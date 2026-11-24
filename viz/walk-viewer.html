@@ -1,0 +1,377 @@
+<title>Spiral Walk Viewer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: one screen. A strip of controls, the board filling the rest, a readout line under it. */
+:root{
+  --bg:#eef1f4; --panel:#ffffff; --fg:#18222d; --muted:#5a6978; --line:#d0d7df; --accent:#0a6a92; --accent-fg:#ffffff; --warn:#b3261e;
+  --board:#fbfcfd; --off:#dfe4ea; --grid:rgba(24,34,45,.16); --mark:#18222d; --tail:#d1495b; --old:#b9c3cd; --mid:#d9dee4;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0e1317; --panel:#161d23; --fg:#e2e8ee; --muted:#8b9aa9; --line:#2a353f; --accent:#56b6dc; --accent-fg:#06222e; --warn:#ff8a80;
+  --board:#11181d; --off:#080b0e; --grid:rgba(226,232,238,.16); --mark:#f2f6f9; --tail:#ff7b8b; --old:#36424d; --mid:#3a444e; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0e1317; --panel:#161d23; --fg:#e2e8ee; --muted:#8b9aa9; --line:#2a353f; --accent:#56b6dc; --accent-fg:#06222e; --warn:#ff8a80;
+  --board:#11181d; --off:#080b0e; --grid:rgba(226,232,238,.16); --mark:#f2f6f9; --tail:#ff7b8b; --old:#36424d; --mid:#3a444e; color-scheme:dark }
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:13px;line-height:1.35;display:flex;flex-direction:column;gap:8px;
+  padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));box-sizing:border-box}
+*{box-sizing:border-box}
+header{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:flex-end}
+h1{font-size:15px;font-weight:600;margin:0 6px 3px 0;letter-spacing:-.01em;white-space:nowrap}
+.grp{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:flex-end;padding-right:14px;border-right:1px solid var(--line)}
+.grp:last-child{border-right:0;padding-right:0}
+label{display:flex;flex-direction:column;gap:2px;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+label.chk{flex-direction:row;align-items:center;gap:5px;text-transform:none;letter-spacing:0;font-size:12.5px;color:var(--fg);padding-bottom:5px}
+select,input[type=text],button{font:inherit;font-size:13px;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:5px;height:28px;padding:0 8px}
+input[type=text]{font-family:var(--mono);width:9.5em}
+#letters{width:5.5em;text-transform:uppercase}
+button{cursor:pointer;font-weight:500}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-fg);min-width:5.2em}
+button.sq{width:28px;padding:0;font-family:var(--mono)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+#stage{position:relative;flex:1 1 auto;min-height:260px;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--off)}
+canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:crosshair}
+#zoom{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:5px}
+#banner{position:absolute;left:10px;top:10px;max-width:calc(100% - 70px);background:var(--panel);border:1px solid var(--warn);color:var(--warn);border-radius:5px;padding:5px 9px;font-weight:500}
+#legend{position:absolute;left:10px;bottom:10px;background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:5px 8px;display:flex;gap:8px;align-items:center;font-family:var(--mono);font-size:11.5px;color:var(--muted);max-width:calc(100% - 20px)}
+#legend canvas{position:static;width:140px;height:10px;border-radius:2px;cursor:default;flex:none}
+footer{display:flex;flex-wrap:wrap;gap:2px 22px;font-family:var(--mono);font-size:12px;font-variant-numeric:tabular-nums;color:var(--muted);min-height:2.7em}
+footer b{color:var(--fg);font-weight:500}
+footer span{white-space:nowrap}
+@media (max-width:640px){ .grp{border-right:0;padding-right:0} h1{width:100%} }
+</style>
+
+<header>
+  <h1>Spiral Walk Viewer</h1>
+  <div class="grp">
+    <label>Piece
+      <select id="piece">
+        <option value="NDFA">Spider (N+D+F+A)</option>
+        <option value="NDA">Squirrel (N+D+A)</option>
+        <option value="NDF">Civet (N+D+F)</option>
+        <option value="FA">Falafel (F+A)</option>
+        <option value="NFA">Leopard (N+F+A)</option>
+        <option value="DN">Carpenter (D+N)</option>
+        <option value="FN">Priest (F+N)</option>
+        <option value="N">Knight (N)</option>
+        <option value="">Other letters</option>
+      </select></label>
+    <label>Letters <input type="text" id="letters" value="NDFA" maxlength="5" spellcheck="false" title="W wazir (0,1), F ferz (1,1), D dabbaba (0,2), N knight (1,2), A alfil (2,2)"></label>
+    <label>Board
+      <select id="board">
+        <option value="400">801 &#215; 801</option>
+        <option value="1000" selected>2001 &#215; 2001</option>
+        <option value="2000">4001 &#215; 4001</option>
+        <option value="3000">6001 &#215; 6001</option>
+        <option value="8400">16801 &#215; 16801 (1.4 GB)</option>
+      </select></label>
+    <label>Known traps
+      <select id="known">
+        <option value="">Run to a trap&#8230;</option>
+        <option value="N:400:2016">Knight, step 2,016</option>
+        <option value="FN:400:1051">Priest, step 1,051</option>
+        <option value="NA:400:59677">Knight+Alfil, step 59,677</option>
+        <option value="DN:8400:253925076">Carpenter, step 253,925,076</option>
+        <option value="NFA:8400:256730882">Leopard, step 256,730,882</option>
+      </select></label>
+  </div>
+  <div class="grp">
+    <label>Run to step <input type="text" id="target" value="1000000" inputmode="numeric"></label>
+    <label>Speed
+      <select id="speed">
+        <option value="0">As fast as possible</option>
+        <option value="20000">20,000 per second</option>
+        <option value="1000">1,000 per second</option>
+        <option value="60">60 per second</option>
+        <option value="5">5 per second</option>
+      </select></label>
+    <button class="primary" id="run">Run</button>
+    <button id="step1" title="One step">+1</button>
+    <button id="restart">Restart</button>
+  </div>
+  <div class="grp">
+    <label>Colour
+      <select id="mode">
+        <option value="lead">Ahead of / behind the spiral</option>
+        <option value="order">Order of visit</option>
+        <option value="recent">Most recent steps</option>
+        <option value="free">Free moves on arrival</option>
+      </select></label>
+    <label id="paramlab">Scale
+      <select id="param"></select></label>
+    <label class="chk"><input type="checkbox" id="follow"> Follow</label>
+    <label class="chk"><input type="checkbox" id="tail" checked> Trail</label>
+    <label class="chk"><input type="checkbox" id="diag"> Diagonals</label>
+    <label class="chk"><input type="checkbox" id="tightOn" checked> Tight squares</label>
+    <label>Tightest arrivals
+      <select id="tight"><option value="">Go to one</option></select></label>
+    <label class="chk"><input type="checkbox" id="gapOn" checked> Large gaps</label>
+    <label>Largest gaps
+      <select id="gaps"><option value="">None of 2 or more</option></select></label>
+  </div>
+</header>
+
+<div id="stage">
+  <canvas id="cv"></canvas>
+  <div id="banner" hidden></div>
+  <div id="zoom">
+    <button class="sq" id="zin" title="Zoom in (+)">+</button>
+    <button class="sq" id="zout" title="Zoom out (&#8722;)">&#8722;</button>
+    <button class="sq" id="zfit" title="Show everything visited (0)">&#9723;</button>
+    <button class="sq" id="zwalk" title="Go to the piece (G)">&#9678;</button>
+  </div>
+  <div id="legend"><span id="lg0"></span><canvas id="lgc" width="140" height="10"></canvas><span id="lg1"></span></div>
+</div>
+
+<footer>
+  <span>step <b id="f_n">1</b></span>
+  <span>on square <b id="f_sq">1</b></span>
+  <span>ring <b id="f_ring">0</b></span>
+  <span>free moves now <b id="f_free">&#8211;</b></span>
+  <span>fewest so far <b id="f_min">&#8211;</b></span>
+  <span>largest gap <b id="f_gap">0</b></span>
+  <span><b id="f_rate"></b></span>
+  <span id="f_hover">Drag to move, wheel or pinch to zoom. Point at a square to read it.</span>
+</footer>
+
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const cv=$("cv"), ctx=cv.getContext("2d");
+
+// ---------- the walk ----------
+let H,W,ord,freeAt,x,y,n,moves,trapped,edge,minFree,minFreeAt,maxLead,tailBuf,tailLen,tailPos,curFree;
+const TAIL=4000; let allocFail=0, trapSeen=false;
+// the arrivals with the fewest free moves: at most CAPT of them, fewest first, earliest first among equals
+const CAPT=200, SHOWT=40; let tight=[], tightCut=99, tightVer=0, tightShown=-1, tightSel=null;
+function tightAdd(fr){ tight.push({f:fr,n:n,x:x,y:y}); tightVer++;
+  if(tight.length>CAPT){ let w=0; for(let i=1;i<tight.length;i++){ const a=tight[i], b=tight[w]; if(a.f>b.f||(a.f===b.f&&a.n>b.n)) w=i; } tight.splice(w,1); }
+  if(tight.length>=CAPT){ let m=0; for(const e of tight) if(e.f>m) m=e.f; tightCut=m; } }
+function tightList(){ return tight.slice().sort((a,b)=>a.f-b.f||a.n-b.n).slice(0,SHOWT); }
+// Lines and gaps. A line is the squares at one position of a side, running straight out (side 0 right, 1 top, 2 left,
+// 3 bottom). LH = its lowest unvisited ring. The gap of a visit is the ring visited minus that. Gaps of 2 or more are kept.
+let LH=[], gaps=[], gapCut=1, gapVer=0, gapShown=-1, gapSel=null, maxGap=0, maxGapAt=0;
+function lineVisit(){ const ax=x<0?-x:x, ay=y<0?-y:y, r=ax>ay?ax:ay; let s,t; if(x===r&&y>-r){s=0;t=y;} else if(y===r){s=1;t=x;} else if(x===-r){s=2;t=y;} else {s=3;t=x;}
+  const Ls=LH[s], i=t+H+1, h=Ls[i]; if(r!==h) return r-h;
+  let k=h+1; for(;k<=H;k++){ let qx,qy; if(s===0){qx=k;qy=t;} else if(s===1){qx=t;qy=k;} else if(s===2){qx=-k;qy=t;} else {qx=t;qy=-k;} if(!ord[(qy+H)*W+qx+H]) break; }
+  Ls[i]=k; return 0; }
+function gapAdd(g){ gaps.push({g:g,n:n,x:x,y:y}); gapVer++;
+  if(gaps.length>CAPT){ let w=0; for(let i=1;i<gaps.length;i++){ const a=gaps[i], b=gaps[w]; if(a.g<b.g||(a.g===b.g&&a.n>b.n)) w=i; } gaps.splice(w,1); }
+  if(gaps.length>=CAPT){ let m=99; for(const e of gaps) if(e.g<m) m=e.g; gapCut=m; } }
+function gapList(){ return gaps.slice().sort((a,b)=>b.g-a.g||a.n-b.n).slice(0,SHOWT); }
+function spiral(x,y){ const ax=x<0?-x:x, ay=y<0?-y:y, r=ax>ay?ax:ay; if(!r) return 1; const b=(2*r-1)*(2*r-1);
+  if(x===r&&y>-r) return b+(y+r); if(y===r) return b+2*r+(r-x); if(x===-r) return b+4*r+(r-y); return b+6*r+(x+r); }
+function movesOf(letters){ const base={W:[0,1],F:[1,1],D:[0,2],N:[1,2],A:[2,2]}, seen=new Set(), out=[];
+  for(const ch of letters){ const m=base[ch]; if(!m) continue;
+    for(const sx of [-1,1]) for(const sy of [-1,1]) for(const sw of [0,1]){ const dx=(sw?m[1]:m[0])*sx, dy=(sw?m[0]:m[1])*sy, k=dx+","+dy; if(!seen.has(k)){ seen.add(k); out.push(dx,dy); } } }
+  return Int32Array.from(out); }
+function reset(){
+  H=+$("board").value; W=2*H+1; ord=null; freeAt=null; allocFail=0; trapSeen=false; tight=[]; tightCut=99; tightVer++; tightSel=null;   // drop the old board before asking for a new one
+  try{ ord=new Int32Array(W*W); freeAt=new Uint8Array(W*W); }
+  catch(err){ allocFail=W; ord=null; freeAt=null; $("board").value="1000"; H=1000; W=2001; ord=new Int32Array(W*W); freeAt=new Uint8Array(W*W); }
+  LH=[]; for(let s=0;s<4;s++){ const a=new Int32Array(2*H+3); for(let t=-H-1;t<=H+1;t++) a[t+H+1]=(s===0||s===3)?(t>0?t:-t+1):(t>=0?t+1:-t); LH.push(a); }
+  gaps=[]; gapCut=1; gapVer++; gapSel=null; maxGap=0; maxGapAt=0;
+  moves=movesOf($("letters").value.toUpperCase()); x=0; y=0; n=1; ord[H*W+H]=1; trapped=false; edge=false; minFree=99; minFreeAt=0; maxLead=1;
+  tailBuf=new Int32Array(2*TAIL); tailLen=1; tailPos=1; tailBuf[0]=0; tailBuf[1]=0; curFree=countFree();
+  $("banner").hidden=true; }
+function countFree(){ let c=0; for(let k=0;k<moves.length;k+=2){ const qx=x+moves[k], qy=y+moves[k+1]; if(qx<-H||qx>H||qy<-H||qy>H) continue; if(!ord[(qy+H)*W+qx+H]) c++; } return c; }
+// one step; false if it cannot be made
+function step(){
+  let best=-1,bx=0,by=0,fr=0; const m=moves, L=m.length;
+  for(let k=0;k<L;k+=2){ const qx=x+m[k], qy=y+m[k+1];
+    if(qx<-H||qx>H||qy<-H||qy>H){ edge=true; return false; }
+    if(ord[(qy+H)*W+qx+H]) continue; fr++; const s=spiral(qx,qy); if(best<0||s<best){ best=s; bx=qx; by=qy; } }
+  const here=(y+H)*W+x+H; freeAt[here]=fr; if(fr<minFree){ minFree=fr; minFreeAt=n; } if(fr<tightCut) tightAdd(fr);
+  if(best<0){ trapped=true; return false; }
+  x=bx; y=by; n++; ord[(y+H)*W+x+H]=n;
+  const g=lineVisit(); if(g>maxGap){ maxGap=g; maxGapAt=n; } if(g>gapCut) gapAdd(g); const d=n-best; const ad=d<0?-d:d; if(ad>maxLead) maxLead=ad;
+  tailBuf[2*tailPos]=x; tailBuf[2*tailPos+1]=y; tailPos=(tailPos+1)%TAIL; if(tailLen<TAIL) tailLen++;
+  return true; }
+
+// ---------- view ----------
+let cx=0, cy=0, sc=1, dpr=1, vw=0, vh=0, img=null, buf32=null, dirty=true, userView=false;   // userView: the viewer has moved or zoomed
+const css=k=>getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+function rgb(str){ const c=document.createElement("canvas").getContext("2d"); c.fillStyle=str; c.fillRect(0,0,1,1); const d=c.getImageData(0,0,1,1).data; return [d[0],d[1],d[2]]; }
+const pack=(r,g,b)=>(255<<24)|(b<<16)|(g<<8)|r;
+function ramp(stops,nn){ const out=new Uint32Array(nn); for(let i=0;i<nn;i++){ const t=i/(nn-1)*(stops.length-1), a=Math.min(stops.length-2,Math.floor(t)), f=t-a, p=stops[a], q=stops[a+1];
+    out[i]=pack(Math.round(p[0]+(q[0]-p[0])*f),Math.round(p[1]+(q[1]-p[1])*f),Math.round(p[2]+(q[2]-p[2])*f)); } return out; }
+let C={};
+function readTheme(){
+  const mid=rgb(css("--mid")), old=rgb(css("--old"));
+  C.board=pack(...rgb(css("--board"))); C.off=pack(...rgb(css("--off"))); C.old=pack(...old);
+  C.accent=css("--accent"); C.boardCss=css("--board"); C.grid=css("--grid"); C.mark=css("--mark"); C.tail=css("--tail"); C.fg=css("--fg"); C.muted=css("--muted");
+  C.order=ramp([[68,1,84],[59,82,139],[33,145,140],[94,201,98],[253,231,37]],256);
+  C.lead=ramp([[33,102,172],[103,169,207],mid,[239,138,98],[178,24,43]],257);
+  C.recent=ramp([[255,214,10],[240,120,40],[190,40,90],old],256);
+  C.free=ramp([[150,0,30],[230,70,40],[250,170,60],[130,200,160],[60,130,190],[40,60,130]],21);
+  dirty=true; drawLegend(); }
+function resize(){ const r=$("stage").getBoundingClientRect(); dpr=Math.min(2,window.devicePixelRatio||1); vw=Math.max(50,Math.round(r.width*dpr)); vh=Math.max(50,Math.round(r.height*dpr));
+  cv.width=vw; cv.height=vh; img=ctx.createImageData(vw,vh); buf32=new Uint32Array(img.data.buffer); if(!userView&&ord) fit(); dirty=true; }
+function fit(){ let r=1; if(n>1){ r=Math.ceil(Math.sqrt(n)/2)*1.12+3; } r=Math.min(r,H+2); cx=0; cy=0; sc=Math.min(vw,vh)/(2*r+1); dirty=true; }
+function toWalker(){ userView=true; cx=x; cy=y; if(sc<10*dpr) sc=10*dpr; dirty=true; }
+function zoomAt(f,px,py){ userView=true; const ns=Math.max(Math.min(vw,vh)/(2*H+40),Math.min(90*dpr,sc*f)); const wx=cx+(px-vw/2)/sc, wy=cy-(py-vh/2)/sc; sc=ns; cx=wx-(px-vw/2)/sc; cy=wy+(py-vh/2)/sc; dirty=true; }
+function leadRange(){ const v=$("param").value; return v==="auto"?maxLead:+v; }
+function render(){
+  if($("follow").checked){ cx=x; cy=y; }
+  const mode=$("mode").value, w=vw, h=vh, s=sc, colX=new Int32Array(w);
+  for(let px=0;px<w;px++){ const xc=Math.floor(cx+(px-w/2)/s+0.5); colX[px]=(xc<-H||xc>H)?0x7fffffff:xc; }
+  const lr=leadRange(), recentN=+$("param").value||1, orderK=255/Math.max(1,n-1);
+  const cBoard=C.board, cOff=C.off, LUTo=C.order, LUTl=C.lead, LUTr=C.recent, LUTf=C.free, cOld=C.old;
+  let o=0;
+  for(let py=0;py<h;py++){
+    const yc=Math.floor(cy-(py-h/2)/s+0.5);
+    if(yc<-H||yc>H){ for(let px=0;px<w;px++) buf32[o++]=cOff; continue; }
+    const base=(yc+H)*W+H, ay=yc<0?-yc:yc;
+    for(let px=0;px<w;px++){ const xc=colX[px]; if(xc===0x7fffffff){ buf32[o++]=cOff; continue; }
+      const v=ord[base+xc]; if(!v){ buf32[o++]=cBoard; continue; }
+      if(mode==="order") buf32[o++]=LUTo[((v-1)*orderK)|0];
+      else if(mode==="lead"){ const ax=xc<0?-xc:xc, r=ax>ay?ax:ay; let sp; if(!r) sp=1; else { const b=(2*r-1)*(2*r-1); sp=(xc===r&&yc>-r)?b+yc+r:(yc===r)?b+2*r+r-xc:(xc===-r)?b+4*r+r-yc:b+6*r+xc+r; }
+        let t=(v-sp)/lr; if(t>1)t=1; else if(t<-1)t=-1; buf32[o++]=LUTl[Math.round(128+128*t)]; }
+      else if(mode==="recent"){ const age=n-v; buf32[o++]=age>=recentN?cOld:LUTr[(age*255/recentN)|0]; }
+      else { const f=(v===n)?curFree:freeAt[base+xc]; buf32[o++]=LUTf[f>20?20:f]; } } }
+  ctx.putImageData(img,0,0);
+  const X=wx=>(wx-cx)*s+w/2, Y=wy=>h/2-(wy-cy)*s;
+  // grid and numbers when close
+  if(s>=7*dpr){ ctx.strokeStyle=C.grid; ctx.lineWidth=1; ctx.beginPath();
+    const x0=Math.max(-H,Math.floor(cx-w/2/s)-1), x1=Math.min(H,Math.ceil(cx+w/2/s)+1), y0=Math.max(-H,Math.floor(cy-h/2/s)-1), y1=Math.min(H,Math.ceil(cy+h/2/s)+1);
+    for(let i=x0;i<=x1+1;i++){ const p=Math.round(X(i-0.5))+0.5; ctx.moveTo(p,Y(y1+0.5)); ctx.lineTo(p,Y(y0-0.5)); }
+    for(let j=y0;j<=y1+1;j++){ const p=Math.round(Y(j-0.5))+0.5; ctx.moveTo(X(x0-0.5),p); ctx.lineTo(X(x1+0.5),p); }
+    ctx.stroke();
+    if(s>=34*dpr){ ctx.textAlign="center"; ctx.textBaseline="middle"; const big=s>=58*dpr;
+      for(let j=y0;j<=y1;j++) for(let i=x0;i<=x1;i++){ const v=ord[(j+H)*W+i+H];
+        ctx.font=`${Math.round(Math.min(s*0.2,13*dpr))}px "IBM Plex Mono",monospace`; ctx.fillStyle=v?"rgba(255,255,255,.92)":C.muted;
+        if(v){ ctx.shadowColor="rgba(0,0,0,.55)"; ctx.shadowBlur=3; }
+        ctx.fillText(String(spiral(i,j)),X(i),Y(j)-(big&&v?s*0.16:0));
+        if(big&&v){ ctx.font=`${Math.round(Math.min(s*0.16,11*dpr))}px "IBM Plex Mono",monospace`; ctx.fillText("step "+v,X(i),Y(j)+s*0.2); }
+        ctx.shadowBlur=0; } } }
+  if($("diag").checked){ ctx.strokeStyle=C.grid; ctx.lineWidth=1.5*dpr; ctx.beginPath(); ctx.moveTo(X(-H),Y(-H)); ctx.lineTo(X(H),Y(H)); ctx.moveTo(X(-H),Y(H)); ctx.lineTo(X(H),Y(-H)); ctx.stroke(); }
+  if($("tail").checked&&tailLen>1&&s>=1.5*dpr){ const cnt=Math.min(tailLen,s>=6*dpr?TAIL:600); ctx.strokeStyle=C.tail; ctx.lineWidth=Math.max(1,Math.min(2.5*dpr,s*0.12)); ctx.lineJoin="round"; ctx.beginPath();
+    for(let k=0;k<cnt;k++){ const i=((tailPos-1-k)%TAIL+TAIL)%TAIL, px=X(tailBuf[2*i]), py=Y(tailBuf[2*i+1]); if(k) ctx.lineTo(px,py); else ctx.moveTo(px,py); } ctx.stroke();
+    if(s>=5*dpr){ const a=Math.max(2*dpr,Math.min(s*0.2,6*dpr)); ctx.lineWidth=Math.max(1,Math.min(2*dpr,s*0.09)); ctx.lineCap="round"; ctx.beginPath();   // a cross on every square of the trail
+      for(let k=1;k<cnt;k++){ const i=((tailPos-1-k)%TAIL+TAIL)%TAIL, px=X(tailBuf[2*i]), py=Y(tailBuf[2*i+1]); if(px<-a||px>w+a||py<-a||py>h+a) continue;
+        ctx.moveTo(px-a,py-a); ctx.lineTo(px+a,py+a); ctx.moveTo(px-a,py+a); ctx.lineTo(px+a,py-a); } ctx.stroke(); } }
+  // the tightest arrivals: a square frame on each, with the number of free moves when there is room
+  if($("tightOn").checked){ const hs=Math.max(5*dpr,s*0.5); ctx.textAlign="center"; ctx.textBaseline="bottom"; ctx.font=`${Math.round(11*dpr)}px "IBM Plex Mono",monospace`;
+    const lst=tightList(), inside=s>=14*dpr; if(tightSel&&lst.includes(tightSel)){ lst.splice(lst.indexOf(tightSel),1); lst.push(tightSel); }   // the chosen one is drawn last, on top
+    if(inside){ ctx.textAlign="left"; ctx.textBaseline="top"; }
+    for(const e of lst){ const ex=X(e.x), ey=Y(e.y); if(ex<-hs||ex>w+hs||ey<-hs||ey>h+hs) continue; const sel=e===tightSel;
+      ctx.lineWidth=(sel?5:3.5)*dpr; ctx.strokeStyle=C.boardCss; ctx.strokeRect(ex-hs,ey-hs,2*hs,2*hs);
+      ctx.lineWidth=(sel?3:1.5)*dpr; ctx.strokeStyle=sel?C.tail:C.mark; ctx.strokeRect(ex-hs,ey-hs,2*hs,2*hs);
+      const tx=inside?ex-hs+3*dpr:ex, ty=inside?ey-hs+2*dpr:ey-hs-2*dpr;   // the count: in the corner of the square when it fits, above the frame when not
+      ctx.lineWidth=3*dpr; ctx.strokeStyle=C.boardCss; ctx.strokeText(String(e.f),tx,ty); ctx.fillStyle=sel?C.tail:C.mark; ctx.fillText(String(e.f),tx,ty); } }
+  // the largest gaps: a diamond on each, with the size of the gap
+  if($("gapOn").checked&&gaps.length){ const hs=Math.max(6*dpr,s*0.62), inside=s>=14*dpr; ctx.font=`${Math.round(11*dpr)}px "IBM Plex Mono",monospace`; ctx.textAlign=inside?"right":"center"; ctx.textBaseline=inside?"top":"bottom";
+    const lst=gapList(); if(gapSel&&lst.includes(gapSel)){ lst.splice(lst.indexOf(gapSel),1); lst.push(gapSel); }
+    for(const e of lst){ const ex=X(e.x), ey=Y(e.y); if(ex<-hs||ex>w+hs||ey<-hs||ey>h+hs) continue; const sel=e===gapSel;
+      const path=()=>{ ctx.beginPath(); ctx.moveTo(ex,ey-hs); ctx.lineTo(ex+hs,ey); ctx.lineTo(ex,ey+hs); ctx.lineTo(ex-hs,ey); ctx.closePath(); ctx.stroke(); };
+      ctx.lineWidth=(sel?5.5:4)*dpr; ctx.strokeStyle=C.boardCss; path(); ctx.lineWidth=(sel?3:1.8)*dpr; ctx.strokeStyle=sel?C.tail:C.accent; path();
+      const tx=inside?ex+s*0.5-3*dpr:ex, ty=inside?ey-s*0.5+2*dpr:ey-hs-2*dpr;
+      ctx.lineWidth=3*dpr; ctx.strokeStyle=C.boardCss; ctx.strokeText(String(e.g),tx,ty); ctx.fillStyle=sel?C.tail:C.accent; ctx.fillText(String(e.g),tx,ty); } }
+  // the piece
+  const px=X(x), py=Y(y), rad=Math.max(4*dpr,s*0.32);
+  ctx.beginPath(); ctx.arc(px,py,rad,0,6.2832); ctx.lineWidth=2*dpr; ctx.strokeStyle=C.mark; ctx.stroke();
+  ctx.beginPath(); ctx.arc(px,py,rad+2*dpr,0,6.2832); ctx.lineWidth=1*dpr; ctx.strokeStyle=C.tail; ctx.stroke();
+  dirty=false; }
+
+// ---------- legend, readouts ----------
+const fmt=v=>v.toLocaleString("en-US");
+function fillParam(){ const m=$("mode").value, p=$("param"), keep=p.value; let opts=[], lab="Scale";
+  if(m==="lead"){ lab="Scale"; opts=[["auto","Largest so far"],["100","\u00b1 100 steps"],["1000","\u00b1 1,000"],["10000","\u00b1 10,000"],["100000","\u00b1 100,000"],["1000000","\u00b1 1,000,000"],["10000000","\u00b1 10,000,000"]]; }
+  else if(m==="recent"){ lab="Window"; opts=[["200","200 steps"],["2000","2,000"],["20000","20,000"],["200000","200,000"],["2000000","2,000,000"],["20000000","20,000,000"]]; }
+  else opts=[["","\u2013"]];
+  $("paramlab").firstChild.textContent=lab+" "; p.innerHTML=""; for(const [v,t] of opts){ const o=document.createElement("option"); o.value=v; o.textContent=t; p.appendChild(o); }
+  if(opts.some(o=>o[0]===keep)) p.value=keep; else if(m==="recent") p.value="2000"; p.disabled=opts.length<2; }
+function drawLegend(){ const m=$("mode").value, lc=$("lgc"), g=lc.getContext("2d"), id=g.createImageData(140,10), b=new Uint32Array(id.data.buffer);
+  const lut=m==="order"?C.order:m==="lead"?C.lead:m==="recent"?C.recent:C.free; if(!lut) return;
+  for(let i=0;i<140;i++){ const c=lut[Math.round(i/139*(lut.length-1))]; for(let j=0;j<10;j++) b[j*140+i]=c; } g.putImageData(id,0,0);
+  if(m==="order"){ $("lg0").textContent="first"; $("lg1").textContent="last"; }
+  else if(m==="lead"){ const r=fmt(Math.round(leadRange())); $("lg0").textContent="early "+r; $("lg1").textContent=r+" late"; }
+  else if(m==="recent"){ $("lg0").textContent="now"; $("lg1").textContent=fmt(+$("param").value)+" ago"; }
+  else { $("lg0").textContent="0 free"; $("lg1").textContent="20"; } }
+let rate=0;
+function status(){
+  if(trapped&&!trapSeen){ trapSeen=true; cx=x; cy=y; sc=Math.max(sc,26*dpr); userView=true; $("follow").checked=false; dirty=true; }   // go to the trap once
+  if(tightShown!==tightVer){ tightShown=tightVer; const sel=$("tight"); sel.innerHTML=""; const o0=document.createElement("option"); o0.value=""; o0.textContent="Go to one"; sel.appendChild(o0);
+    tightList().forEach((e,i)=>{ const o=document.createElement("option"); o.value=String(i); o.textContent=e.f+" free, step "+fmt(e.n); sel.appendChild(o); }); }
+  if(gapShown!==gapVer){ gapShown=gapVer; const sel=$("gaps"); sel.innerHTML=""; const o0=document.createElement("option"); o0.value=""; o0.textContent=gaps.length?"Go to one":"None of 2 or more"; sel.appendChild(o0);
+    gapList().forEach((e,i)=>{ const o=document.createElement("option"); o.value=String(i); o.textContent="gap "+e.g+", step "+fmt(e.n); sel.appendChild(o); }); }
+  $("f_gap").textContent=maxGap?maxGap+" (step "+fmt(maxGapAt)+")":"0";
+  $("f_n").textContent=fmt(n); $("f_sq").textContent=fmt(spiral(x,y)); $("f_ring").textContent=fmt(Math.max(Math.abs(x),Math.abs(y)));
+  $("f_free").textContent=curFree+" of "+moves.length/2; $("f_min").textContent=minFree>20?"\u2013":minFree+" (step "+fmt(minFreeAt)+")";
+  $("f_rate").textContent=running&&rate?fmt(Math.round(rate))+" steps/s":"";
+  const b=$("banner");
+  if(trapped){ b.hidden=false; b.textContent="Trapped at step "+fmt(n)+" on square "+fmt(spiral(x,y))+": every move leads to a visited square."; }
+  else if(edge){ b.hidden=false; b.textContent="Stopped at step "+fmt(n)+": the walk reached the edge of the board. Pick a larger board and restart."; }
+  else if(allocFail){ b.hidden=false; b.textContent="This browser could not give the page memory for the "+allocFail+" \u00d7 "+allocFail+" board. Showing the 2001 \u00d7 2001 board instead."; }
+  else b.hidden=true;
+  $("run").textContent=running?"Pause":"Run"; if($("mode").value==="lead"&&$("param").value==="auto") drawLegend(); }
+function hover(e){ const r=cv.getBoundingClientRect(), px=(e.clientX-r.left)*dpr, py=(e.clientY-r.top)*dpr; const hx=Math.floor(cx+(px-vw/2)/sc+0.5), hy=Math.floor(cy-(py-vh/2)/sc+0.5);
+  const el=$("f_hover"); if(hx<-H||hx>H||hy<-H||hy>H){ el.textContent="outside the board"; return; }
+  const i=(hy+H)*W+hx+H, v=ord[i], sp=spiral(hx,hy);
+  el.innerHTML="("+hx+", "+hy+") square <b>"+fmt(sp)+"</b> ring "+Math.max(Math.abs(hx),Math.abs(hy))+(v?" \u00b7 visited at step <b>"+fmt(v)+"</b> ("+(v-sp>=0?"+":"\u2212")+fmt(Math.abs(v-sp))+")"+(v<n?" \u00b7 "+freeAt[i]+" free on arrival":""):" \u00b7 not visited"); }
+
+// ---------- running ----------
+let running=false, acc=0, lastT=0, rateN=0, rateT=0, lastDraw=0;
+function target(){ const t=parseInt($("target").value.replace(/[^0-9]/g,""),10); return isFinite(t)&&t>0?t:1; }
+// At full speed the walk runs in its own slices of 40 ms, apart from drawing, so a slow or hidden display does not hold it back.
+let simDirty=false, pumping=false; const chan=new MessageChannel();
+chan.port1.onmessage=()=>{ pumping=false; if(!running||+$("speed").value!==0) return;
+  const tg=target(), t0=performance.now(); let did=0;
+  while(running&&n<tg&&performance.now()-t0<40){ for(let i=0;i<20000&&n<tg;i++){ if(!step()){ running=false; break; } did++; } }
+  if(n>=tg) running=false; rateN+=did; simDirty=true; if(running){ pumping=true; chan.port2.postMessage(0); } };
+function frame(t){
+  const sp=+$("speed").value;
+  if(running&&sp!==0){ const tg=target(); let did=0; acc+=sp*Math.min(0.1,(t-lastT)/1000); const k=Math.floor(acc); acc-=k;
+    for(let i=0;i<k&&n<tg;i++){ if(!step()){ running=false; break; } did++; }
+    if(n>=tg) running=false; rateN+=did; simDirty=true; }
+  if(running&&sp===0&&!pumping){ pumping=true; chan.port2.postMessage(0); }
+  if(simDirty){ simDirty=false; curFree=countFree(); dirty=true; if(!userView&&!$("follow").checked) fit();
+    if(t-rateT>500){ rate=rateN*1000/(t-rateT); rateN=0; rateT=t; } status(); }
+  // at full speed draw four times a second
+  lastT=t; if(dirty&&(!running||sp!==0||t-lastDraw>250)){ render(); lastDraw=t; } requestAnimationFrame(frame); }
+
+// ---------- controls ----------
+function restart(runTo){ running=false; reset(); userView=false; fit(); if(runTo&&!allocFail){ running=true; } status(); dirty=true; }
+$("known").addEventListener("change",e=>{ const v=e.target.value; if(!v) return; const part=v.split(":"), p=$("piece");
+  $("letters").value=part[0]; p.value=[...p.options].some(o=>o.value===part[0])?part[0]:""; $("board").value=part[1]; $("target").value=String(+part[2]+1); $("speed").value="0"; e.target.value=""; restart(true); });
+$("piece").addEventListener("change",e=>{ if(e.target.value){ $("letters").value=e.target.value; restart(true); } else $("letters").focus(); });
+$("letters").addEventListener("change",e=>{ const v=e.target.value.toUpperCase().replace(/[^WFDNA]/g,""); e.target.value=v||"N"; const p=$("piece"); p.value=[...p.options].some(o=>o.value===v)?v:""; restart(true); });
+$("board").addEventListener("change",()=>restart(true));
+$("restart").addEventListener("click",()=>restart(false));
+$("run").addEventListener("click",()=>{ if(trapped||edge) return; if(!running&&n>=target()){ $("target").value=String(n*2); } running=!running; rateT=performance.now(); rateN=0; status(); });
+$("step1").addEventListener("click",()=>{ running=false; if(!trapped&&!edge){ step(); curFree=countFree(); } dirty=true; status(); });
+$("mode").addEventListener("change",()=>{ fillParam(); drawLegend(); dirty=true; });
+$("param").addEventListener("change",()=>{ drawLegend(); dirty=true; });
+$("gaps").addEventListener("change",e=>{ if(e.target.value==="") return; const t=gapList()[+e.target.value]; if(!t) return;
+  gapSel=t; cx=t.x; cy=t.y; sc=Math.max(sc,26*dpr); userView=true; $("follow").checked=false; $("gapOn").checked=true; dirty=true; });
+for(const id of ["follow","tail","diag","tightOn","gapOn"]) $(id).addEventListener("change",()=>{ dirty=true; });
+$("tight").addEventListener("change",e=>{ if(e.target.value==="") return; const t=tightList()[+e.target.value]; if(!t) return;
+  tightSel=t; cx=t.x; cy=t.y; sc=Math.max(sc,26*dpr); userView=true; $("follow").checked=false; $("tightOn").checked=true; dirty=true; });
+$("zin").addEventListener("click",()=>zoomAt(1.6,vw/2,vh/2)); $("zout").addEventListener("click",()=>zoomAt(1/1.6,vw/2,vh/2));
+$("zfit").addEventListener("click",()=>{ $("follow").checked=false; fit(); userView=false; }); $("zwalk").addEventListener("click",toWalker);
+cv.addEventListener("wheel",e=>{ e.preventDefault(); const r=cv.getBoundingClientRect(); zoomAt(Math.exp(-e.deltaY*(e.ctrlKey?0.01:0.0016)),(e.clientX-r.left)*dpr,(e.clientY-r.top)*dpr); },{passive:false});
+const ptr=new Map(); let pinch=0;
+cv.addEventListener("pointerdown",e=>{ cv.setPointerCapture(e.pointerId); ptr.set(e.pointerId,[e.clientX,e.clientY]); pinch=0; });
+cv.addEventListener("pointermove",e=>{ if(!ptr.has(e.pointerId)){ hover(e); return; }
+  const p=ptr.get(e.pointerId), dx=e.clientX-p[0], dy=e.clientY-p[1]; ptr.set(e.pointerId,[e.clientX,e.clientY]);
+  if(ptr.size===1){ userView=true; cx-=dx*dpr/sc; cy+=dy*dpr/sc; $("follow").checked=false; dirty=true; }
+  else if(ptr.size===2){ const a=[...ptr.values()], d=Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]), r=cv.getBoundingClientRect(); if(pinch) zoomAt(d/pinch,((a[0][0]+a[1][0])/2-r.left)*dpr,((a[0][1]+a[1][1])/2-r.top)*dpr); pinch=d; } });
+const up=e=>{ ptr.delete(e.pointerId); pinch=0; }; cv.addEventListener("pointerup",up); cv.addEventListener("pointercancel",up);
+window.addEventListener("keydown",e=>{ if(/INPUT|SELECT/.test(e.target.tagName)) return; const st=60*dpr/sc;
+  if(e.key==="+"||e.key==="=") zoomAt(1.6,vw/2,vh/2); else if(e.key==="-") zoomAt(1/1.6,vw/2,vh/2); else if(e.key==="0") fit(); else if(e.key==="g"||e.key==="G") toWalker();
+  else if(e.key==="ArrowLeft"){ cx-=st; dirty=true; } else if(e.key==="ArrowRight"){ cx+=st; dirty=true; } else if(e.key==="ArrowUp"){ cy+=st; dirty=true; } else if(e.key==="ArrowDown"){ cy-=st; dirty=true; }
+  else if(e.key===" "){ $("run").click(); } else return; e.preventDefault(); });
+new ResizeObserver(()=>{ resize(); }).observe($("stage"));
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",readTheme);
+new MutationObserver(readTheme).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+
+// ---------- start: a Spider walk of 200,000 steps, so the page opens on something ----------
+fillParam(); resize(); readTheme(); reset();
+for(let i=0;i<199999;i++) if(!step()) break;
+curFree=countFree(); fit(); status(); requestAnimationFrame(frame);
+})();
+</script>

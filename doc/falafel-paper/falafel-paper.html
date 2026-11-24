@@ -1,0 +1,1918 @@
+<title>Falafel Walk Paper</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: one column set like a typeset article: centred title block, indented abstract,
+   numbered sections, theorem environments, ruled tables, numbered figures. */
+:root {
+  --paper: #ffffff;
+  --ink: #1a1a1e;
+  --muted: #5a5c66;
+  --hair: #c6c8d0;
+  --tint-a: #dbe5f6;
+  --tint-b: #f4e4c6;
+  --tint-0: #ebebef;
+  --accent: #1d4c9a;
+  --serif: "Latin Modern Roman", "CMU Serif", "Old Standard TT", "Times New Roman", Times, serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #17181c; --ink: #e8e6e0; --muted: #a3a5ae; --hair: #454751;
+    --tint-a: #27375a; --tint-b: #4d3d20; --tint-0: #2b2c33; --accent: #93b4f0;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #17181c; --ink: #e8e6e0; --muted: #a3a5ae; --hair: #454751;
+  --tint-a: #27375a; --tint-b: #4d3d20; --tint-0: #2b2c33; --accent: #93b4f0;
+  color-scheme: dark;
+}
+body {
+  background: var(--paper); color: var(--ink);
+  font-family: var(--serif); font-size: 18px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 3rem 5rem;
+}
+article { max-width: 43rem; margin: 0 auto; min-width: 0; overflow-x: clip; }
+h1 { font-size: 1.75rem; line-height: 1.25; font-weight: 400; text-align: center; margin: 0 0 1.2rem; text-wrap: balance; }
+.author { text-align: center; font-variant: small-caps; letter-spacing: .04em; font-size: 1.1rem; margin: 0; }
+.date { text-align: center; color: var(--muted); margin: .3rem 0 2.2rem; }
+.abstract { margin: 0 2.2rem 2.4rem; font-size: .94em; }
+.abstract b { font-variant: small-caps; letter-spacing: .04em; font-weight: 700; }
+h2 { font-size: 1.2rem; font-weight: 700; margin: 2.4rem 0 .8rem; text-wrap: balance; }
+h2 .no { margin-right: .45em; }
+p { margin: 0; text-align: justify; hyphens: auto; }
+p + p { text-indent: 1.4em; }
+.noindent { text-indent: 0 !important; }
+a { color: var(--accent); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+code { font-family: var(--mono); font-size: .82em; }
+.thm, .proof, .rem { margin: 1.1rem 0; }
+.thm > p:first-child, .proof > p:first-child, .rem > p:first-child { text-indent: 0; }
+.thm { font-style: italic; }
+.thm.def { font-style: normal; }
+.thm .head { font-style: normal; font-weight: 700; margin-right: .15em; }
+.thm .note { font-style: normal; }
+.thm ol, .rem ol { margin: .3rem 0 0; padding-left: 2.4em; }
+.thm li, .rem li { text-align: justify; }
+ol.roman { list-style: none; padding-left: 2.6em; }
+ol.roman > li { position: relative; }
+ol.roman > li > .mark { position: absolute; left: -2.6em; width: 2.2em; text-align: right; font-style: normal; }
+.rem .head, .proof .head { font-style: italic; margin-right: .15em; }
+.rem .head.b { font-style: normal; font-weight: 700; }
+.proof .qed { float: right; margin-left: 1em; }
+.eq { display: flex; align-items: center; gap: .6rem; }
+.eqbody { flex: 1; min-width: 0; overflow-x: auto; }
+.eqno { flex: none; }
+table.path td:first-child { min-width: 7.6em; }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width: 100%; margin: .8rem 0 !important; }
+mjx-container { color: var(--ink); }
+figure { margin: 1.8rem 0; }
+figcaption { font-size: .92em; text-align: left; margin: .7rem 1.2rem 0; }
+figure.tab figcaption { margin: 0 1.2rem .7rem; }
+figcaption .lab { font-variant: small-caps; letter-spacing: .04em; margin-right: .3em; }
+.figwrap, .tablewrap { overflow-x: auto; }
+.figwrap svg { display: block; margin: 0 auto; width: 100%; height: auto; }
+.figwrap.s svg { max-width: 300px; }
+.figwrap.m svg { max-width: 520px; min-width: 430px; }
+.figwrap.l svg { max-width: 600px; min-width: 480px; }
+table { border-collapse: collapse; margin: 0 auto; font-size: .9em; border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink); }
+th { font-weight: 400; font-style: italic; text-align: left; border-bottom: 1px solid var(--ink); padding: .35em .8em; white-space: nowrap; }
+td { padding: .22em .8em; vertical-align: top; text-align: left; }
+tbody tr:first-child td { padding-top: .45em; }
+tbody tr:last-child td { padding-bottom: .45em; }
+tr.gap td { padding: 0; height: .45em; }
+table.reg td, table.reg th { padding-inline: .65em; }
+table.terms td { white-space: nowrap; }
+table.path td:nth-child(2), table.reg td:first-child, table.prefix td, table.map td:first-child { white-space: nowrap; }
+table.prefix td { padding: .2em .45em; font-variant-numeric: tabular-nums; }
+table.prefix td:first-child { color: var(--muted); text-align: right; padding-right: .9em; }
+pre { font-family: var(--mono); font-size: .68em; line-height: 1.45; overflow-x: auto; margin: 1rem 0; padding: .9em .5em;
+  border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink); }
+.refs { list-style: none; padding: 0; margin: 0; font-size: .95em; }
+.refs li { padding-left: 2.4em; text-indent: -2.4em; margin: .35em 0; overflow-wrap: anywhere; }
+.walk { list-style: none; padding-left: 3.4em; margin: .6rem 0; }
+.walk li { position: relative; text-align: justify; }
+.walk li .mark { position: absolute; left: -3.4em; }
+.thm ol.walk { padding-left: 3.4em; }  /* ".thm ol" above would set 2.4em and push the labels out of the column */
+/* figures */
+svg text { font-family: var(--serif); }
+.cell { fill: var(--paper); stroke: var(--hair); stroke-width: 1; }
+.cell.on, .cell.even { fill: var(--tint-a); }
+.cell.odd { fill: var(--tint-b); }
+.cell.pre { fill: var(--tint-0); }
+.ring { fill: none; stroke: var(--ink); stroke-width: 2; }
+.ring.home { stroke: var(--accent); stroke-width: 2.5; }
+.num { fill: var(--ink); font-size: 15px; text-anchor: middle; }
+.num.small { font-size: 11.5px; }
+.tick { fill: var(--muted); font-size: 12px; text-anchor: middle; }
+.tick.ax { font-style: italic; font-size: 14px; }
+.axis { stroke: var(--hair); stroke-width: 1; }
+.old { fill: var(--hair); }
+.path { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linejoin: round; }
+.dot { fill: var(--accent); }
+.start { fill: var(--ink); }
+.end { fill: var(--paper); stroke: var(--ink); stroke-width: 2; }
+.piece { fill: var(--ink); font-size: 16px; font-style: italic; font-weight: 700; text-anchor: middle; }
+@media (max-width: 560px) {
+  body { font-size: 16.5px; }
+  .abstract { margin-inline: .6rem; }
+  p { text-align: left; }
+  figcaption, figure.tab figcaption { margin-inline: 0; text-align: left; }
+}
+</style>
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']], tags: 'none' },
+  svg: { fontCache: 'global' },
+  options: { enableMenu: false }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js"></script>
+
+<article>
+
+<h1>The Falafel&rsquo;s walk on the square spiral never&nbsp;ends</h1>
+<p class="author">Martin Norb&auml;ck Olivers</p>
+<p class="date">Draft, 24 November 2026</p>
+
+<div class="abstract">
+<p><b>Abstract.</b> The Falafel is the chess piece that moves one or two squares diagonally. Put it on
+square 1 of the square spiral and let it always move to the lowest-numbered square that it has not yet
+visited. The numbers of the squares it visits form sequence A399160 of the OEIS. We prove that the
+Falafel is never trapped and that it visits every square it can reach, so the sequence is a
+permutation of the odd positive integers. After its first 80 squares the walk runs in laps around the
+origin, and we give every lap in closed form. The proof is a case analysis in linear integer
+arithmetic. It has been formalised in Lean&nbsp;4 with Mathlib and is checked by the Lean kernel.</p>
+</div>
+
+<h2><span class="no">1.</span> Introduction</h2>
+
+<p>Number the squares of an infinite chessboard along the square spiral: square 1 is \((0,0)\), square
+2 is \((1,0)\), square 3 is \((1,1)\), and the numbering goes on counter-clockwise (Figure&nbsp;1). Put
+a chess piece on square 1 and let it move by one rule: it always moves to the lowest-numbered square
+that it has not visited before. For the knight this walk ends. At step 2016 the knight stands on
+square 2084, and every square one knight move away has been visited&nbsp;[2].</p>
+
+<figure>
+<div class="figwrap s">
+<svg viewBox="0 0 310 310" role="img" aria-label="The square spiral with the numbers 1 to 49">
+<rect class="cell on" x="1" y="1" width="44" height="44"/>
+<text class="num" x="23" y="28">37</text>
+<rect class="cell" x="45" y="1" width="44" height="44"/>
+<text class="num" x="67" y="28">36</text>
+<rect class="cell on" x="89" y="1" width="44" height="44"/>
+<text class="num" x="111" y="28">35</text>
+<rect class="cell" x="133" y="1" width="44" height="44"/>
+<text class="num" x="155" y="28">34</text>
+<rect class="cell on" x="177" y="1" width="44" height="44"/>
+<text class="num" x="199" y="28">33</text>
+<rect class="cell" x="221" y="1" width="44" height="44"/>
+<text class="num" x="243" y="28">32</text>
+<rect class="cell on" x="265" y="1" width="44" height="44"/>
+<text class="num" x="287" y="28">31</text>
+<rect class="cell" x="1" y="45" width="44" height="44"/>
+<text class="num" x="23" y="72">38</text>
+<rect class="cell on near" x="45" y="45" width="44" height="44"/>
+<text class="num" x="67" y="72">17</text>
+<rect class="cell" x="89" y="45" width="44" height="44"/>
+<text class="num" x="111" y="72">16</text>
+<rect class="cell on" x="133" y="45" width="44" height="44"/>
+<text class="num" x="155" y="72">15</text>
+<rect class="cell" x="177" y="45" width="44" height="44"/>
+<text class="num" x="199" y="72">14</text>
+<rect class="cell on near" x="221" y="45" width="44" height="44"/>
+<text class="num" x="243" y="72">13</text>
+<rect class="cell" x="265" y="45" width="44" height="44"/>
+<text class="num" x="287" y="72">30</text>
+<rect class="cell on" x="1" y="89" width="44" height="44"/>
+<text class="num" x="23" y="116">39</text>
+<rect class="cell" x="45" y="89" width="44" height="44"/>
+<text class="num" x="67" y="116">18</text>
+<rect class="cell on near" x="89" y="89" width="44" height="44"/>
+<text class="num" x="111" y="116">5</text>
+<rect class="cell" x="133" y="89" width="44" height="44"/>
+<text class="num" x="155" y="116">4</text>
+<rect class="cell on near" x="177" y="89" width="44" height="44"/>
+<text class="num" x="199" y="116">3</text>
+<rect class="cell" x="221" y="89" width="44" height="44"/>
+<text class="num" x="243" y="116">12</text>
+<rect class="cell on" x="265" y="89" width="44" height="44"/>
+<text class="num" x="287" y="116">29</text>
+<rect class="cell" x="1" y="133" width="44" height="44"/>
+<text class="num" x="23" y="160">40</text>
+<rect class="cell on" x="45" y="133" width="44" height="44"/>
+<text class="num" x="67" y="160">19</text>
+<rect class="cell" x="89" y="133" width="44" height="44"/>
+<text class="num" x="111" y="160">6</text>
+<rect class="cell on home" x="133" y="133" width="44" height="44"/>
+<text class="num" x="155" y="160">1</text>
+<rect class="cell" x="177" y="133" width="44" height="44"/>
+<text class="num" x="199" y="160">2</text>
+<rect class="cell on" x="221" y="133" width="44" height="44"/>
+<text class="num" x="243" y="160">11</text>
+<rect class="cell" x="265" y="133" width="44" height="44"/>
+<text class="num" x="287" y="160">28</text>
+<rect class="cell on" x="1" y="177" width="44" height="44"/>
+<text class="num" x="23" y="204">41</text>
+<rect class="cell" x="45" y="177" width="44" height="44"/>
+<text class="num" x="67" y="204">20</text>
+<rect class="cell on near" x="89" y="177" width="44" height="44"/>
+<text class="num" x="111" y="204">7</text>
+<rect class="cell" x="133" y="177" width="44" height="44"/>
+<text class="num" x="155" y="204">8</text>
+<rect class="cell on near" x="177" y="177" width="44" height="44"/>
+<text class="num" x="199" y="204">9</text>
+<rect class="cell" x="221" y="177" width="44" height="44"/>
+<text class="num" x="243" y="204">10</text>
+<rect class="cell on" x="265" y="177" width="44" height="44"/>
+<text class="num" x="287" y="204">27</text>
+<rect class="cell" x="1" y="221" width="44" height="44"/>
+<text class="num" x="23" y="248">42</text>
+<rect class="cell on near" x="45" y="221" width="44" height="44"/>
+<text class="num" x="67" y="248">21</text>
+<rect class="cell" x="89" y="221" width="44" height="44"/>
+<text class="num" x="111" y="248">22</text>
+<rect class="cell on" x="133" y="221" width="44" height="44"/>
+<text class="num" x="155" y="248">23</text>
+<rect class="cell" x="177" y="221" width="44" height="44"/>
+<text class="num" x="199" y="248">24</text>
+<rect class="cell on near" x="221" y="221" width="44" height="44"/>
+<text class="num" x="243" y="248">25</text>
+<rect class="cell" x="265" y="221" width="44" height="44"/>
+<text class="num" x="287" y="248">26</text>
+<rect class="cell on" x="1" y="265" width="44" height="44"/>
+<text class="num" x="23" y="292">43</text>
+<rect class="cell" x="45" y="265" width="44" height="44"/>
+<text class="num" x="67" y="292">44</text>
+<rect class="cell on" x="89" y="265" width="44" height="44"/>
+<text class="num" x="111" y="292">45</text>
+<rect class="cell" x="133" y="265" width="44" height="44"/>
+<text class="num" x="155" y="292">46</text>
+<rect class="cell on" x="177" y="265" width="44" height="44"/>
+<text class="num" x="199" y="292">47</text>
+<rect class="cell" x="221" y="265" width="44" height="44"/>
+<text class="num" x="243" y="292">48</text>
+<rect class="cell on" x="265" y="265" width="44" height="44"/>
+<text class="num" x="287" y="292">49</text>
+<rect class="ring" x="47" y="223" width="40" height="40"/>
+<rect class="ring" x="47" y="47" width="40" height="40"/>
+<rect class="ring" x="91" y="179" width="40" height="40"/>
+<rect class="ring" x="91" y="91" width="40" height="40"/>
+<rect class="ring" x="179" y="179" width="40" height="40"/>
+<rect class="ring" x="179" y="91" width="40" height="40"/>
+<rect class="ring" x="223" y="223" width="40" height="40"/>
+<rect class="ring" x="223" y="47" width="40" height="40"/>
+<rect class="ring home" x="135" y="135" width="40" height="40"/>
+</svg>
+</div>
+<figcaption><span class="lab">Figure 1.</span> The square spiral. The Falafel stands only on the
+tinted squares, which are those with \(x + y\) even. From square 1 it can move to the eight outlined
+squares 3, 5, 7, 9, 13, 17, 21 and 25.</figcaption>
+</figure>
+
+<p>Here the piece is the Falafel. It is the compound of the Fers, which moves one square diagonally,
+and the Alfil, which leaps two squares diagonally. The numbers of the squares it visits are sequence
+A399160 of the OEIS&nbsp;[1], contributed by J.&nbsp;Ahlstr&ouml;m:</p>
+\[ 1,\ 3,\ 7,\ 19,\ 5,\ 9,\ 11,\ 15,\ 33,\ 13,\ 29,\ 53,\ \dots \]
+<p class="noindent">On 23 November 2026 the entry did not say whether the sequence is finite. We prove
+that it is infinite, and we determine it completely.</p>
+
+<p>Write \(\sigma(x,y)\) for the number of the square \((x,y)\); the formula is (1) in Section&nbsp;2.
+By construction, every positive integer is the number of exactly one square.
+Two squares \((x,y)\) and \((x',y')\) are <i>one move apart</i> if \(|x'-x| = |y'-y|\) and this
+common value is 1 or 2.</p>
+
+<div class="thm def">
+<p><span class="head">Definition 1.</span> A <i>Falafel walk</i> is an infinite sequence
+\(a_0, a_1, a_2, \dots\) of squares such that</p>
+<ol class="walk">
+<li><span class="mark">(W1)</span> \(a_0 = (0,0)\);</li>
+<li><span class="mark">(W2)</span> \(a_m \ne a_n\) whenever \(m \ne n\);</li>
+<li><span class="mark">(W3)</span> \(a_{n+1}\) is one move from \(a_n\), for every \(n\);</li>
+<li><span class="mark">(W4)</span> for every \(n\), every square \(q\) that is one move from \(a_n\) and has
+\(\sigma(q) &lt; \sigma(a_{n+1})\) is one of \(a_0, \dots, a_n\).</li>
+</ol>
+</div>
+
+<p class="noindent">Conditions (W2) to (W4) say that \(a_{n+1}\) is the lowest-numbered unvisited
+square one move from \(a_n\). A trapped piece produces only a finite sequence, so a Falafel walk
+exists exactly if the Falafel is never trapped. The \(n\)-th term of A399160 is
+\(\sigma(a_{n-1})\).</p>
+
+<div class="rem">
+<p><span class="head b">Remark 1</span><span class="head">(only one walk).</span> Different squares
+have different numbers, so the rule allows at most one move: \(a_0, \dots, a_n\) determine
+\(a_{n+1}\). So there is at most one Falafel walk.</p>
+</div>
+
+<div class="thm">
+<p><span class="head">Theorem 1.</span></p>
+<ol class="roman">
+<li><span class="mark">(a)</span> There is a Falafel walk.</li>
+<li><span class="mark">(b)</span> It visits every square \((x,y)\) with \(x+y\) even, and no other square.</li>
+</ol>
+</div>
+
+<p class="noindent">The squares with \(x+y\) even are the squares with odd numbers. So A399160 is a
+permutation of the odd positive integers (Corollary&nbsp;8 in Section&nbsp;6).</p>
+
+<p>Theorem 2 in Section&nbsp;3 describes the walk completely. Its first 80 squares
+are irregular. After them the walk runs in laps \(R = 4, 5, 6, \dots\) around the origin, and one
+closed formula gives the squares of every lap. Corollary&nbsp;9 in Section&nbsp;6 turns this into a
+formula for the \(n\)-th term of the sequence.</p>
+
+<p>The proof goes as follows. Every square gets a <i>stamp</i>: the number of its lap, and its index
+within the lap. Four lemmas about stamps carry the proof (Section&nbsp;4). Each is a statement of
+linear integer arithmetic and is proved by a case analysis, which we do not print. The whole proof
+has been formalised in Lean&nbsp;4&nbsp;[3] with the library Mathlib&nbsp;[4], and the Lean kernel has
+checked it. Sections 5 and 6 derive the theorems and Corollaries 8 and 9 from the lemmas by hand.
+Section&nbsp;7 says what was formalised, and which few lines a reader has to trust.</p>
+
+<h2><span class="no">2.</span> The spiral in diagonal coordinates</h2>
+
+<p>Let \(r = \max(|x|,|y|)\) be the <i>ring</i> of the square \((x,y)\). The spiral number is</p>
+<div class="eq"><div class="eqbody">\[ \sigma(x,y) \;=\; (2r-1)^2 + \begin{cases}
+ y + r &amp; \text{if } x = r \text{ and } y > -r, \\
+ 2r + (r - x) &amp; \text{if } y = r, \\
+ 4r + (r - y) &amp; \text{if } x = -r, \\
+ 6r + (x + r) &amp; \text{otherwise,}
+\end{cases} \]</div><div class="eqno">(1)</div></div>
+<p class="noindent">where the first case that applies is taken. Ring 0 is the square \((0,0)\) with
+number 1. Ring \(r \ge 1\) holds the numbers from \((2r-1)^2 + 1\) to \((2r+1)^2\).</p>
+
+<p>A move changes \(x\) by \(\pm 1\) or \(\pm 2\) and \(y\) by the same amount up to sign. So a move
+does not change the parity of \(x+y\), and a Falafel walk, which starts at \((0,0)\), stays on the
+squares with \(x+y\) even.</p>
+
+<div class="thm def">
+<p><span class="head">Definition 2</span><span class="note">(diagonal coordinates).</span> The
+<i>diagonal coordinates</i> of a square \((x,y)\) with \(x+y\) even are the integers</p>
+\[ u = \frac{x+y}{2}, \qquad v = \frac{x-y}{2}, \qquad\text{so that}\qquad (x,y) = (u+v,\ u-v). \]
+<p class="noindent">Every pair \((u,v)\) of integers belongs to exactly one such square. A
+<i>step</i> is one of the pairs \((\pm 1, 0)\), \((0, \pm 1)\), \((\pm 2, 0)\), \((0, \pm 2)\).</p>
+</div>
+
+<p class="noindent">From now on, except in Section&nbsp;6, a <i>square</i> is given by its diagonal
+coordinates: it is a pair \(s = (u,v)\) of integers, and \(\sigma(s)\) means \(\sigma(u+v,\,u-v)\).
+Two squares are one move apart exactly if their difference is a step. So in diagonal coordinates the
+Falafel is a rook that moves one or two squares.</p>
+
+<div class="thm def">
+<p><span class="head">Definition 3</span><span class="note">(ring and position).</span> For a square
+\((u,v)\) put \(\rho(u,v) = |u| + |v|\) and</p>
+\[ \pi(u,v) \;=\; \begin{cases} 2u &amp; \text{if } u &gt; 0,\ v \ge 0 \\ 2u - 4v &amp; \text{if } u &gt; 0,\ v &lt; 0 \\ -6u - 4v &amp; \text{if } u &lt; 0,\ v \le 0 \\ 8v - 6u &amp; \text{if } u &lt; 0,\ v &gt; 0 \\ -4v &amp; \text{if } u = 0,\ v &lt; 0 \\ 8v &amp; \text{if } u = 0,\ v \ge 0 \end{cases} \]
+</div>
+
+<div class="thm">
+<p><span class="head">Lemma 1.</span> Let \(s\) and \(s'\) be squares.</p>
+<ol class="roman">
+<li><span class="mark">(i)</span> \(\sigma(s) = (2\rho(s)-1)^2 + \pi(s)\).</li>
+<li><span class="mark">(ii)</span> \(0 \le \pi(s) \le 8\rho(s)\), and \(\pi(s) \ge 1\) if \(\rho(s) \ge 1\).</li>
+<li><span class="mark">(iii)</span> If \(\rho(s) &lt; \rho(s')\), or \(\rho(s) = \rho(s')\) and \(\pi(s) \le \pi(s')\), then \(\sigma(s) \le \sigma(s')\).</li>
+</ol>
+</div>
+
+<div class="proof">
+<p><span class="head">Proof.</span> Since \(\max(|u+v|,|u-v|) = |u|+|v|\), the number \(\rho(s)\) is
+the ring of \(s\). The cases of (1) are the four sides of the ring. On each side, putting
+\(x = u+v\) and \(y = u-v\) into (1) gives the stated value of \(\pi\). This is (i), and (ii) can be
+read off from the cases of \(\pi\). For (iii), let \(\rho(s) &lt; \rho(s')\). Then by (i) and (ii)</p>
+\[ \sigma(s) \;\le\; (2\rho(s)-1)^2 + 8\rho(s) \;=\; (2\rho(s)+1)^2 \;\le\; (2\rho(s')-1)^2 \;&lt;\; \sigma(s'). \]
+<p class="noindent">If the rings are equal, (iii) is (i).<span class="qed">&#9633;</span></p>
+</div>
+
+<h2><span class="no">3.</span> The walk</h2>
+
+<div class="thm def">
+<p><span class="head">Definition 4</span><span class="note">(laps).</span> For an integer
+\(R \ge 4\) put</p>
+\[ \mathrm{lo}(R) = \begin{cases} -R - 1 &amp; \text{if } R \text{ even} \\ -R - 3 &amp; \text{if } R \text{ odd} \end{cases} \qquad \mathrm{hi}(R) = \begin{cases} (25R - 4)/2 &amp; \text{if } R \text{ even} \\ (25R + 1)/2 &amp; \text{if } R \text{ odd} \end{cases} \]
+<p class="noindent"><i>Lap</i> \(R\) is the sequence of squares \(P_R(j)\) for
+\(\mathrm{lo}(R) \le j &lt; \mathrm{hi}(R)\), where \(P_R(j)\) is given by Table&nbsp;1.</p>
+</div>
+
+<p class="noindent">A lap consists of nine pieces, A to I; Figure&nbsp;2 shows lap 6. Piece A runs
+along the row \(v = R\) (for odd \(R\) it starts one square below that row). Pieces B, D, F and H are
+staircases along the four sides of a diamond, each one ring further out than the one before, and C, E
+and G are the corners between them. Piece I comes back in along a slanted strip and ends one step
+from the start of lap \(R+1\). The indices are counted from the start of piece B, so the indices of
+piece A are negative.</p>
+
+<figure>
+<div class="figwrap l">
+<svg viewBox="0 0 644 512" role="img" aria-label="Lap 6 of the walk">
+<line class="axis" x1="14" y1="212" x2="630" y2="212"/>
+<line class="axis" x1="300" y1="498" x2="300" y2="14"/>
+<text class="tick ax" x="632" y="226">u</text>
+<text class="tick ax" x="310" y="18">v</text>
+<circle class="old" cx="300" cy="212" r="2.4"/>
+<circle class="old" cx="322" cy="212" r="2.4"/>
+<circle class="old" cx="278" cy="212" r="2.4"/>
+<circle class="old" cx="278" cy="234" r="2.4"/>
+<circle class="old" cx="300" cy="234" r="2.4"/>
+<circle class="old" cx="300" cy="190" r="2.4"/>
+<circle class="old" cx="322" cy="190" r="2.4"/>
+<circle class="old" cx="322" cy="234" r="2.4"/>
+<circle class="old" cx="344" cy="234" r="2.4"/>
+<circle class="old" cx="344" cy="212" r="2.4"/>
+<circle class="old" cx="344" cy="190" r="2.4"/>
+<circle class="old" cx="344" cy="168" r="2.4"/>
+<circle class="old" cx="300" cy="168" r="2.4"/>
+<circle class="old" cx="322" cy="168" r="2.4"/>
+<circle class="old" cx="278" cy="168" r="2.4"/>
+<circle class="old" cx="278" cy="190" r="2.4"/>
+<circle class="old" cx="256" cy="190" r="2.4"/>
+<circle class="old" cx="256" cy="212" r="2.4"/>
+<circle class="old" cx="256" cy="234" r="2.4"/>
+<circle class="old" cx="256" cy="256" r="2.4"/>
+<circle class="old" cx="300" cy="256" r="2.4"/>
+<circle class="old" cx="322" cy="256" r="2.4"/>
+<circle class="old" cx="278" cy="256" r="2.4"/>
+<circle class="old" cx="278" cy="278" r="2.4"/>
+<circle class="old" cx="300" cy="278" r="2.4"/>
+<circle class="old" cx="322" cy="278" r="2.4"/>
+<circle class="old" cx="344" cy="278" r="2.4"/>
+<circle class="old" cx="344" cy="256" r="2.4"/>
+<circle class="old" cx="366" cy="256" r="2.4"/>
+<circle class="old" cx="366" cy="212" r="2.4"/>
+<circle class="old" cx="366" cy="190" r="2.4"/>
+<circle class="old" cx="366" cy="234" r="2.4"/>
+<circle class="old" cx="388" cy="234" r="2.4"/>
+<circle class="old" cx="388" cy="212" r="2.4"/>
+<circle class="old" cx="388" cy="190" r="2.4"/>
+<circle class="old" cx="388" cy="168" r="2.4"/>
+<circle class="old" cx="366" cy="168" r="2.4"/>
+<circle class="old" cx="366" cy="146" r="2.4"/>
+<circle class="old" cx="322" cy="146" r="2.4"/>
+<circle class="old" cx="300" cy="146" r="2.4"/>
+<circle class="old" cx="278" cy="146" r="2.4"/>
+<circle class="old" cx="256" cy="146" r="2.4"/>
+<circle class="old" cx="256" cy="168" r="2.4"/>
+<circle class="old" cx="234" cy="168" r="2.4"/>
+<circle class="old" cx="234" cy="212" r="2.4"/>
+<circle class="old" cx="234" cy="234" r="2.4"/>
+<circle class="old" cx="234" cy="190" r="2.4"/>
+<circle class="old" cx="212" cy="190" r="2.4"/>
+<circle class="old" cx="212" cy="212" r="2.4"/>
+<circle class="old" cx="212" cy="234" r="2.4"/>
+<circle class="old" cx="212" cy="256" r="2.4"/>
+<circle class="old" cx="234" cy="256" r="2.4"/>
+<circle class="old" cx="234" cy="278" r="2.4"/>
+<circle class="old" cx="256" cy="278" r="2.4"/>
+<circle class="old" cx="256" cy="300" r="2.4"/>
+<circle class="old" cx="300" cy="300" r="2.4"/>
+<circle class="old" cx="322" cy="300" r="2.4"/>
+<circle class="old" cx="278" cy="300" r="2.4"/>
+<circle class="old" cx="278" cy="322" r="2.4"/>
+<circle class="old" cx="300" cy="322" r="2.4"/>
+<circle class="old" cx="322" cy="322" r="2.4"/>
+<circle class="old" cx="344" cy="322" r="2.4"/>
+<circle class="old" cx="344" cy="300" r="2.4"/>
+<circle class="old" cx="366" cy="300" r="2.4"/>
+<circle class="old" cx="366" cy="278" r="2.4"/>
+<circle class="old" cx="388" cy="278" r="2.4"/>
+<circle class="old" cx="388" cy="256" r="2.4"/>
+<circle class="old" cx="410" cy="256" r="2.4"/>
+<circle class="old" cx="410" cy="212" r="2.4"/>
+<circle class="old" cx="410" cy="190" r="2.4"/>
+<circle class="old" cx="410" cy="234" r="2.4"/>
+<circle class="old" cx="432" cy="234" r="2.4"/>
+<circle class="old" cx="432" cy="212" r="2.4"/>
+<circle class="old" cx="432" cy="190" r="2.4"/>
+<circle class="old" cx="432" cy="168" r="2.4"/>
+<circle class="old" cx="410" cy="168" r="2.4"/>
+<circle class="old" cx="410" cy="146" r="2.4"/>
+<circle class="old" cx="388" cy="146" r="2.4"/>
+<circle class="old" cx="344" cy="146" r="2.4"/>
+<circle class="old" cx="344" cy="124" r="2.4"/>
+<circle class="old" cx="300" cy="124" r="2.4"/>
+<circle class="old" cx="322" cy="124" r="2.4"/>
+<circle class="old" cx="278" cy="124" r="2.4"/>
+<circle class="old" cx="256" cy="124" r="2.4"/>
+<circle class="old" cx="234" cy="124" r="2.4"/>
+<circle class="old" cx="234" cy="146" r="2.4"/>
+<circle class="old" cx="212" cy="146" r="2.4"/>
+<circle class="old" cx="212" cy="168" r="2.4"/>
+<circle class="old" cx="190" cy="168" r="2.4"/>
+<circle class="old" cx="190" cy="212" r="2.4"/>
+<circle class="old" cx="190" cy="234" r="2.4"/>
+<circle class="old" cx="190" cy="190" r="2.4"/>
+<circle class="old" cx="168" cy="190" r="2.4"/>
+<circle class="old" cx="168" cy="212" r="2.4"/>
+<circle class="old" cx="168" cy="234" r="2.4"/>
+<circle class="old" cx="168" cy="256" r="2.4"/>
+<circle class="old" cx="190" cy="256" r="2.4"/>
+<circle class="old" cx="190" cy="278" r="2.4"/>
+<circle class="old" cx="212" cy="278" r="2.4"/>
+<circle class="old" cx="212" cy="300" r="2.4"/>
+<circle class="old" cx="234" cy="300" r="2.4"/>
+<circle class="old" cx="234" cy="322" r="2.4"/>
+<circle class="old" cx="256" cy="322" r="2.4"/>
+<circle class="old" cx="256" cy="344" r="2.4"/>
+<circle class="old" cx="300" cy="344" r="2.4"/>
+<circle class="old" cx="322" cy="344" r="2.4"/>
+<circle class="old" cx="278" cy="344" r="2.4"/>
+<circle class="old" cx="278" cy="366" r="2.4"/>
+<circle class="old" cx="300" cy="366" r="2.4"/>
+<circle class="old" cx="322" cy="366" r="2.4"/>
+<circle class="old" cx="344" cy="366" r="2.4"/>
+<circle class="old" cx="344" cy="344" r="2.4"/>
+<circle class="old" cx="366" cy="344" r="2.4"/>
+<circle class="old" cx="366" cy="322" r="2.4"/>
+<circle class="old" cx="388" cy="322" r="2.4"/>
+<circle class="old" cx="388" cy="300" r="2.4"/>
+<circle class="old" cx="410" cy="300" r="2.4"/>
+<circle class="old" cx="410" cy="278" r="2.4"/>
+<circle class="old" cx="432" cy="278" r="2.4"/>
+<circle class="old" cx="432" cy="256" r="2.4"/>
+<circle class="old" cx="454" cy="256" r="2.4"/>
+<circle class="old" cx="454" cy="212" r="2.4"/>
+<circle class="old" cx="454" cy="190" r="2.4"/>
+<circle class="old" cx="454" cy="234" r="2.4"/>
+<circle class="old" cx="476" cy="234" r="2.4"/>
+<circle class="old" cx="476" cy="212" r="2.4"/>
+<circle class="old" cx="476" cy="190" r="2.4"/>
+<circle class="old" cx="476" cy="168" r="2.4"/>
+<circle class="old" cx="454" cy="168" r="2.4"/>
+<circle class="old" cx="454" cy="146" r="2.4"/>
+<circle class="old" cx="432" cy="146" r="2.4"/>
+<circle class="old" cx="432" cy="124" r="2.4"/>
+<circle class="old" cx="388" cy="124" r="2.4"/>
+<circle class="old" cx="366" cy="124" r="2.4"/>
+<circle class="old" cx="366" cy="102" r="2.4"/>
+<circle class="old" cx="322" cy="102" r="2.4"/>
+<circle class="old" cx="300" cy="102" r="2.4"/>
+<circle class="old" cx="278" cy="102" r="2.4"/>
+<circle class="old" cx="256" cy="102" r="2.4"/>
+<circle class="old" cx="234" cy="102" r="2.4"/>
+<circle class="old" cx="212" cy="102" r="2.4"/>
+<circle class="old" cx="212" cy="124" r="2.4"/>
+<circle class="old" cx="190" cy="124" r="2.4"/>
+<circle class="old" cx="190" cy="146" r="2.4"/>
+<circle class="old" cx="168" cy="146" r="2.4"/>
+<circle class="old" cx="168" cy="168" r="2.4"/>
+<circle class="old" cx="146" cy="168" r="2.4"/>
+<circle class="old" cx="146" cy="212" r="2.4"/>
+<circle class="old" cx="146" cy="234" r="2.4"/>
+<circle class="old" cx="146" cy="190" r="2.4"/>
+<circle class="old" cx="124" cy="190" r="2.4"/>
+<circle class="old" cx="124" cy="212" r="2.4"/>
+<circle class="old" cx="124" cy="234" r="2.4"/>
+<circle class="old" cx="124" cy="256" r="2.4"/>
+<circle class="old" cx="146" cy="256" r="2.4"/>
+<circle class="old" cx="146" cy="278" r="2.4"/>
+<circle class="old" cx="168" cy="278" r="2.4"/>
+<circle class="old" cx="168" cy="300" r="2.4"/>
+<circle class="old" cx="190" cy="300" r="2.4"/>
+<circle class="old" cx="190" cy="322" r="2.4"/>
+<circle class="old" cx="212" cy="322" r="2.4"/>
+<circle class="old" cx="212" cy="344" r="2.4"/>
+<circle class="old" cx="234" cy="344" r="2.4"/>
+<circle class="old" cx="234" cy="366" r="2.4"/>
+<circle class="old" cx="256" cy="366" r="2.4"/>
+<circle class="old" cx="256" cy="388" r="2.4"/>
+<circle class="old" cx="300" cy="388" r="2.4"/>
+<circle class="old" cx="322" cy="388" r="2.4"/>
+<circle class="old" cx="278" cy="388" r="2.4"/>
+<circle class="old" cx="278" cy="410" r="2.4"/>
+<circle class="old" cx="300" cy="410" r="2.4"/>
+<circle class="old" cx="322" cy="410" r="2.4"/>
+<circle class="old" cx="344" cy="410" r="2.4"/>
+<circle class="old" cx="344" cy="388" r="2.4"/>
+<circle class="old" cx="366" cy="388" r="2.4"/>
+<circle class="old" cx="366" cy="366" r="2.4"/>
+<circle class="old" cx="388" cy="366" r="2.4"/>
+<circle class="old" cx="388" cy="344" r="2.4"/>
+<circle class="old" cx="410" cy="344" r="2.4"/>
+<circle class="old" cx="410" cy="322" r="2.4"/>
+<circle class="old" cx="432" cy="322" r="2.4"/>
+<circle class="old" cx="432" cy="300" r="2.4"/>
+<circle class="old" cx="454" cy="300" r="2.4"/>
+<circle class="old" cx="454" cy="278" r="2.4"/>
+<circle class="old" cx="476" cy="278" r="2.4"/>
+<circle class="old" cx="476" cy="256" r="2.4"/>
+<circle class="old" cx="498" cy="256" r="2.4"/>
+<circle class="old" cx="498" cy="212" r="2.4"/>
+<circle class="old" cx="498" cy="190" r="2.4"/>
+<circle class="old" cx="498" cy="234" r="2.4"/>
+<circle class="old" cx="520" cy="234" r="2.4"/>
+<circle class="old" cx="520" cy="212" r="2.4"/>
+<circle class="old" cx="520" cy="190" r="2.4"/>
+<circle class="old" cx="520" cy="168" r="2.4"/>
+<circle class="old" cx="498" cy="168" r="2.4"/>
+<circle class="old" cx="498" cy="146" r="2.4"/>
+<circle class="old" cx="476" cy="146" r="2.4"/>
+<circle class="old" cx="476" cy="124" r="2.4"/>
+<circle class="old" cx="454" cy="124" r="2.4"/>
+<circle class="old" cx="410" cy="124" r="2.4"/>
+<circle class="old" cx="410" cy="102" r="2.4"/>
+<circle class="old" cx="388" cy="102" r="2.4"/>
+<circle class="old" cx="344" cy="102" r="2.4"/>
+<circle class="old" cx="344" cy="80" r="2.4"/>
+<polyline class="path" points="300,80 322,80 278,80 256,80 234,80 212,80 190,80 190,102 168,102 168,124 146,124 146,146 124,146 124,168 102,168 102,212 102,234 102,190 80,190 80,212 80,234 80,256 102,256 102,278 124,278 124,300 146,300 146,322 168,322 168,344 190,344 190,366 212,366 212,388 234,388 234,410 256,410 256,432 300,432 322,432 278,432 278,454 300,454 322,454 344,454 344,432 366,432 366,410 388,410 388,388 410,388 410,366 432,366 432,344 454,344 454,322 476,322 476,300 498,300 498,278 520,278 520,256 542,256 542,212 542,190 542,234 564,234 564,212 564,190 564,168 542,168 542,146 520,146 520,124 498,124 498,102 454,102 432,102 432,80 388,80"/>
+<circle class="dot" cx="300" cy="80" r="3"/>
+<circle class="dot" cx="322" cy="80" r="3"/>
+<circle class="dot" cx="278" cy="80" r="3"/>
+<circle class="dot" cx="256" cy="80" r="3"/>
+<circle class="dot" cx="234" cy="80" r="3"/>
+<circle class="dot" cx="212" cy="80" r="3"/>
+<circle class="dot" cx="190" cy="80" r="3"/>
+<circle class="dot" cx="190" cy="102" r="3"/>
+<circle class="dot" cx="168" cy="102" r="3"/>
+<circle class="dot" cx="168" cy="124" r="3"/>
+<circle class="dot" cx="146" cy="124" r="3"/>
+<circle class="dot" cx="146" cy="146" r="3"/>
+<circle class="dot" cx="124" cy="146" r="3"/>
+<circle class="dot" cx="124" cy="168" r="3"/>
+<circle class="dot" cx="102" cy="168" r="3"/>
+<circle class="dot" cx="102" cy="212" r="3"/>
+<circle class="dot" cx="102" cy="234" r="3"/>
+<circle class="dot" cx="102" cy="190" r="3"/>
+<circle class="dot" cx="80" cy="190" r="3"/>
+<circle class="dot" cx="80" cy="212" r="3"/>
+<circle class="dot" cx="80" cy="234" r="3"/>
+<circle class="dot" cx="80" cy="256" r="3"/>
+<circle class="dot" cx="102" cy="256" r="3"/>
+<circle class="dot" cx="102" cy="278" r="3"/>
+<circle class="dot" cx="124" cy="278" r="3"/>
+<circle class="dot" cx="124" cy="300" r="3"/>
+<circle class="dot" cx="146" cy="300" r="3"/>
+<circle class="dot" cx="146" cy="322" r="3"/>
+<circle class="dot" cx="168" cy="322" r="3"/>
+<circle class="dot" cx="168" cy="344" r="3"/>
+<circle class="dot" cx="190" cy="344" r="3"/>
+<circle class="dot" cx="190" cy="366" r="3"/>
+<circle class="dot" cx="212" cy="366" r="3"/>
+<circle class="dot" cx="212" cy="388" r="3"/>
+<circle class="dot" cx="234" cy="388" r="3"/>
+<circle class="dot" cx="234" cy="410" r="3"/>
+<circle class="dot" cx="256" cy="410" r="3"/>
+<circle class="dot" cx="256" cy="432" r="3"/>
+<circle class="dot" cx="300" cy="432" r="3"/>
+<circle class="dot" cx="322" cy="432" r="3"/>
+<circle class="dot" cx="278" cy="432" r="3"/>
+<circle class="dot" cx="278" cy="454" r="3"/>
+<circle class="dot" cx="300" cy="454" r="3"/>
+<circle class="dot" cx="322" cy="454" r="3"/>
+<circle class="dot" cx="344" cy="454" r="3"/>
+<circle class="dot" cx="344" cy="432" r="3"/>
+<circle class="dot" cx="366" cy="432" r="3"/>
+<circle class="dot" cx="366" cy="410" r="3"/>
+<circle class="dot" cx="388" cy="410" r="3"/>
+<circle class="dot" cx="388" cy="388" r="3"/>
+<circle class="dot" cx="410" cy="388" r="3"/>
+<circle class="dot" cx="410" cy="366" r="3"/>
+<circle class="dot" cx="432" cy="366" r="3"/>
+<circle class="dot" cx="432" cy="344" r="3"/>
+<circle class="dot" cx="454" cy="344" r="3"/>
+<circle class="dot" cx="454" cy="322" r="3"/>
+<circle class="dot" cx="476" cy="322" r="3"/>
+<circle class="dot" cx="476" cy="300" r="3"/>
+<circle class="dot" cx="498" cy="300" r="3"/>
+<circle class="dot" cx="498" cy="278" r="3"/>
+<circle class="dot" cx="520" cy="278" r="3"/>
+<circle class="dot" cx="520" cy="256" r="3"/>
+<circle class="dot" cx="542" cy="256" r="3"/>
+<circle class="dot" cx="542" cy="212" r="3"/>
+<circle class="dot" cx="542" cy="190" r="3"/>
+<circle class="dot" cx="542" cy="234" r="3"/>
+<circle class="dot" cx="564" cy="234" r="3"/>
+<circle class="dot" cx="564" cy="212" r="3"/>
+<circle class="dot" cx="564" cy="190" r="3"/>
+<circle class="dot" cx="564" cy="168" r="3"/>
+<circle class="dot" cx="542" cy="168" r="3"/>
+<circle class="dot" cx="542" cy="146" r="3"/>
+<circle class="dot" cx="520" cy="146" r="3"/>
+<circle class="dot" cx="520" cy="124" r="3"/>
+<circle class="dot" cx="498" cy="124" r="3"/>
+<circle class="dot" cx="498" cy="102" r="3"/>
+<circle class="dot" cx="454" cy="102" r="3"/>
+<circle class="dot" cx="432" cy="102" r="3"/>
+<circle class="dot" cx="432" cy="80" r="3"/>
+<circle class="dot" cx="388" cy="80" r="3"/>
+<circle class="start" cx="300" cy="80" r="5.5"/>
+<circle class="end" cx="388" cy="80" r="5.5"/>
+<text class="piece" x="234.0" y="60.8">A</text>
+<text class="piece" x="116.5" y="125.2">B</text>
+<text class="piece" x="58.0" y="217.0">C</text>
+<text class="piece" x="149.8" y="367.2">D</text>
+<text class="piece" x="300.0" y="481.0">E</text>
+<text class="piece" x="461.1" y="378.1">F</text>
+<text class="piece" x="586.0" y="217.0">G</text>
+<text class="piece" x="557.7" y="134.7">H</text>
+<text class="piece" x="452.9" y="65.2">I</text>
+</svg>
+</div>
+<figcaption><span class="lab">Figure 2.</span> Lap 6 in the coordinates \((u,v)\). It runs from
+\((0,6)\), the filled circle, to \((4,6)\), the open circle. The letters are the pieces of
+Table&nbsp;1. The grey dots are the squares visited before lap 6.</figcaption>
+</figure>
+
+<figure class="tab">
+<figcaption><span class="lab">Table 1.</span> The square \(P_R(j)\) of lap \(R \ge 4\) at index
+\(j\). In piece I, \(h = \lfloor R/2 \rfloor\) and \(k = \lfloor t/3 \rfloor\).</figcaption>
+<div class="tablewrap"><table class="path"><thead><tr>
+<th>Piece</th>
+<th>Index \(j\)</th>
+<th>Square \(P_R(j)\)</th>
+</tr></thead><tbody>
+<tr><td>A. North row</td><td>even \(R\), \(j = -R - 1\)</td><td>\((0,\ R)\)</td></tr>
+<tr><td></td><td>even \(R\), \(j = -R\)</td><td>\((1,\ R)\)</td></tr>
+<tr><td></td><td>odd \(R\), \(j = -R - 3\)</td><td>\((3,\ R - 1)\)</td></tr>
+<tr><td></td><td>odd \(R\), \(j = -R - 2\)</td><td>\((3,\ R)\)</td></tr>
+<tr><td></td><td>all other \(j\) with \(\mathrm{lo}(R) \le j &lt; 0\)</td><td>\((-R - j,\ R)\)</td></tr>
+<tr class="gap"><td colspan="3"></td></tr>
+<tr><td>B. North-west staircase</td><td>\(j = t\), \(0 \le t &lt; 2R - 4\)</td><td>\((1 - R - \lfloor (t + 1)/2 \rfloor,\ R - 1 - \lfloor t/2 \rfloor)\)</td></tr>
+<tr class="gap"><td colspan="3"></td></tr>
+<tr><td>C. West corner</td><td>\(j = 2R - 4 + t\), \(t = 0, \dots, 5\)</td><td>\((3 - 2R,\,0),\) \((3 - 2R,\,-1),\) \((3 - 2R,\,1),\) \((2 - 2R,\,1),\) \((2 - 2R,\,0),\) \((2 - 2R,\,-1)\)</td></tr>
+<tr class="gap"><td colspan="3"></td></tr>
+<tr><td>D. South-west staircase</td><td>\(j = 2R + 2 + t\), \(0 \le t &lt; 4R - 7\)</td><td>\((2 - 2R + \lfloor (t + 1)/2 \rfloor,\ -2 - \lfloor t/2 \rfloor)\)</td></tr>
+<tr class="gap"><td colspan="3"></td></tr>
+<tr><td>E. South corner</td><td>\(j = 6R - 5 + t\), \(t = 0, \dots, 5\)</td><td>\((0,\,2 - 2R),\) \((1,\,2 - 2R),\) \((-1,\,2 - 2R),\) \((-1,\,1 - 2R),\) \((0,\,1 - 2R),\) \((1,\,1 - 2R)\)</td></tr>
+<tr class="gap"><td colspan="3"></td></tr>
+<tr><td>F. South-east staircase</td><td>\(j = 6R + 1 + t\), \(0 \le t &lt; 4R - 5\)</td><td>\((2 + \lfloor t/2 \rfloor,\ 1 - 2R + \lfloor (t + 1)/2 \rfloor)\)</td></tr>
+<tr class="gap"><td colspan="3"></td></tr>
+<tr><td>G. East corner</td><td>\(j = 10R - 4 + t\), \(t = 0, \dots, 5\)</td><td>\((2R - 1,\,0),\) \((2R - 1,\,1),\) \((2R - 1,\,-1),\) \((2R,\,-1),\) \((2R,\,0),\) \((2R,\,1)\)</td></tr>
+<tr class="gap"><td colspan="3"></td></tr>
+<tr><td>H. North-east staircase</td><td>\(j = 10R + 2 + t\), \(0 \le t &lt; R + 1\)</td><td>\((2R - \lfloor (t + 1)/2 \rfloor,\ 2 + \lfloor t/2 \rfloor)\)</td></tr>
+<tr class="gap"><td colspan="3"></td></tr>
+<tr><td>I. Return</td><td>\(j = 11R + 3 + t &lt; \mathrm{hi}(R)\), \(t \ge 0\)</td><td></td></tr>
+<tr><td></td><td>even \(R\), \(t = 3k\)</td><td>\((3h - 3k - 2,\ h + k + 2)\)</td></tr>
+<tr><td></td><td>even \(R\), \(t = 3k + 1\)</td><td>\((3h - 3k - 3,\ h + k + 2)\)</td></tr>
+<tr><td></td><td>even \(R\), \(t = 3k + 2\)</td><td>\((3h - 3k - 3,\ h + k + 3)\)</td></tr>
+<tr><td></td><td>odd \(R\), \(t = 3k\)</td><td>\((3h - 3k - 1,\ h + k + 2)\)</td></tr>
+<tr><td></td><td>odd \(R\), \(t = 3k + 1\)</td><td>\((3h - 3k - 1,\ h + k + 3)\)</td></tr>
+<tr><td></td><td>odd \(R\), \(t = 3k + 2\)</td><td>\((3h - 3k - 2,\ h + k + 3)\)</td></tr>
+</tbody></table></div>
+</figure>
+
+<p>Let \(T_0, T_1, \dots, T_{79}\) be the 80 squares of Table&nbsp;6 in Appendix&nbsp;A.</p>
+
+<div class="thm">
+<p><span class="head">Theorem 2.</span> Let \(W_0, W_1, W_2, \dots\) be the sequence that consists of
+\(T_0, \dots, T_{79}\), then lap 4, then lap 5, and so on.</p>
+<ol class="roman">
+<li><span class="mark">(a)</span> Every square \((u,v)\) of \(\mathbb{Z}^2\) occurs exactly once in this sequence.</li>
+<li><span class="mark">(b)</span> Write \(W_n = (u_n, v_n)\). Then \(a_n = (u_n + v_n,\ u_n - v_n)\) is the Falafel walk.</li>
+</ol>
+</div>
+
+<p class="noindent">The number of squares of lap \(R\) is</p>
+\[ \mathrm{hi}(R) - \mathrm{lo}(R) = \begin{cases} (27R - 2)/2 &amp; \text{if } R \text{ even} \\ (27R + 7)/2 &amp; \text{if } R \text{ odd} \end{cases} \]
+<p class="noindent">So lap 4 starts with \(W_{80}\) and lap 5 with \(W_{133}\). Corollary&nbsp;9 gives
+the start of every lap.</p>
+
+<p>A program checked the following, and the description of the pieces above, for
+\(4 \le R \le 300\); it is not part of the formal proof. Lap \(R\) lies in the rings
+\(R \le \rho \le 2R + 2\) and has squares in both of these rings. So when lap \(R\) is complete,
+every ring up to \(R\) is fully visited, ring \(R + 1\) is not, and no square beyond ring
+\(2R + 2\) has been visited. The outermost visited ring is about twice the first incomplete one.</p>
+
+<h2><span class="no">4.</span> Stamps</h2>
+
+<p>Table&nbsp;1 gives the square at a given index of a lap. The next definition goes the other way:
+it gives the lap and the index of a given square (Lemma&nbsp;3).</p>
+
+<div class="thm def">
+<p><span class="head">Definition 5</span><span class="note">(lap number and index).</span> The
+<i>lap number</i> \(\lambda(u,v)\) of a square is given by Table&nbsp;2. For a square with
+\(\lambda(u,v) \ge 4\), its <i>index</i> \(\kappa(u,v)\) is given by Table&nbsp;4 in
+Appendix&nbsp;A.</p>
+</div>
+
+<p class="noindent">The ten regions of Table&nbsp;2 and the centre are disjoint and cover the plane.
+Regions 1 to 8 hold the pieces A to H, and region 10 holds piece I; region 9 holds the first two
+squares of an odd lap. A value below 4 is not the number of a lap: by Lemma&nbsp;2 it marks one of
+the first 80 squares. Figure&nbsp;3 shows the lap numbers near the origin.</p>
+
+<figure class="tab">
+<figcaption><span class="lab">Table 2.</span> The lap number \(\lambda(u,v)\). In region 10,
+\(q = \lfloor (u + 3v)/6 \rfloor\) and \(m = (u + 3v) \bmod 6\).</figcaption>
+<div class="tablewrap"><table class="reg"><thead><tr>
+<th>Region</th>
+<th>Squares \((u, v)\)</th>
+<th>Case</th>
+<th>\(\lambda(u, v)\)</th>
+</tr></thead><tbody>
+<tr><td>1. North row</td><td>\(v \ge 2,\ u \le 1,\ u + v \ge 1\)</td><td></td><td>\(v\)</td></tr>
+<tr><td>2. North-west staircase</td><td>\(v \ge 2,\ u + v \le 0\)</td><td></td><td>\(\lfloor (v - u)/2 \rfloor + 1\)</td></tr>
+<tr><td>3. West corner</td><td>\(|v| \le 1,\ u \le -2\)</td><td></td><td>\(\lfloor (3 - u)/2 \rfloor\)</td></tr>
+<tr><td>4. South-west staircase</td><td>\(v \le -2,\ u \le -2\)</td><td></td><td>\(\lfloor (1 - u - v)/2 \rfloor\)</td></tr>
+<tr><td>5. South corner</td><td>\(v \le -2,\ |u| \le 1\)</td><td></td><td>\(\lfloor (2 - v)/2 \rfloor\)</td></tr>
+<tr><td>6. South-east staircase</td><td>\(v \le -2,\ u \ge 2\)</td><td></td><td>\(\lfloor (u - v)/2 \rfloor\)</td></tr>
+<tr><td>7. East corner</td><td>\(|v| \le 1,\ u \ge 2\)</td><td></td><td>\(\lfloor (u + 1)/2 \rfloor\)</td></tr>
+<tr><td>8. North-east staircase</td><td>\(v \ge 2,\ u \ge 2,\ u - 3v \ge -6\)</td><td></td><td>\(\lfloor (u + v - 1)/2 \rfloor\)</td></tr>
+<tr><td>9. Column 3</td><td>\(u = 3,\ v \ge 4\)</td><td></td><td>\(2\lfloor v/2 \rfloor + 1\)</td></tr>
+<tr><td>10. Return</td><td>\(v \ge 2,\ u \ge 2,\ u \ne 3,\ u - 3v \le -7\)</td><td>\(m = 0\)</td><td>\(2q - 2\)</td></tr>
+<tr><td></td><td></td><td>\(1 \le m \le 2\)</td><td>\(2q - 1\)</td></tr>
+<tr><td></td><td></td><td>\(3 \le m \le 4\)</td><td>\(2q\)</td></tr>
+<tr><td></td><td></td><td>\(m = 5\)</td><td>\(2q + 1\)</td></tr>
+<tr><td>Centre</td><td>\(|u| \le 1,\ |v| \le 1\)</td><td></td><td>\(0\)</td></tr>
+</tbody></table></div>
+</figure>
+
+<figure>
+<div class="figwrap m">
+<svg viewBox="0 0 534 534" role="img" aria-label="The lap number of every square with |u| and |v| at most 9">
+<rect class="cell even" x="36" y="2" width="26" height="26"/>
+<text class="num small" x="49" y="19">10</text>
+<rect class="cell odd" x="62" y="2" width="26" height="26"/>
+<text class="num small" x="75" y="19">9</text>
+<rect class="cell odd" x="88" y="2" width="26" height="26"/>
+<text class="num small" x="101" y="19">9</text>
+<rect class="cell odd" x="114" y="2" width="26" height="26"/>
+<text class="num small" x="127" y="19">9</text>
+<rect class="cell odd" x="140" y="2" width="26" height="26"/>
+<text class="num small" x="153" y="19">9</text>
+<rect class="cell odd" x="166" y="2" width="26" height="26"/>
+<text class="num small" x="179" y="19">9</text>
+<rect class="cell odd" x="192" y="2" width="26" height="26"/>
+<text class="num small" x="205" y="19">9</text>
+<rect class="cell odd" x="218" y="2" width="26" height="26"/>
+<text class="num small" x="231" y="19">9</text>
+<rect class="cell odd" x="244" y="2" width="26" height="26"/>
+<text class="num small" x="257" y="19">9</text>
+<rect class="cell odd" x="270" y="2" width="26" height="26"/>
+<text class="num small" x="283" y="19">9</text>
+<rect class="cell odd" x="296" y="2" width="26" height="26"/>
+<text class="num small" x="309" y="19">9</text>
+<rect class="cell odd" x="322" y="2" width="26" height="26"/>
+<text class="num small" x="335" y="19">9</text>
+<rect class="cell odd" x="348" y="2" width="26" height="26"/>
+<text class="num small" x="361" y="19">9</text>
+<rect class="cell odd" x="374" y="2" width="26" height="26"/>
+<text class="num small" x="387" y="19">9</text>
+<rect class="cell odd" x="400" y="2" width="26" height="26"/>
+<text class="num small" x="413" y="19">9</text>
+<rect class="cell even" x="426" y="2" width="26" height="26"/>
+<text class="num small" x="439" y="19">10</text>
+<rect class="cell even" x="452" y="2" width="26" height="26"/>
+<text class="num small" x="465" y="19">10</text>
+<rect class="cell odd" x="478" y="2" width="26" height="26"/>
+<text class="num small" x="491" y="19">11</text>
+<rect class="cell even" x="504" y="2" width="26" height="26"/>
+<text class="num small" x="517" y="19">10</text>
+<rect class="cell odd" x="36" y="28" width="26" height="26"/>
+<text class="num small" x="49" y="45">9</text>
+<rect class="cell odd" x="62" y="28" width="26" height="26"/>
+<text class="num small" x="75" y="45">9</text>
+<rect class="cell even" x="88" y="28" width="26" height="26"/>
+<text class="num small" x="101" y="45">8</text>
+<rect class="cell even" x="114" y="28" width="26" height="26"/>
+<text class="num small" x="127" y="45">8</text>
+<rect class="cell even" x="140" y="28" width="26" height="26"/>
+<text class="num small" x="153" y="45">8</text>
+<rect class="cell even" x="166" y="28" width="26" height="26"/>
+<text class="num small" x="179" y="45">8</text>
+<rect class="cell even" x="192" y="28" width="26" height="26"/>
+<text class="num small" x="205" y="45">8</text>
+<rect class="cell even" x="218" y="28" width="26" height="26"/>
+<text class="num small" x="231" y="45">8</text>
+<rect class="cell even" x="244" y="28" width="26" height="26"/>
+<text class="num small" x="257" y="45">8</text>
+<rect class="cell even" x="270" y="28" width="26" height="26"/>
+<text class="num small" x="283" y="45">8</text>
+<rect class="cell even" x="296" y="28" width="26" height="26"/>
+<text class="num small" x="309" y="45">8</text>
+<rect class="cell odd" x="322" y="28" width="26" height="26"/>
+<text class="num small" x="335" y="45">7</text>
+<rect class="cell odd" x="348" y="28" width="26" height="26"/>
+<text class="num small" x="361" y="45">9</text>
+<rect class="cell even" x="374" y="28" width="26" height="26"/>
+<text class="num small" x="387" y="45">8</text>
+<rect class="cell odd" x="400" y="28" width="26" height="26"/>
+<text class="num small" x="413" y="45">9</text>
+<rect class="cell even" x="426" y="28" width="26" height="26"/>
+<text class="num small" x="439" y="45">8</text>
+<rect class="cell odd" x="452" y="28" width="26" height="26"/>
+<text class="num small" x="465" y="45">9</text>
+<rect class="cell odd" x="478" y="28" width="26" height="26"/>
+<text class="num small" x="491" y="45">9</text>
+<rect class="cell even" x="504" y="28" width="26" height="26"/>
+<text class="num small" x="517" y="45">10</text>
+<rect class="cell odd" x="36" y="54" width="26" height="26"/>
+<text class="num small" x="49" y="71">9</text>
+<rect class="cell even" x="62" y="54" width="26" height="26"/>
+<text class="num small" x="75" y="71">8</text>
+<rect class="cell even" x="88" y="54" width="26" height="26"/>
+<text class="num small" x="101" y="71">8</text>
+<rect class="cell odd" x="114" y="54" width="26" height="26"/>
+<text class="num small" x="127" y="71">7</text>
+<rect class="cell odd" x="140" y="54" width="26" height="26"/>
+<text class="num small" x="153" y="71">7</text>
+<rect class="cell odd" x="166" y="54" width="26" height="26"/>
+<text class="num small" x="179" y="71">7</text>
+<rect class="cell odd" x="192" y="54" width="26" height="26"/>
+<text class="num small" x="205" y="71">7</text>
+<rect class="cell odd" x="218" y="54" width="26" height="26"/>
+<text class="num small" x="231" y="71">7</text>
+<rect class="cell odd" x="244" y="54" width="26" height="26"/>
+<text class="num small" x="257" y="71">7</text>
+<rect class="cell odd" x="270" y="54" width="26" height="26"/>
+<text class="num small" x="283" y="71">7</text>
+<rect class="cell odd" x="296" y="54" width="26" height="26"/>
+<text class="num small" x="309" y="71">7</text>
+<rect class="cell odd" x="322" y="54" width="26" height="26"/>
+<text class="num small" x="335" y="71">7</text>
+<rect class="cell odd" x="348" y="54" width="26" height="26"/>
+<text class="num small" x="361" y="71">7</text>
+<rect class="cell odd" x="374" y="54" width="26" height="26"/>
+<text class="num small" x="387" y="71">7</text>
+<rect class="cell odd" x="400" y="54" width="26" height="26"/>
+<text class="num small" x="413" y="71">7</text>
+<rect class="cell even" x="426" y="54" width="26" height="26"/>
+<text class="num small" x="439" y="71">8</text>
+<rect class="cell even" x="452" y="54" width="26" height="26"/>
+<text class="num small" x="465" y="71">8</text>
+<rect class="cell odd" x="478" y="54" width="26" height="26"/>
+<text class="num small" x="491" y="71">9</text>
+<rect class="cell even" x="504" y="54" width="26" height="26"/>
+<text class="num small" x="517" y="71">8</text>
+<rect class="cell even" x="36" y="80" width="26" height="26"/>
+<text class="num small" x="49" y="97">8</text>
+<rect class="cell even" x="62" y="80" width="26" height="26"/>
+<text class="num small" x="75" y="97">8</text>
+<rect class="cell odd" x="88" y="80" width="26" height="26"/>
+<text class="num small" x="101" y="97">7</text>
+<rect class="cell odd" x="114" y="80" width="26" height="26"/>
+<text class="num small" x="127" y="97">7</text>
+<rect class="cell even" x="140" y="80" width="26" height="26"/>
+<text class="num small" x="153" y="97">6</text>
+<rect class="cell even" x="166" y="80" width="26" height="26"/>
+<text class="num small" x="179" y="97">6</text>
+<rect class="cell even" x="192" y="80" width="26" height="26"/>
+<text class="num small" x="205" y="97">6</text>
+<rect class="cell even" x="218" y="80" width="26" height="26"/>
+<text class="num small" x="231" y="97">6</text>
+<rect class="cell even" x="244" y="80" width="26" height="26"/>
+<text class="num small" x="257" y="97">6</text>
+<rect class="cell even" x="270" y="80" width="26" height="26"/>
+<text class="num small" x="283" y="97">6</text>
+<rect class="cell even" x="296" y="80" width="26" height="26"/>
+<text class="num small" x="309" y="97">6</text>
+<rect class="cell odd" x="322" y="80" width="26" height="26"/>
+<text class="num small" x="335" y="97">5</text>
+<rect class="cell odd" x="348" y="80" width="26" height="26"/>
+<text class="num small" x="361" y="97">7</text>
+<rect class="cell even" x="374" y="80" width="26" height="26"/>
+<text class="num small" x="387" y="97">6</text>
+<rect class="cell odd" x="400" y="80" width="26" height="26"/>
+<text class="num small" x="413" y="97">7</text>
+<rect class="cell even" x="426" y="80" width="26" height="26"/>
+<text class="num small" x="439" y="97">6</text>
+<rect class="cell odd" x="452" y="80" width="26" height="26"/>
+<text class="num small" x="465" y="97">7</text>
+<rect class="cell odd" x="478" y="80" width="26" height="26"/>
+<text class="num small" x="491" y="97">7</text>
+<rect class="cell even" x="504" y="80" width="26" height="26"/>
+<text class="num small" x="517" y="97">8</text>
+<rect class="cell even" x="36" y="106" width="26" height="26"/>
+<text class="num small" x="49" y="123">8</text>
+<rect class="cell odd" x="62" y="106" width="26" height="26"/>
+<text class="num small" x="75" y="123">7</text>
+<rect class="cell odd" x="88" y="106" width="26" height="26"/>
+<text class="num small" x="101" y="123">7</text>
+<rect class="cell even" x="114" y="106" width="26" height="26"/>
+<text class="num small" x="127" y="123">6</text>
+<rect class="cell even" x="140" y="106" width="26" height="26"/>
+<text class="num small" x="153" y="123">6</text>
+<rect class="cell odd" x="166" y="106" width="26" height="26"/>
+<text class="num small" x="179" y="123">5</text>
+<rect class="cell odd" x="192" y="106" width="26" height="26"/>
+<text class="num small" x="205" y="123">5</text>
+<rect class="cell odd" x="218" y="106" width="26" height="26"/>
+<text class="num small" x="231" y="123">5</text>
+<rect class="cell odd" x="244" y="106" width="26" height="26"/>
+<text class="num small" x="257" y="123">5</text>
+<rect class="cell odd" x="270" y="106" width="26" height="26"/>
+<text class="num small" x="283" y="123">5</text>
+<rect class="cell odd" x="296" y="106" width="26" height="26"/>
+<text class="num small" x="309" y="123">5</text>
+<rect class="cell odd" x="322" y="106" width="26" height="26"/>
+<text class="num small" x="335" y="123">5</text>
+<rect class="cell odd" x="348" y="106" width="26" height="26"/>
+<text class="num small" x="361" y="123">5</text>
+<rect class="cell odd" x="374" y="106" width="26" height="26"/>
+<text class="num small" x="387" y="123">5</text>
+<rect class="cell odd" x="400" y="106" width="26" height="26"/>
+<text class="num small" x="413" y="123">5</text>
+<rect class="cell even" x="426" y="106" width="26" height="26"/>
+<text class="num small" x="439" y="123">6</text>
+<rect class="cell even" x="452" y="106" width="26" height="26"/>
+<text class="num small" x="465" y="123">6</text>
+<rect class="cell odd" x="478" y="106" width="26" height="26"/>
+<text class="num small" x="491" y="123">7</text>
+<rect class="cell even" x="504" y="106" width="26" height="26"/>
+<text class="num small" x="517" y="123">6</text>
+<rect class="cell odd" x="36" y="132" width="26" height="26"/>
+<text class="num small" x="49" y="149">7</text>
+<rect class="cell odd" x="62" y="132" width="26" height="26"/>
+<text class="num small" x="75" y="149">7</text>
+<rect class="cell even" x="88" y="132" width="26" height="26"/>
+<text class="num small" x="101" y="149">6</text>
+<rect class="cell even" x="114" y="132" width="26" height="26"/>
+<text class="num small" x="127" y="149">6</text>
+<rect class="cell odd" x="140" y="132" width="26" height="26"/>
+<text class="num small" x="153" y="149">5</text>
+<rect class="cell odd" x="166" y="132" width="26" height="26"/>
+<text class="num small" x="179" y="149">5</text>
+<rect class="cell even" x="192" y="132" width="26" height="26"/>
+<text class="num small" x="205" y="149">4</text>
+<rect class="cell even" x="218" y="132" width="26" height="26"/>
+<text class="num small" x="231" y="149">4</text>
+<rect class="cell even" x="244" y="132" width="26" height="26"/>
+<text class="num small" x="257" y="149">4</text>
+<rect class="cell even" x="270" y="132" width="26" height="26"/>
+<text class="num small" x="283" y="149">4</text>
+<rect class="cell even" x="296" y="132" width="26" height="26"/>
+<text class="num small" x="309" y="149">4</text>
+<rect class="cell pre" x="322" y="132" width="26" height="26"/>
+<rect class="cell odd" x="348" y="132" width="26" height="26"/>
+<text class="num small" x="361" y="149">5</text>
+<rect class="cell even" x="374" y="132" width="26" height="26"/>
+<text class="num small" x="387" y="149">4</text>
+<rect class="cell odd" x="400" y="132" width="26" height="26"/>
+<text class="num small" x="413" y="149">5</text>
+<rect class="cell even" x="426" y="132" width="26" height="26"/>
+<text class="num small" x="439" y="149">4</text>
+<rect class="cell odd" x="452" y="132" width="26" height="26"/>
+<text class="num small" x="465" y="149">5</text>
+<rect class="cell odd" x="478" y="132" width="26" height="26"/>
+<text class="num small" x="491" y="149">5</text>
+<rect class="cell even" x="504" y="132" width="26" height="26"/>
+<text class="num small" x="517" y="149">6</text>
+<rect class="cell odd" x="36" y="158" width="26" height="26"/>
+<text class="num small" x="49" y="175">7</text>
+<rect class="cell even" x="62" y="158" width="26" height="26"/>
+<text class="num small" x="75" y="175">6</text>
+<rect class="cell even" x="88" y="158" width="26" height="26"/>
+<text class="num small" x="101" y="175">6</text>
+<rect class="cell odd" x="114" y="158" width="26" height="26"/>
+<text class="num small" x="127" y="175">5</text>
+<rect class="cell odd" x="140" y="158" width="26" height="26"/>
+<text class="num small" x="153" y="175">5</text>
+<rect class="cell even" x="166" y="158" width="26" height="26"/>
+<text class="num small" x="179" y="175">4</text>
+<rect class="cell even" x="192" y="158" width="26" height="26"/>
+<text class="num small" x="205" y="175">4</text>
+<rect class="cell pre" x="218" y="158" width="26" height="26"/>
+<rect class="cell pre" x="244" y="158" width="26" height="26"/>
+<rect class="cell pre" x="270" y="158" width="26" height="26"/>
+<rect class="cell pre" x="296" y="158" width="26" height="26"/>
+<rect class="cell pre" x="322" y="158" width="26" height="26"/>
+<rect class="cell pre" x="348" y="158" width="26" height="26"/>
+<rect class="cell pre" x="374" y="158" width="26" height="26"/>
+<rect class="cell pre" x="400" y="158" width="26" height="26"/>
+<rect class="cell even" x="426" y="158" width="26" height="26"/>
+<text class="num small" x="439" y="175">4</text>
+<rect class="cell even" x="452" y="158" width="26" height="26"/>
+<text class="num small" x="465" y="175">4</text>
+<rect class="cell odd" x="478" y="158" width="26" height="26"/>
+<text class="num small" x="491" y="175">5</text>
+<rect class="cell odd" x="504" y="158" width="26" height="26"/>
+<text class="num small" x="517" y="175">5</text>
+<rect class="cell even" x="36" y="184" width="26" height="26"/>
+<text class="num small" x="49" y="201">6</text>
+<rect class="cell even" x="62" y="184" width="26" height="26"/>
+<text class="num small" x="75" y="201">6</text>
+<rect class="cell odd" x="88" y="184" width="26" height="26"/>
+<text class="num small" x="101" y="201">5</text>
+<rect class="cell odd" x="114" y="184" width="26" height="26"/>
+<text class="num small" x="127" y="201">5</text>
+<rect class="cell even" x="140" y="184" width="26" height="26"/>
+<text class="num small" x="153" y="201">4</text>
+<rect class="cell even" x="166" y="184" width="26" height="26"/>
+<text class="num small" x="179" y="201">4</text>
+<rect class="cell pre" x="192" y="184" width="26" height="26"/>
+<rect class="cell pre" x="218" y="184" width="26" height="26"/>
+<rect class="cell pre" x="244" y="184" width="26" height="26"/>
+<rect class="cell pre" x="270" y="184" width="26" height="26"/>
+<rect class="cell pre" x="296" y="184" width="26" height="26"/>
+<rect class="cell pre" x="322" y="184" width="26" height="26"/>
+<rect class="cell pre" x="348" y="184" width="26" height="26"/>
+<rect class="cell pre" x="374" y="184" width="26" height="26"/>
+<rect class="cell pre" x="400" y="184" width="26" height="26"/>
+<rect class="cell pre" x="426" y="184" width="26" height="26"/>
+<rect class="cell even" x="452" y="184" width="26" height="26"/>
+<text class="num small" x="465" y="201">4</text>
+<rect class="cell even" x="478" y="184" width="26" height="26"/>
+<text class="num small" x="491" y="201">4</text>
+<rect class="cell odd" x="504" y="184" width="26" height="26"/>
+<text class="num small" x="517" y="201">5</text>
+<rect class="cell even" x="36" y="210" width="26" height="26"/>
+<text class="num small" x="49" y="227">6</text>
+<rect class="cell odd" x="62" y="210" width="26" height="26"/>
+<text class="num small" x="75" y="227">5</text>
+<rect class="cell odd" x="88" y="210" width="26" height="26"/>
+<text class="num small" x="101" y="227">5</text>
+<rect class="cell even" x="114" y="210" width="26" height="26"/>
+<text class="num small" x="127" y="227">4</text>
+<rect class="cell even" x="140" y="210" width="26" height="26"/>
+<text class="num small" x="153" y="227">4</text>
+<rect class="cell pre" x="166" y="210" width="26" height="26"/>
+<rect class="cell pre" x="192" y="210" width="26" height="26"/>
+<rect class="cell pre" x="218" y="210" width="26" height="26"/>
+<rect class="cell pre" x="244" y="210" width="26" height="26"/>
+<rect class="cell pre" x="270" y="210" width="26" height="26"/>
+<rect class="cell pre" x="296" y="210" width="26" height="26"/>
+<rect class="cell pre" x="322" y="210" width="26" height="26"/>
+<rect class="cell pre" x="348" y="210" width="26" height="26"/>
+<rect class="cell pre" x="374" y="210" width="26" height="26"/>
+<rect class="cell pre" x="400" y="210" width="26" height="26"/>
+<rect class="cell pre" x="426" y="210" width="26" height="26"/>
+<rect class="cell even" x="452" y="210" width="26" height="26"/>
+<text class="num small" x="465" y="227">4</text>
+<rect class="cell even" x="478" y="210" width="26" height="26"/>
+<text class="num small" x="491" y="227">4</text>
+<rect class="cell odd" x="504" y="210" width="26" height="26"/>
+<text class="num small" x="517" y="227">5</text>
+<rect class="cell even" x="36" y="236" width="26" height="26"/>
+<text class="num small" x="49" y="253">6</text>
+<rect class="cell odd" x="62" y="236" width="26" height="26"/>
+<text class="num small" x="75" y="253">5</text>
+<rect class="cell odd" x="88" y="236" width="26" height="26"/>
+<text class="num small" x="101" y="253">5</text>
+<rect class="cell even" x="114" y="236" width="26" height="26"/>
+<text class="num small" x="127" y="253">4</text>
+<rect class="cell even" x="140" y="236" width="26" height="26"/>
+<text class="num small" x="153" y="253">4</text>
+<rect class="cell pre" x="166" y="236" width="26" height="26"/>
+<rect class="cell pre" x="192" y="236" width="26" height="26"/>
+<rect class="cell pre" x="218" y="236" width="26" height="26"/>
+<rect class="cell pre" x="244" y="236" width="26" height="26"/>
+<rect class="cell pre" x="270" y="236" width="26" height="26"/>
+<rect class="cell pre" x="296" y="236" width="26" height="26"/>
+<rect class="cell pre" x="322" y="236" width="26" height="26"/>
+<rect class="cell pre" x="348" y="236" width="26" height="26"/>
+<rect class="cell pre" x="374" y="236" width="26" height="26"/>
+<rect class="cell pre" x="400" y="236" width="26" height="26"/>
+<rect class="cell pre" x="426" y="236" width="26" height="26"/>
+<rect class="cell even" x="452" y="236" width="26" height="26"/>
+<text class="num small" x="465" y="253">4</text>
+<rect class="cell even" x="478" y="236" width="26" height="26"/>
+<text class="num small" x="491" y="253">4</text>
+<rect class="cell odd" x="504" y="236" width="26" height="26"/>
+<text class="num small" x="517" y="253">5</text>
+<rect class="cell even" x="36" y="262" width="26" height="26"/>
+<text class="num small" x="49" y="279">6</text>
+<rect class="cell odd" x="62" y="262" width="26" height="26"/>
+<text class="num small" x="75" y="279">5</text>
+<rect class="cell odd" x="88" y="262" width="26" height="26"/>
+<text class="num small" x="101" y="279">5</text>
+<rect class="cell even" x="114" y="262" width="26" height="26"/>
+<text class="num small" x="127" y="279">4</text>
+<rect class="cell even" x="140" y="262" width="26" height="26"/>
+<text class="num small" x="153" y="279">4</text>
+<rect class="cell pre" x="166" y="262" width="26" height="26"/>
+<rect class="cell pre" x="192" y="262" width="26" height="26"/>
+<rect class="cell pre" x="218" y="262" width="26" height="26"/>
+<rect class="cell pre" x="244" y="262" width="26" height="26"/>
+<rect class="cell pre" x="270" y="262" width="26" height="26"/>
+<rect class="cell pre" x="296" y="262" width="26" height="26"/>
+<rect class="cell pre" x="322" y="262" width="26" height="26"/>
+<rect class="cell pre" x="348" y="262" width="26" height="26"/>
+<rect class="cell pre" x="374" y="262" width="26" height="26"/>
+<rect class="cell pre" x="400" y="262" width="26" height="26"/>
+<rect class="cell pre" x="426" y="262" width="26" height="26"/>
+<rect class="cell even" x="452" y="262" width="26" height="26"/>
+<text class="num small" x="465" y="279">4</text>
+<rect class="cell even" x="478" y="262" width="26" height="26"/>
+<text class="num small" x="491" y="279">4</text>
+<rect class="cell odd" x="504" y="262" width="26" height="26"/>
+<text class="num small" x="517" y="279">5</text>
+<rect class="cell even" x="36" y="288" width="26" height="26"/>
+<text class="num small" x="49" y="305">6</text>
+<rect class="cell odd" x="62" y="288" width="26" height="26"/>
+<text class="num small" x="75" y="305">5</text>
+<rect class="cell odd" x="88" y="288" width="26" height="26"/>
+<text class="num small" x="101" y="305">5</text>
+<rect class="cell even" x="114" y="288" width="26" height="26"/>
+<text class="num small" x="127" y="305">4</text>
+<rect class="cell even" x="140" y="288" width="26" height="26"/>
+<text class="num small" x="153" y="305">4</text>
+<rect class="cell pre" x="166" y="288" width="26" height="26"/>
+<rect class="cell pre" x="192" y="288" width="26" height="26"/>
+<rect class="cell pre" x="218" y="288" width="26" height="26"/>
+<rect class="cell pre" x="244" y="288" width="26" height="26"/>
+<rect class="cell pre" x="270" y="288" width="26" height="26"/>
+<rect class="cell pre" x="296" y="288" width="26" height="26"/>
+<rect class="cell pre" x="322" y="288" width="26" height="26"/>
+<rect class="cell pre" x="348" y="288" width="26" height="26"/>
+<rect class="cell pre" x="374" y="288" width="26" height="26"/>
+<rect class="cell pre" x="400" y="288" width="26" height="26"/>
+<rect class="cell even" x="426" y="288" width="26" height="26"/>
+<text class="num small" x="439" y="305">4</text>
+<rect class="cell even" x="452" y="288" width="26" height="26"/>
+<text class="num small" x="465" y="305">4</text>
+<rect class="cell odd" x="478" y="288" width="26" height="26"/>
+<text class="num small" x="491" y="305">5</text>
+<rect class="cell odd" x="504" y="288" width="26" height="26"/>
+<text class="num small" x="517" y="305">5</text>
+<rect class="cell even" x="36" y="314" width="26" height="26"/>
+<text class="num small" x="49" y="331">6</text>
+<rect class="cell even" x="62" y="314" width="26" height="26"/>
+<text class="num small" x="75" y="331">6</text>
+<rect class="cell odd" x="88" y="314" width="26" height="26"/>
+<text class="num small" x="101" y="331">5</text>
+<rect class="cell odd" x="114" y="314" width="26" height="26"/>
+<text class="num small" x="127" y="331">5</text>
+<rect class="cell even" x="140" y="314" width="26" height="26"/>
+<text class="num small" x="153" y="331">4</text>
+<rect class="cell even" x="166" y="314" width="26" height="26"/>
+<text class="num small" x="179" y="331">4</text>
+<rect class="cell pre" x="192" y="314" width="26" height="26"/>
+<rect class="cell pre" x="218" y="314" width="26" height="26"/>
+<rect class="cell pre" x="244" y="314" width="26" height="26"/>
+<rect class="cell pre" x="270" y="314" width="26" height="26"/>
+<rect class="cell pre" x="296" y="314" width="26" height="26"/>
+<rect class="cell pre" x="322" y="314" width="26" height="26"/>
+<rect class="cell pre" x="348" y="314" width="26" height="26"/>
+<rect class="cell pre" x="374" y="314" width="26" height="26"/>
+<rect class="cell even" x="400" y="314" width="26" height="26"/>
+<text class="num small" x="413" y="331">4</text>
+<rect class="cell even" x="426" y="314" width="26" height="26"/>
+<text class="num small" x="439" y="331">4</text>
+<rect class="cell odd" x="452" y="314" width="26" height="26"/>
+<text class="num small" x="465" y="331">5</text>
+<rect class="cell odd" x="478" y="314" width="26" height="26"/>
+<text class="num small" x="491" y="331">5</text>
+<rect class="cell even" x="504" y="314" width="26" height="26"/>
+<text class="num small" x="517" y="331">6</text>
+<rect class="cell odd" x="36" y="340" width="26" height="26"/>
+<text class="num small" x="49" y="357">7</text>
+<rect class="cell even" x="62" y="340" width="26" height="26"/>
+<text class="num small" x="75" y="357">6</text>
+<rect class="cell even" x="88" y="340" width="26" height="26"/>
+<text class="num small" x="101" y="357">6</text>
+<rect class="cell odd" x="114" y="340" width="26" height="26"/>
+<text class="num small" x="127" y="357">5</text>
+<rect class="cell odd" x="140" y="340" width="26" height="26"/>
+<text class="num small" x="153" y="357">5</text>
+<rect class="cell even" x="166" y="340" width="26" height="26"/>
+<text class="num small" x="179" y="357">4</text>
+<rect class="cell even" x="192" y="340" width="26" height="26"/>
+<text class="num small" x="205" y="357">4</text>
+<rect class="cell pre" x="218" y="340" width="26" height="26"/>
+<rect class="cell pre" x="244" y="340" width="26" height="26"/>
+<rect class="cell pre" x="270" y="340" width="26" height="26"/>
+<rect class="cell pre" x="296" y="340" width="26" height="26"/>
+<rect class="cell pre" x="322" y="340" width="26" height="26"/>
+<rect class="cell pre" x="348" y="340" width="26" height="26"/>
+<rect class="cell even" x="374" y="340" width="26" height="26"/>
+<text class="num small" x="387" y="357">4</text>
+<rect class="cell even" x="400" y="340" width="26" height="26"/>
+<text class="num small" x="413" y="357">4</text>
+<rect class="cell odd" x="426" y="340" width="26" height="26"/>
+<text class="num small" x="439" y="357">5</text>
+<rect class="cell odd" x="452" y="340" width="26" height="26"/>
+<text class="num small" x="465" y="357">5</text>
+<rect class="cell even" x="478" y="340" width="26" height="26"/>
+<text class="num small" x="491" y="357">6</text>
+<rect class="cell even" x="504" y="340" width="26" height="26"/>
+<text class="num small" x="517" y="357">6</text>
+<rect class="cell odd" x="36" y="366" width="26" height="26"/>
+<text class="num small" x="49" y="383">7</text>
+<rect class="cell odd" x="62" y="366" width="26" height="26"/>
+<text class="num small" x="75" y="383">7</text>
+<rect class="cell even" x="88" y="366" width="26" height="26"/>
+<text class="num small" x="101" y="383">6</text>
+<rect class="cell even" x="114" y="366" width="26" height="26"/>
+<text class="num small" x="127" y="383">6</text>
+<rect class="cell odd" x="140" y="366" width="26" height="26"/>
+<text class="num small" x="153" y="383">5</text>
+<rect class="cell odd" x="166" y="366" width="26" height="26"/>
+<text class="num small" x="179" y="383">5</text>
+<rect class="cell even" x="192" y="366" width="26" height="26"/>
+<text class="num small" x="205" y="383">4</text>
+<rect class="cell even" x="218" y="366" width="26" height="26"/>
+<text class="num small" x="231" y="383">4</text>
+<rect class="cell pre" x="244" y="366" width="26" height="26"/>
+<rect class="cell pre" x="270" y="366" width="26" height="26"/>
+<rect class="cell pre" x="296" y="366" width="26" height="26"/>
+<rect class="cell pre" x="322" y="366" width="26" height="26"/>
+<rect class="cell even" x="348" y="366" width="26" height="26"/>
+<text class="num small" x="361" y="383">4</text>
+<rect class="cell even" x="374" y="366" width="26" height="26"/>
+<text class="num small" x="387" y="383">4</text>
+<rect class="cell odd" x="400" y="366" width="26" height="26"/>
+<text class="num small" x="413" y="383">5</text>
+<rect class="cell odd" x="426" y="366" width="26" height="26"/>
+<text class="num small" x="439" y="383">5</text>
+<rect class="cell even" x="452" y="366" width="26" height="26"/>
+<text class="num small" x="465" y="383">6</text>
+<rect class="cell even" x="478" y="366" width="26" height="26"/>
+<text class="num small" x="491" y="383">6</text>
+<rect class="cell odd" x="504" y="366" width="26" height="26"/>
+<text class="num small" x="517" y="383">7</text>
+<rect class="cell even" x="36" y="392" width="26" height="26"/>
+<text class="num small" x="49" y="409">8</text>
+<rect class="cell odd" x="62" y="392" width="26" height="26"/>
+<text class="num small" x="75" y="409">7</text>
+<rect class="cell odd" x="88" y="392" width="26" height="26"/>
+<text class="num small" x="101" y="409">7</text>
+<rect class="cell even" x="114" y="392" width="26" height="26"/>
+<text class="num small" x="127" y="409">6</text>
+<rect class="cell even" x="140" y="392" width="26" height="26"/>
+<text class="num small" x="153" y="409">6</text>
+<rect class="cell odd" x="166" y="392" width="26" height="26"/>
+<text class="num small" x="179" y="409">5</text>
+<rect class="cell odd" x="192" y="392" width="26" height="26"/>
+<text class="num small" x="205" y="409">5</text>
+<rect class="cell even" x="218" y="392" width="26" height="26"/>
+<text class="num small" x="231" y="409">4</text>
+<rect class="cell even" x="244" y="392" width="26" height="26"/>
+<text class="num small" x="257" y="409">4</text>
+<rect class="cell even" x="270" y="392" width="26" height="26"/>
+<text class="num small" x="283" y="409">4</text>
+<rect class="cell even" x="296" y="392" width="26" height="26"/>
+<text class="num small" x="309" y="409">4</text>
+<rect class="cell even" x="322" y="392" width="26" height="26"/>
+<text class="num small" x="335" y="409">4</text>
+<rect class="cell even" x="348" y="392" width="26" height="26"/>
+<text class="num small" x="361" y="409">4</text>
+<rect class="cell odd" x="374" y="392" width="26" height="26"/>
+<text class="num small" x="387" y="409">5</text>
+<rect class="cell odd" x="400" y="392" width="26" height="26"/>
+<text class="num small" x="413" y="409">5</text>
+<rect class="cell even" x="426" y="392" width="26" height="26"/>
+<text class="num small" x="439" y="409">6</text>
+<rect class="cell even" x="452" y="392" width="26" height="26"/>
+<text class="num small" x="465" y="409">6</text>
+<rect class="cell odd" x="478" y="392" width="26" height="26"/>
+<text class="num small" x="491" y="409">7</text>
+<rect class="cell odd" x="504" y="392" width="26" height="26"/>
+<text class="num small" x="517" y="409">7</text>
+<rect class="cell even" x="36" y="418" width="26" height="26"/>
+<text class="num small" x="49" y="435">8</text>
+<rect class="cell even" x="62" y="418" width="26" height="26"/>
+<text class="num small" x="75" y="435">8</text>
+<rect class="cell odd" x="88" y="418" width="26" height="26"/>
+<text class="num small" x="101" y="435">7</text>
+<rect class="cell odd" x="114" y="418" width="26" height="26"/>
+<text class="num small" x="127" y="435">7</text>
+<rect class="cell even" x="140" y="418" width="26" height="26"/>
+<text class="num small" x="153" y="435">6</text>
+<rect class="cell even" x="166" y="418" width="26" height="26"/>
+<text class="num small" x="179" y="435">6</text>
+<rect class="cell odd" x="192" y="418" width="26" height="26"/>
+<text class="num small" x="205" y="435">5</text>
+<rect class="cell odd" x="218" y="418" width="26" height="26"/>
+<text class="num small" x="231" y="435">5</text>
+<rect class="cell even" x="244" y="418" width="26" height="26"/>
+<text class="num small" x="257" y="435">4</text>
+<rect class="cell even" x="270" y="418" width="26" height="26"/>
+<text class="num small" x="283" y="435">4</text>
+<rect class="cell even" x="296" y="418" width="26" height="26"/>
+<text class="num small" x="309" y="435">4</text>
+<rect class="cell even" x="322" y="418" width="26" height="26"/>
+<text class="num small" x="335" y="435">4</text>
+<rect class="cell odd" x="348" y="418" width="26" height="26"/>
+<text class="num small" x="361" y="435">5</text>
+<rect class="cell odd" x="374" y="418" width="26" height="26"/>
+<text class="num small" x="387" y="435">5</text>
+<rect class="cell even" x="400" y="418" width="26" height="26"/>
+<text class="num small" x="413" y="435">6</text>
+<rect class="cell even" x="426" y="418" width="26" height="26"/>
+<text class="num small" x="439" y="435">6</text>
+<rect class="cell odd" x="452" y="418" width="26" height="26"/>
+<text class="num small" x="465" y="435">7</text>
+<rect class="cell odd" x="478" y="418" width="26" height="26"/>
+<text class="num small" x="491" y="435">7</text>
+<rect class="cell even" x="504" y="418" width="26" height="26"/>
+<text class="num small" x="517" y="435">8</text>
+<rect class="cell odd" x="36" y="444" width="26" height="26"/>
+<text class="num small" x="49" y="461">9</text>
+<rect class="cell even" x="62" y="444" width="26" height="26"/>
+<text class="num small" x="75" y="461">8</text>
+<rect class="cell even" x="88" y="444" width="26" height="26"/>
+<text class="num small" x="101" y="461">8</text>
+<rect class="cell odd" x="114" y="444" width="26" height="26"/>
+<text class="num small" x="127" y="461">7</text>
+<rect class="cell odd" x="140" y="444" width="26" height="26"/>
+<text class="num small" x="153" y="461">7</text>
+<rect class="cell even" x="166" y="444" width="26" height="26"/>
+<text class="num small" x="179" y="461">6</text>
+<rect class="cell even" x="192" y="444" width="26" height="26"/>
+<text class="num small" x="205" y="461">6</text>
+<rect class="cell odd" x="218" y="444" width="26" height="26"/>
+<text class="num small" x="231" y="461">5</text>
+<rect class="cell odd" x="244" y="444" width="26" height="26"/>
+<text class="num small" x="257" y="461">5</text>
+<rect class="cell odd" x="270" y="444" width="26" height="26"/>
+<text class="num small" x="283" y="461">5</text>
+<rect class="cell odd" x="296" y="444" width="26" height="26"/>
+<text class="num small" x="309" y="461">5</text>
+<rect class="cell odd" x="322" y="444" width="26" height="26"/>
+<text class="num small" x="335" y="461">5</text>
+<rect class="cell odd" x="348" y="444" width="26" height="26"/>
+<text class="num small" x="361" y="461">5</text>
+<rect class="cell even" x="374" y="444" width="26" height="26"/>
+<text class="num small" x="387" y="461">6</text>
+<rect class="cell even" x="400" y="444" width="26" height="26"/>
+<text class="num small" x="413" y="461">6</text>
+<rect class="cell odd" x="426" y="444" width="26" height="26"/>
+<text class="num small" x="439" y="461">7</text>
+<rect class="cell odd" x="452" y="444" width="26" height="26"/>
+<text class="num small" x="465" y="461">7</text>
+<rect class="cell even" x="478" y="444" width="26" height="26"/>
+<text class="num small" x="491" y="461">8</text>
+<rect class="cell even" x="504" y="444" width="26" height="26"/>
+<text class="num small" x="517" y="461">8</text>
+<rect class="cell odd" x="36" y="470" width="26" height="26"/>
+<text class="num small" x="49" y="487">9</text>
+<rect class="cell odd" x="62" y="470" width="26" height="26"/>
+<text class="num small" x="75" y="487">9</text>
+<rect class="cell even" x="88" y="470" width="26" height="26"/>
+<text class="num small" x="101" y="487">8</text>
+<rect class="cell even" x="114" y="470" width="26" height="26"/>
+<text class="num small" x="127" y="487">8</text>
+<rect class="cell odd" x="140" y="470" width="26" height="26"/>
+<text class="num small" x="153" y="487">7</text>
+<rect class="cell odd" x="166" y="470" width="26" height="26"/>
+<text class="num small" x="179" y="487">7</text>
+<rect class="cell even" x="192" y="470" width="26" height="26"/>
+<text class="num small" x="205" y="487">6</text>
+<rect class="cell even" x="218" y="470" width="26" height="26"/>
+<text class="num small" x="231" y="487">6</text>
+<rect class="cell odd" x="244" y="470" width="26" height="26"/>
+<text class="num small" x="257" y="487">5</text>
+<rect class="cell odd" x="270" y="470" width="26" height="26"/>
+<text class="num small" x="283" y="487">5</text>
+<rect class="cell odd" x="296" y="470" width="26" height="26"/>
+<text class="num small" x="309" y="487">5</text>
+<rect class="cell odd" x="322" y="470" width="26" height="26"/>
+<text class="num small" x="335" y="487">5</text>
+<rect class="cell even" x="348" y="470" width="26" height="26"/>
+<text class="num small" x="361" y="487">6</text>
+<rect class="cell even" x="374" y="470" width="26" height="26"/>
+<text class="num small" x="387" y="487">6</text>
+<rect class="cell odd" x="400" y="470" width="26" height="26"/>
+<text class="num small" x="413" y="487">7</text>
+<rect class="cell odd" x="426" y="470" width="26" height="26"/>
+<text class="num small" x="439" y="487">7</text>
+<rect class="cell even" x="452" y="470" width="26" height="26"/>
+<text class="num small" x="465" y="487">8</text>
+<rect class="cell even" x="478" y="470" width="26" height="26"/>
+<text class="num small" x="491" y="487">8</text>
+<rect class="cell odd" x="504" y="470" width="26" height="26"/>
+<text class="num small" x="517" y="487">9</text>
+<text class="tick" x="49" y="512">-9</text>
+<text class="tick" x="26" y="487" text-anchor="end">-9</text>
+<text class="tick" x="127" y="512">-6</text>
+<text class="tick" x="26" y="409" text-anchor="end">-6</text>
+<text class="tick" x="205" y="512">-3</text>
+<text class="tick" x="26" y="331" text-anchor="end">-3</text>
+<text class="tick" x="283" y="512">0</text>
+<text class="tick" x="26" y="253" text-anchor="end">0</text>
+<text class="tick" x="361" y="512">3</text>
+<text class="tick" x="26" y="175" text-anchor="end">3</text>
+<text class="tick" x="439" y="512">6</text>
+<text class="tick" x="26" y="97" text-anchor="end">6</text>
+<text class="tick" x="517" y="512">9</text>
+<text class="tick" x="26" y="19" text-anchor="end">9</text>
+<rect class="ring home" x="271" y="237" width="24" height="24"/>
+</svg>
+</div>
+<figcaption><span class="lab">Figure 3.</span> The lap number \(\lambda(u,v)\) for
+\(|u|, |v| \le 9\), with \(u\) to the right and \(v\) upwards. Even and odd laps from 4 on have
+different tints. The 80 squares with \(\lambda \le 3\) are grey and carry no number, and the origin
+is outlined.</figcaption>
+</figure>
+
+<div class="thm">
+<p><span class="head">Lemma 2</span><span class="note">(the first 80 squares).</span> The squares
+\(T_0, \dots, T_{79}\) are distinct. A square \(s\) has \(\lambda(s) \le 3\) exactly if it is one of
+them.</p>
+</div>
+
+<div class="thm">
+<p><span class="head">Lemma 3</span><span class="note">(indices).</span> Let \(s\) be a square with
+\(\lambda(s) = R \ge 4\). Then \(\mathrm{lo}(R) \le \kappa(s) &lt; \mathrm{hi}(R)\) and
+\(P_R(\kappa(s)) = s\).</p>
+</div>
+
+<div class="rem">
+<p><span class="head">Example.</span> The square \(s = (-5,-2)\) lies in region 4. Tables 2 and 4
+give</p>
+\[ \lambda(s) = \lfloor (1+5+2)/2 \rfloor = 4, \qquad \kappa(s) = 4 \cdot 4 - 2 - 5 + 2 = 11. \]
+<p class="noindent">In Table&nbsp;1 with \(R = 4\), the index \(11 = 2R + 2 + 1\) belongs to piece D
+with \(t = 1\), and</p>
+\[ P_4(11) = (2 - 8 + \lfloor 2/2 \rfloor,\ -2 - \lfloor 1/2 \rfloor) = (-5,-2). \]
+</div>
+
+<div class="thm def">
+<p><span class="head">Definition 6</span><span class="note">(stamps).</span> The <i>stamp</i> of a
+square \(s\) is the pair</p>
+\[ \tau(s) = \begin{cases} (3,\ i) &amp; \text{if } s = T_i, \\ (\lambda(s),\ \kappa(s)) &amp; \text{if } \lambda(s) \ge 4. \end{cases} \]
+<p class="noindent">Stamps are ordered
+lexicographically. Put \(\mathrm{lo}(3) = 0\) and \(\mathrm{hi}(3) = 80\), and let \(S\) be the set
+of pairs \((R,j)\) of integers with \(R \ge 3\) and \(\mathrm{lo}(R) \le j &lt; \mathrm{hi}(R)\). The
+<i>successor</i> of \((R,j)\) in \(S\) is \((R, j+1)\) if \(j + 1 &lt; \mathrm{hi}(R)\), and
+\((R+1, \mathrm{lo}(R+1))\) otherwise.</p>
+</div>
+
+<p class="noindent">By Lemma&nbsp;2 every square has a stamp.</p>
+
+<div class="thm">
+<p><span class="head">Corollary 4.</span> Every stamp lies in \(S\), and different squares have
+different stamps.</p>
+</div>
+
+<div class="proof">
+<p><span class="head">Proof.</span> The first claim is Lemma&nbsp;2 for stamps \((3,i)\) and
+Lemma&nbsp;3 for the others. Let \(\tau(s) = \tau(s')\). If this stamp is \((3,i)\), then
+\(s = T_i = s'\). If it is \((R,j)\) with \(R \ge 4\), then \(s = P_R(j) = s'\) by
+Lemma&nbsp;3.<span class="qed">&#9633;</span></p>
+</div>
+
+<div class="thm def">
+<p><span class="head">Definition 7</span><span class="note">(next square).</span> The
+<i>next square</i> \(s^+\) of a square \(s\) is</p>
+\[ s^+ = \begin{cases}
+ T_{i+1} &amp; \text{if } s = T_i \text{ with } i &lt; 79, \\
+ P_4(\mathrm{lo}(4)) &amp; \text{if } s = T_{79}, \\
+ P_R(\kappa(s)+1) &amp; \text{if } \lambda(s) = R \ge 4 \text{ and } \kappa(s) + 1 &lt; \mathrm{hi}(R), \\
+ P_{R+1}(\mathrm{lo}(R+1)) &amp; \text{if } \lambda(s) = R \ge 4 \text{ and } \kappa(s) + 1 = \mathrm{hi}(R).
+\end{cases} \]
+</div>
+
+<p class="noindent">By Lemmas 2 and 3 exactly one case applies.</p>
+
+<div class="thm">
+<p><span class="head">Lemma 5</span><span class="note">(the next square).</span> For every square
+\(s\), the difference \(s^+ - s\) is a step, and \(\tau(s^+)\) is the successor of \(\tau(s)\) in
+\(S\).</p>
+</div>
+
+<div class="thm">
+<p><span class="head">Lemma 6</span><span class="note">(the greedy rule).</span> Let \(s\) be a
+square and \(e\) a step. If \(\tau(s+e) > \tau(s)\), then \(\sigma(s^+) \le \sigma(s+e)\).</p>
+</div>
+
+<p class="noindent">In words: a square one step from \(s\) with a later stamp never has a lower
+number than the next square \(s^+\).</p>
+
+<p><i>On the proofs of Lemmas 2, 3, 5 and 6.</i> We do not print them. A case check on Table&nbsp;2
+shows that all squares with \(\lambda \le 3\) lie in the box \(-4 \le u \le 6\),
+\(-5 \le v \le 4\). For them the lemmas are checked by evaluation. For a square with
+\(\lambda(s) \ge 4\) the proof splits into cases: by the region of \(s\), by the rows of Tables 2
+and 4, by the remainders these rows use, and in Lemmas 5 and 6 also by the region of the second
+square. In every case each quantity is an explicit expression in \(u\) and \(v\) that is linear
+apart from division by 2, 3 or 6 with remainder. So every case is a statement of linear arithmetic
+over the integers, and such statements can be decided mechanically. Lemma&nbsp;6 compares spiral
+numbers, which are quadratic. By Lemma&nbsp;1&nbsp;(iii) it is enough to compare rings and positions,
+and these are linear. In Lean every case is closed by <code>omega</code>, a decision procedure for
+linear integer arithmetic, and the statements about the first 80 squares by <code>decide</code>,
+which evaluates them inside the kernel.</p>
+
+<h2><span class="no">5.</span> Proof of Theorems 1 and 2</h2>
+
+<p>Let \(V_0 = (0,0) = T_0\) and \(V_{n+1} = V_n^+\).</p>
+
+<p><i>Step 1. The stamps \(\tau(V_0), \tau(V_1), \dots\) are the elements of \(S\) in increasing
+order, each once.</i> For every \(R \ge 3\) the number \(\mathrm{hi}(R) - \mathrm{lo}(R)\) is
+positive. So \((3,0)\) is the least element of \(S\), and every element of \(S\) is reached from
+\((3,0)\) by taking the successor finitely often. Now \(\tau(V_0) = (3,0)\), and
+\(\tau(V_{n+1})\) is the successor of \(\tau(V_n)\) by Lemma&nbsp;5.</p>
+
+<p><i>Step 2. \(V_n = W_n\) for all \(n\), and Theorem 2 (a) holds.</i> Let \(s\) be a square. By
+Corollary&nbsp;4 and Step&nbsp;1 there is exactly one \(n\) with \(\tau(V_n) = \tau(s)\), and then
+\(V_n = s\) because different squares have different stamps. So every square occurs exactly once
+among the \(V_n\). The square with stamp \((3,i)\) is \(T_i\). The square with stamp \((R,j)\),
+\(R \ge 4\), is \(P_R(j)\) by Lemma&nbsp;3. Since the stamps come in increasing order, the sequence
+\(V\) is \(T_0, \dots, T_{79}\), then lap 4, then lap 5, and so on. This is the sequence \(W\).</p>
+
+<p><i>Step 3. \(W\) satisfies (W1) to (W4), with &ldquo;differs by a step&rdquo; for &ldquo;one move
+apart&rdquo;.</i> (W1) holds by definition, (W2) by Step&nbsp;2 and (W3) by Lemma&nbsp;5. For (W4)
+let \(e\) be a step and \(q = W_n + e\) with \(\sigma(q) &lt; \sigma(W_{n+1})\). Since
+\(W_{n+1} = W_n^+\), Lemma&nbsp;6 shows that \(\tau(q) > \tau(W_n)\) is false. So
+\(\tau(q) \le \tau(W_n)\). By Step&nbsp;2, \(q = W_m\) for some \(m\), and by Step&nbsp;1,
+\(m \le n\).</p>
+
+<p>By Section&nbsp;2 the sequence \(a_n = (u_n + v_n,\ u_n - v_n)\) is therefore a Falafel walk. This
+proves Theorem&nbsp;1&nbsp;(a). By Remark&nbsp;1 it is the only Falafel walk, which is
+Theorem&nbsp;2&nbsp;(b). By Step&nbsp;2 it visits every square with \(x+y\) even, and by Section&nbsp;2
+it visits no other square. This is Theorem&nbsp;1&nbsp;(b).<span class="qed">&#9633;</span></p>
+
+<h2><span class="no">6.</span> The sequence</h2>
+
+<p>In Lemma&nbsp;7 and Corollary&nbsp;8 a square is again a pair \((x,y)\), with any parity of
+\(x+y\).</p>
+
+<div class="thm">
+<p><span class="head">Lemma 7.</span> For every square \((x,y)\),
+\(\sigma(x,y) \equiv x + y + 1 \pmod 2\).</p>
+</div>
+
+<div class="proof">
+<p><span class="head">Proof.</span> Each square of the spiral shares a side with the next one. So from
+one square to the next the number goes up by 1 and \(x + y\) changes by 1, and
+\(\sigma(x,y) - x - y\) keeps its parity. At the square \((0,0)\) it is 1.<span class="qed">&#9633;</span></p>
+</div>
+
+<div class="thm">
+<p><span class="head">Corollary 8.</span> Let \(a_0, a_1, a_2, \dots\) be the Falafel walk. Every odd
+positive integer is \(\sigma(a_n)\) for exactly one \(n\), and every \(\sigma(a_n)\) is odd. So
+A399160 is a permutation of the odd positive integers.</p>
+</div>
+
+<div class="proof">
+<p><span class="head">Proof.</span> Let \(k\) be an odd positive integer. It is the number of a square
+\((x,y)\), and \(x + y\) is even by Lemma&nbsp;7. By
+Theorem&nbsp;1&nbsp;(b) there is \(n\) with \(a_n = (x,y)\), so \(\sigma(a_n) = k\). If also
+\(\sigma(a_m) = k\), then \(a_m = a_n\), because different squares have different numbers, and
+\(m = n\) by (W2). Finally,
+every \(a_n\) has \(x + y\) even, so every \(\sigma(a_n)\) is odd by
+Lemma&nbsp;7.<span class="qed">&#9633;</span></p>
+</div>
+
+<div class="thm">
+<p><span class="head">Corollary 9</span><span class="note">(the terms).</span> For an integer \(R \ge 4\) put</p>
+\[ \mathrm{start}(R) = \begin{cases} (27R^2 - 22R - 24)/4 &amp; \text{if } R \text{ even} \\ (27R^2 - 22R - 33)/4 &amp; \text{if } R \text{ odd} \end{cases} \]
+<p class="noindent">Lap \(R\) starts with \(W_{\mathrm{start}(R)}\). So \(W_n = T_n\) for \(n &lt; 80\). For
+\(n \ge 80\) let \(R\) be the largest integer with \(\mathrm{start}(R) \le n\). Then \(W_n\) lies in
+lap \(R\), and</p>
+\[ W_n = P_R\bigl(\mathrm{lo}(R) + n - \mathrm{start}(R)\bigr). \]
+<p class="noindent">The \((n+1)\)-th term of A399160 is \((2\rho(W_n) - 1)^2 + \pi(W_n)\). Table&nbsp;5
+in Appendix&nbsp;A gives this number as a function of \(R\) and the index
+\(j = \mathrm{lo}(R) + n - \mathrm{start}(R)\).</p>
+</div>
+
+<div class="proof">
+<p><span class="head">Proof.</span> By Theorem&nbsp;2 the squares of the walk are
+\(W_0, W_1, W_2, \dots\), and Lemma&nbsp;1&nbsp;(i) gives the number of \(W_n\). Lap 4 starts with
+\(W_{80}\), and \(\mathrm{start}(4) = 80\). For both parities of \(R\), the difference
+\(\mathrm{start}(R+1) - \mathrm{start}(R)\) is the number \(\mathrm{hi}(R) - \mathrm{lo}(R)\) of squares
+of lap \(R\) (Section&nbsp;3). So lap \(R\) starts with \(W_{\mathrm{start}(R)}\) and ends just
+before \(W_{\mathrm{start}(R+1)}\). The numbers \(\mathrm{start}(R)\) increase with \(R\). So \(W_n\)
+with \(n \ge 80\) lies in lap \(R\) exactly if \(R\) is the largest integer with
+\(\mathrm{start}(R) \le n\), and then it is the square of lap \(R\) at index
+\(\mathrm{lo}(R) + n - \mathrm{start}(R)\). On every row of Table&nbsp;1 the ring \(\rho\) and the
+position \(\pi\) are linear in \(R\) and \(j\), and Table&nbsp;5 is
+\((2\rho - 1)^2 + \pi\) for that row.<span class="qed">&#9633;</span></p>
+</div>
+
+<p>The first 80 terms, the numbers of \(T_0, \dots, T_{79}\), are 1, 3, 7, 19, 5, 9, 11, 15, 33, 13, 29, 53, 25, 27, 47, 23, 45, 21, 41, 69, 17, 35, 39, 67, 37, 63, 97, 61, 95, 31, 55, 59, 93, 57, 89, 129, 87, 127, 51, 49, 79, 117, 77, 115, 43, 71, 75, 113, 73, 109, 153, 107, 151, 105, 149, 65, 99, 103, 147, 101, 143, 193, 141, 191, 139, 189, 137, 187, 91, 131, 135, 185, 133, 181, 237, 179, 235, 177, 85, 125.</p>
+
+<h2><span class="no">7.</span> The formal proof</h2>
+
+<p>The proof has been formalised in Lean&nbsp;4, version 4.36.0, with Mathlib. The Lean kernel
+accepts it. It has no <code>sorry</code>, which would mark an unproved step, and no
+<code>native_decide</code>, which would take the result of compiled code on trust. It depends only on
+the three standard axioms <code>propext</code>, <code>Classical.choice</code> and
+<code>Quot.sound</code>.</p>
+
+<p><i>What a reader has to trust.</i> Appendix&nbsp;B reproduces the statement as Lean has it. It
+defines \(\sigma\) by formula (1), a move, and a Falafel walk as in Definition&nbsp;1, and it states
+four claims: Remark&nbsp;1, Theorem&nbsp;1&nbsp;(a), Theorem&nbsp;1&nbsp;(b) and Corollary&nbsp;8.
+The laps, the lap number, the index and the stamps are only tools of
+the proof. A mistake in them could make the proof fail. It could not make a false theorem pass. Corollary&nbsp;9 is
+proved in Lean as a formula for the terms: for every \(n \ge 80\) the number of \(a_n\) is the
+entry of Table&nbsp;5 (<code>term_formula</code>). Its statement is in a second file, which
+defines \(\mathrm{start}\), \(\mathrm{lo}\) and the numbers of Table&nbsp;5 and mentions no
+square and no lap. A reader who wants that claim has to trust that file as well.</p>
+
+<p><i>What corresponds to what.</i> Table&nbsp;3 lists the Lean theorem behind each statement of this
+paper. Lean also proves that the first 70 squares of its walk have the 70 numbers listed in the OEIS
+entry (<code>first_terms</code>). This checks that Definition&nbsp;1 is the rule of the OEIS
+entry.</p>
+
+<figure class="tab">
+<figcaption><span class="lab">Table 3.</span> The statements of this paper and the Lean theorems
+behind them.</figcaption>
+<div class="tablewrap"><table class="map">
+<thead><tr><th>Statement</th><th>Lean theorems</th></tr></thead>
+<tbody>
+<tr><td>The numbering</td><td><code>spiral_uv_inj</code> (for squares with x + y even), <code>spiral_pos</code>, <code>spiral_surjective</code></td></tr>
+<tr><td>Remark 1</td><td><code>deterministic</code></td></tr>
+<tr><td>Theorem 1 (a)</td><td><code>never_trapped</code></td></tr>
+<tr><td>Theorem 1 (b)</td><td><code>visits_exactly_even_squares</code></td></tr>
+<tr><td>Theorem 2</td><td><code>first_eighty</code>, <code>walk_follows_path</code>, <code>w_injective</code>, <code>w_surjective</code>, <code>walk_isWalk</code></td></tr>
+<tr><td>Lemma 1</td><td><code>spiral_uv</code>, <code>rpos_bounds</code>, <code>spiral_le_of_keyLE</code></td></tr>
+<tr><td>Lemma 2</td><td><code>prefix_table</code>, <code>prefix_mem</code></td></tr>
+<tr><td>Lemma 3</td><td><code>pos_range</code>, <code>sq_pos</code></td></tr>
+<tr><td>Corollary 4</td><td><code>idx_range</code>, <code>stamp_inj</code></td></tr>
+<tr><td>Lemma 5</td><td><code>step_ok</code>, <code>rook_ok</code>, with <code>sq_pos</code></td></tr>
+<tr><td>Lemma 6</td><td><code>greedy</code></td></tr>
+<tr><td>Lemma 7</td><td><code>spiral_parity</code></td></tr>
+<tr><td>Corollary 8</td><td><code>permutation_of_odd_numbers</code></td></tr>
+<tr><td>Corollary 9</td><td><code>term_formula</code>, from <code>start_succ</code>, <code>walk_eq_path</code>, <code>ring_rpos_core</code> and <code>term_eq</code>; for \(n &lt; 80\), <code>first_eighty</code></td></tr>
+</tbody></table></div>
+</figure>
+
+<p><i>Where Lean and this paper differ.</i> Lean defines the next square by a table of moves, one
+move for every square, arranged by region like Table&nbsp;4. It proves that this move is a step and
+leads to the square with the next stamp. With Lemma&nbsp;3 this is Lemma&nbsp;5. Lean also proves that
+a lap is exactly a level set of the lap number: for \(R \ge 4\), \(\lambda(s) = R\) exactly if
+\(s = P_R(j)\) for some \(j\) with \(\mathrm{lo}(R) \le j &lt; \mathrm{hi}(R)\)
+(<code>lapnum_eq_iff</code>). Lean has the numbering only as formula (1). So it also proves, as far
+as the proof needs it, what this paper takes from the construction of the spiral: different squares
+with \(x+y\) even have different numbers, every number is positive, and every positive integer is
+the number of a square (the first row of Table&nbsp;3). It proves Lemma&nbsp;7 from the four cases of
+(1).</p>
+
+<p><i>What is not formalised.</i> The tables of this paper are a transcription of the Lean
+definitions. A program printed them from expressions that it first compared with the Lean
+definitions: Tables 2 and 4, \(\rho\) and \(\pi\) for all squares with \(|u|, |v| \le 300\), and
+Table&nbsp;1 with \(\mathrm{lo}\) and \(\mathrm{hi}\) for the laps \(4 \le R \le 300\). The same
+program compared the sequence \(W\) of Theorem&nbsp;2 with a direct simulation of the rule for the
+first 200,000 steps, and it tested Lemmas 2, 3, 5 and 6 in the wording of this paper for all squares
+with \(|u|, |v| \le 120\). It also checked that formula (1) gives the numbers of the first
+160,801 squares along the spiral. The description of a lap and of the visited rings in
+Section&nbsp;3 is not formalised either. The program compared Table&nbsp;5 with the Lean table of
+the terms and with the numbers of the squares of Table&nbsp;1 for \(4 \le R \le 300\), and with
+the simulation. It compared the formula for \(\mathrm{start}(R)\) with the Lean definition, which
+is one expression for both parities of \(R\), and with the lengths of the laps for
+\(4 \le R \le 5000\).</p>
+
+<p><i>Acknowledgement.</i> The lap structure was found by experiment. The Lean development was
+written with the help of Claude, an AI system made by Anthropic. The correctness of the result rests
+on the Lean kernel and on the statement in Appendix&nbsp;B, not on how the proof was written.</p>
+
+<h2>Appendix A. The index, the terms and the first 80 squares</h2>
+
+<figure class="tab">
+<figcaption><span class="lab">Table 4.</span> The index \(\kappa(u,v)\) of a square with lap number
+\(R = \lambda(u,v) \ge 4\). The regions are those of Table&nbsp;2, and \(q\) and \(m\) are as
+there.</figcaption>
+<div class="tablewrap"><table class="reg"><thead><tr>
+<th>Region</th>
+<th>Case</th>
+<th>\(\kappa(u, v)\)</th>
+</tr></thead><tbody>
+<tr><td>1. North row</td><td>\(v \text{ odd} \text{ or } u \le -1\)</td><td>\(-u - v\)</td></tr>
+<tr><td></td><td>\(v \text{ even},\ u = 0\)</td><td>\(-v - 1\)</td></tr>
+<tr><td></td><td>\(v \text{ even},\ u = 1\)</td><td>\(-v\)</td></tr>
+<tr class="gap"><td colspan="3"></td></tr>
+<tr><td>2. North-west staircase</td><td></td><td>\(-u - v\)</td></tr>
+<tr class="gap"><td colspan="3"></td></tr>
+<tr><td>3. West corner</td><td>\(u \text{ even}\)</td><td>\(2R - v\)</td></tr>
+<tr><td></td><td>\(u \text{ odd},\ v = 0\)</td><td>\(2R - 4\)</td></tr>
+<tr><td></td><td>\(u \text{ odd},\ v = -1\)</td><td>\(2R - 3\)</td></tr>
+<tr><td></td><td>\(u \text{ odd},\ v = 1\)</td><td>\(2R - 2\)</td></tr>
+<tr class="gap"><td colspan="3"></td></tr>
+<tr><td>4. South-west staircase</td><td></td><td>\(4R - 2 + u - v\)</td></tr>
+<tr class="gap"><td colspan="3"></td></tr>
+<tr><td>5. South corner</td><td>\(v \text{ even},\ u = 0\)</td><td>\(6R - 5\)</td></tr>
+<tr><td></td><td>\(v \text{ even},\ u = 1\)</td><td>\(6R - 4\)</td></tr>
+<tr><td></td><td>\(v \text{ even},\ u = -1\)</td><td>\(6R - 3\)</td></tr>
+<tr><td></td><td>\(v \text{ odd}\)</td><td>\(6R - 1 + u\)</td></tr>
+<tr class="gap"><td colspan="3"></td></tr>
+<tr><td>6. South-east staircase</td><td></td><td>\(8R - 2 + u + v\)</td></tr>
+<tr class="gap"><td colspan="3"></td></tr>
+<tr><td>7. East corner</td><td>\(u \text{ odd},\ v = 0\)</td><td>\(10R - 4\)</td></tr>
+<tr><td></td><td>\(u \text{ odd},\ v = 1\)</td><td>\(10R - 3\)</td></tr>
+<tr><td></td><td>\(u \text{ odd},\ v = -1\)</td><td>\(10R - 2\)</td></tr>
+<tr><td></td><td>\(u \text{ even}\)</td><td>\(10R + v\)</td></tr>
+<tr class="gap"><td colspan="3"></td></tr>
+<tr><td>8. North-east staircase</td><td></td><td>\(12R - u + v\)</td></tr>
+<tr class="gap"><td colspan="3"></td></tr>
+<tr><td>9. Column 3</td><td>\(v \text{ even}\)</td><td>\(-v - 4\)</td></tr>
+<tr><td></td><td>\(v \text{ odd}\)</td><td>\(-v - 2\)</td></tr>
+<tr class="gap"><td colspan="3"></td></tr>
+<tr><td>10. Return</td><td>\(m \le 1\)</td><td>\(11R + 3v - 3q - 1\)</td></tr>
+<tr><td></td><td>\(2 \le m \le 3\)</td><td>\(11R + 3v - 3q - 2\)</td></tr>
+<tr><td></td><td>\(m \ge 4\)</td><td>\(11R + 3v - 3q - 3\)</td></tr>
+</tbody></table></div>
+</figure>
+
+<figure class="tab">
+<figcaption><span class="lab">Table 5.</span> The number \(\sigma(P_R(j))\) of the square at index
+\(j\) of lap \(R \ge 4\). The pieces and the ranges of \(t\) are those of Table&nbsp;1, and
+\(k = \lfloor t/3 \rfloor\). Lean proves that these are the terms of A399160 from the 81st on
+(Corollary&nbsp;9 and Section&nbsp;7).</figcaption>
+<div class="tablewrap"><table class="terms"><thead><tr>
+<th>Piece</th>
+<th>Index \(j\)</th>
+<th>Term</th>
+</tr></thead><tbody>
+<tr><td>A. North row</td><td>even \(R\), \(j = -R - 1\)</td><td>\((2R - 1)^2 + 8R\)</td></tr>
+<tr><td></td><td>even \(R\), \(j = -R\)</td><td>\((2R + 1)^2 + 2\)</td></tr>
+<tr><td></td><td>odd \(R\), \(j = -R - 3\)</td><td>\((2R + 3)^2 + 6\)</td></tr>
+<tr><td></td><td>odd \(R\), \(j = -R - 2\)</td><td>\((2R + 5)^2 + 6\)</td></tr>
+<tr><td></td><td>odd \(R\), \(j = -R - 1\)</td><td>\((2R + 1)^2 + 2\)</td></tr>
+<tr><td></td><td>all other \(j &lt; 0\)</td><td>\((4R + 2j - 1)^2 + 14R + 6j\)</td></tr>
+<tr class="gap"><td colspan="3"></td></tr>
+<tr><td>B. North-west staircase</td><td>\(j = t\), \(t \text{ even}\)</td><td>\((4R - 5)^2 + 14R - t - 14\)</td></tr>
+<tr><td></td><td>\(t \text{ odd}\)</td><td>\((4R - 3)^2 + 14R - t - 7\)</td></tr>
+<tr class="gap"><td colspan="3"></td></tr>
+<tr><td>C. West corner</td><td>\(j = 2R - 4 + t\), \(t = 0\)</td><td>\((4R - 7)^2 + 12R - 18\)</td></tr>
+<tr><td></td><td>\(t = 1\)</td><td>\((4R - 5)^2 + 12R - 14\)</td></tr>
+<tr><td></td><td>\(t = 2\)</td><td>\((4R - 5)^2 + 12R - 10\)</td></tr>
+<tr><td></td><td>\(t = 3\)</td><td>\((4R - 3)^2 + 12R - 4\)</td></tr>
+<tr><td></td><td>\(t = 4\)</td><td>\((4R - 5)^2 + 12R - 12\)</td></tr>
+<tr><td></td><td>\(t = 5\)</td><td>\((4R - 3)^2 + 12R - 8\)</td></tr>
+<tr class="gap"><td colspan="3"></td></tr>
+<tr><td>D. South-west staircase</td><td>\(j = 2R + 2 + t\), \(t \text{ even}\)</td><td>\((4R - 1)^2 + 12R - t - 4\)</td></tr>
+<tr><td></td><td>\(t \text{ odd}\)</td><td>\((4R - 3)^2 + 12R - t - 9\)</td></tr>
+<tr class="gap"><td colspan="3"></td></tr>
+<tr><td>E. South corner</td><td>\(j = 6R - 5 + t\), \(t = 0\)</td><td>\((4R - 5)^2 + 8R - 8\)</td></tr>
+<tr><td></td><td>\(t = 1\)</td><td>\((4R - 3)^2 + 8R - 6\)</td></tr>
+<tr><td></td><td>\(t = 2\)</td><td>\((4R - 3)^2 + 8R - 2\)</td></tr>
+<tr><td></td><td>\(t = 3\)</td><td>\((4R - 1)^2 + 8R + 2\)</td></tr>
+<tr><td></td><td>\(t = 4\)</td><td>\((4R - 3)^2 + 8R - 4\)</td></tr>
+<tr><td></td><td>\(t = 5\)</td><td>\((4R - 1)^2 + 8R - 2\)</td></tr>
+<tr class="gap"><td colspan="3"></td></tr>
+<tr><td>F. South-east staircase</td><td>\(j = 6R + 1 + t\), \(t \text{ even}\)</td><td>\((4R + 1)^2 + 8R - t\)</td></tr>
+<tr><td></td><td>\(t \text{ odd}\)</td><td>\((4R - 1)^2 + 8R - t - 3\)</td></tr>
+<tr class="gap"><td colspan="3"></td></tr>
+<tr><td>G. East corner</td><td>\(j = 10R - 4 + t\), \(t = 0\)</td><td>\((4R - 3)^2 + 4R - 2\)</td></tr>
+<tr><td></td><td>\(t = 1\)</td><td>\((4R - 1)^2 + 4R - 2\)</td></tr>
+<tr><td></td><td>\(t = 2\)</td><td>\((4R - 1)^2 + 4R + 2\)</td></tr>
+<tr><td></td><td>\(t = 3\)</td><td>\((4R + 1)^2 + 4R + 4\)</td></tr>
+<tr><td></td><td>\(t = 4\)</td><td>\((4R - 1)^2 + 4R\)</td></tr>
+<tr><td></td><td>\(t = 5\)</td><td>\((4R + 1)^2 + 4R\)</td></tr>
+<tr class="gap"><td colspan="3"></td></tr>
+<tr><td>H. North-east staircase</td><td>\(j = 10R + 2 + t\), \(t \text{ even}\)</td><td>\((4R + 3)^2 + 4R - t\)</td></tr>
+<tr><td></td><td>\(t \text{ odd}\)</td><td>\((4R + 1)^2 + 4R - t - 1\)</td></tr>
+<tr class="gap"><td colspan="3"></td></tr>
+<tr><td>I. Return</td><td>\(j = 11R + 3 + t\)</td><td></td></tr>
+<tr><td></td><td>even \(R\), \(t = 3k\)</td><td>\((4R - 4k - 1)^2 + 3R - 6k - 4\)</td></tr>
+<tr><td></td><td>even \(R\), \(t = 3k + 1\)</td><td>\((4R - 4k - 3)^2 + 3R - 6k - 6\)</td></tr>
+<tr><td></td><td>even \(R\), \(t = 3k + 2\)</td><td>\((4R - 4k - 1)^2 + 3R - 6k - 6\)</td></tr>
+<tr><td></td><td>odd \(R\), \(t = 3k\)</td><td>\((4R - 4k - 3)^2 + 3R - 6k - 5\)</td></tr>
+<tr><td></td><td>odd \(R\), \(t = 3k + 1\)</td><td>\((4R - 4k - 1)^2 + 3R - 6k - 5\)</td></tr>
+<tr><td></td><td>odd \(R\), \(t = 3k + 2\)</td><td>\((4R - 4k - 3)^2 + 3R - 6k - 7\)</td></tr>
+</tbody></table></div>
+</figure>
+
+<figure class="tab">
+<figcaption><span class="lab">Table 6.</span> The first 80 squares \(T_0, \dots, T_{79}\) of the
+walk, in the coordinates \((u,v)\). Each row holds eight squares.</figcaption>
+<div class="tablewrap"><table class="prefix"><thead><tr><th>\(i\)</th><th colspan="8">\(T_i,\ T_{i+1},\ \dots,\ T_{i+7}\)</th></tr></thead><tbody>
+<tr><td>0</td><td>\((0,\,0)\)</td><td>\((1,\,0)\)</td><td>\((-1,\,0)\)</td><td>\((-1,\,-1)\)</td><td>\((0,\,-1)\)</td><td>\((0,\,1)\)</td><td>\((1,\,1)\)</td><td>\((1,\,-1)\)</td></tr>
+<tr><td>8</td><td>\((2,\,-1)\)</td><td>\((2,\,0)\)</td><td>\((2,\,1)\)</td><td>\((2,\,2)\)</td><td>\((0,\,2)\)</td><td>\((1,\,2)\)</td><td>\((-1,\,2)\)</td><td>\((-1,\,1)\)</td></tr>
+<tr><td>16</td><td>\((-2,\,1)\)</td><td>\((-2,\,0)\)</td><td>\((-2,\,-1)\)</td><td>\((-2,\,-2)\)</td><td>\((0,\,-2)\)</td><td>\((1,\,-2)\)</td><td>\((-1,\,-2)\)</td><td>\((-1,\,-3)\)</td></tr>
+<tr><td>24</td><td>\((0,\,-3)\)</td><td>\((1,\,-3)\)</td><td>\((2,\,-3)\)</td><td>\((2,\,-2)\)</td><td>\((3,\,-2)\)</td><td>\((3,\,0)\)</td><td>\((3,\,1)\)</td><td>\((3,\,-1)\)</td></tr>
+<tr><td>32</td><td>\((4,\,-1)\)</td><td>\((4,\,0)\)</td><td>\((4,\,1)\)</td><td>\((4,\,2)\)</td><td>\((3,\,2)\)</td><td>\((3,\,3)\)</td><td>\((1,\,3)\)</td><td>\((0,\,3)\)</td></tr>
+<tr><td>40</td><td>\((-1,\,3)\)</td><td>\((-2,\,3)\)</td><td>\((-2,\,2)\)</td><td>\((-3,\,2)\)</td><td>\((-3,\,0)\)</td><td>\((-3,\,-1)\)</td><td>\((-3,\,1)\)</td><td>\((-4,\,1)\)</td></tr>
+<tr><td>48</td><td>\((-4,\,0)\)</td><td>\((-4,\,-1)\)</td><td>\((-4,\,-2)\)</td><td>\((-3,\,-2)\)</td><td>\((-3,\,-3)\)</td><td>\((-2,\,-3)\)</td><td>\((-2,\,-4)\)</td><td>\((0,\,-4)\)</td></tr>
+<tr><td>56</td><td>\((1,\,-4)\)</td><td>\((-1,\,-4)\)</td><td>\((-1,\,-5)\)</td><td>\((0,\,-5)\)</td><td>\((1,\,-5)\)</td><td>\((2,\,-5)\)</td><td>\((2,\,-4)\)</td><td>\((3,\,-4)\)</td></tr>
+<tr><td>64</td><td>\((3,\,-3)\)</td><td>\((4,\,-3)\)</td><td>\((4,\,-2)\)</td><td>\((5,\,-2)\)</td><td>\((5,\,0)\)</td><td>\((5,\,1)\)</td><td>\((5,\,-1)\)</td><td>\((6,\,-1)\)</td></tr>
+<tr><td>72</td><td>\((6,\,0)\)</td><td>\((6,\,1)\)</td><td>\((6,\,2)\)</td><td>\((5,\,2)\)</td><td>\((5,\,3)\)</td><td>\((4,\,3)\)</td><td>\((2,\,3)\)</td><td>\((2,\,4)\)</td></tr>
+</tbody></table></div>
+</figure>
+
+<h2>Appendix B. The statement in Lean</h2>
+
+<p>These are the definitions and the four claims as the Lean proof states them. Each claim is one
+statement of this paper and names it in its comment. A square is a pair
+<code>(x, y)</code> of integers, and <code>a n</code> is \(a_n\). The second file, with the
+claim for Corollary&nbsp;9, is not reproduced: its table is Table&nbsp;5.</p>
+
+<pre>/-- The number of the square (x, y) on the square spiral, as OEIS has it: 1 at (0, 0),
+2 at (1, 0), 3 at (1, 1), then counter-clockwise. Here `r` is the ring max(|x|, |y|),
+and ring r ≥ 1 holds the numbers (2r - 1)² + 1 to (2r + 1)². -/
+def spiral (p : ℤ × ℤ) : ℤ :=
+  let x := p.1
+  let y := p.2
+  let r := max |x| |y|
+  if x = r ∧ y &gt; -r then (2 * r - 1) ^ 2 + (y + r)        -- right side, going up
+  else if y = r then (2 * r - 1) ^ 2 + 2 * r + (r - x)    -- top side, going left
+  else if x = -r then (2 * r - 1) ^ 2 + 4 * r + (r - y)   -- left side, going down
+  else (2 * r - 1) ^ 2 + 6 * r + (x + r)                  -- bottom side, going right
+
+/-- The Falafel (Fers + Alfil) moves one or two squares diagonally. -/
+def IsMove (p q : ℤ × ℤ) : Prop :=
+  |q.1 - p.1| = |q.2 - p.2| ∧ (|q.1 - p.1| = 1 ∨ |q.1 - p.1| = 2)
+
+/-- `a 0, a 1, a 2, ...` is an infinite run of the walk. It starts on square 1 and visits no
+square twice. Each next square is one move away. Every square one move away with a lower number
+than the next square was visited before. -/
+structure IsWalk (a : ℕ → ℤ × ℤ) : Prop where
+  start : a 0 = (0, 0)
+  injective : Function.Injective a
+  move : ∀ n, IsMove (a n) (a (n + 1))
+  lowest : ∀ n q, IsMove (a n) q → spiral q &lt; spiral (a (n + 1)) → ∃ m ≤ n, a m = q
+
+/-- Remark 1. The rule decides every step: there is at most one infinite run. -/
+def Deterministic : Prop := ∀ a b : ℕ → ℤ × ℤ, IsWalk a → IsWalk b → a = b
+
+/-- Theorem 1 (a). The walk is never trapped: it has an infinite run.
+A399160(n) is `spiral (a (n - 1))`. -/
+def NeverTrapped : Prop := ∃ a : ℕ → ℤ × ℤ, IsWalk a
+
+/-- Theorem 1 (b). The walk visits every square (x, y) with x + y even, and no other square. -/
+def VisitsExactlyEvenSquares : Prop :=
+  ∀ a : ℕ → ℤ × ℤ, IsWalk a → ∀ x y : ℤ, (∃ n, a n = (x, y)) ↔ Even (x + y)
+
+/-- Corollary 8. Every term is an odd positive integer, and every odd positive integer is a term
+exactly once. So A399160 is a permutation of the odd positive integers. -/
+def PermutationOfOddNumbers : Prop :=
+  ∀ a : ℕ → ℤ × ℤ, IsWalk a →
+    (∀ n, 0 &lt; spiral (a n) ∧ Odd (spiral (a n))) ∧
+    (∀ k : ℤ, 0 &lt; k → Odd k → ∃! n, spiral (a n) = k)</pre>
+
+<h2>References</h2>
+
+<ol class="refs">
+<li>[1] OEIS Foundation Inc., Entry A399160, <i>The On-Line Encyclopedia of Integer Sequences</i>, 2026. <a href="https://oeis.org/A399160">https://oeis.org/A399160</a></li>
+<li>[2] OEIS Foundation Inc., Entry A316667, <i>The On-Line Encyclopedia of Integer Sequences</i>, 2018. <a href="https://oeis.org/A316667">https://oeis.org/A316667</a></li>
+<li>[3] L. de Moura and S. Ullrich, The Lean 4 theorem prover and programming language, in <i>Automated Deduction &ndash; CADE 28</i>, Lecture Notes in Computer Science 12699, Springer, 2021, pp. 625&ndash;635.</li>
+<li>[4] The mathlib Community, The Lean mathematical library, in <i>Proceedings of the 9th ACM SIGPLAN International Conference on Certified Programs and Proofs (CPP 2020)</i>, ACM, 2020, pp. 367&ndash;381.</li>
+</ol>
+
+</article>

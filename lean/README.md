@@ -1,0 +1,197 @@
+# lean: the Falafel walk (OEIS A399160) never ends, in Lean 4
+
+Written Mon 23 Nov 2026. Lean v4.36.0, Mathlib v4.36.0.
+
+## What is proved
+
+Four theorems, in `Falafel/Theorems.lean`. Their statements are the four definitions at the
+end of `Statement.lean`, in the same order. Since 24 Nov 2026 each is one full statement of the
+paper (`doc/falafel-paper/`).
+
+| Theorem | Paper | Statement |
+| --- | --- | --- |
+| `deterministic` | Remark 1 | Two sequences with `IsWalk` are equal: the rule decides every step. |
+| `never_trapped` | Theorem 1 (a) | There is an infinite sequence `a` with `IsWalk a`: the walk is never trapped. |
+| `visits_exactly_even_squares` | Theorem 1 (b) | A sequence with `IsWalk` visits a square (x, y) exactly if x + y is even. |
+| `permutation_of_odd_numbers` | Corollary 8 | For a sequence with `IsWalk`, every term is an odd positive integer, and every odd positive integer is the spiral number of exactly one step. |
+
+Until 24 Nov 2026 the third claim was `VisitsEveryEvenSquare` (only "every square with x + y even
+is visited") and the fourth was `EveryOddNumberOnce` (without "every term is odd and positive",
+which was the separate theorem `terms_odd_and_positive`).
+
+- `lake build` succeeds. There is no `sorry`.
+- `#print axioms` gives `propext`, `Classical.choice`, `Quot.sound` for all four. These are the
+  standard axioms of Lean and Mathlib.
+- There is no `native_decide`. The finite checks use `decide`, which is evaluation inside the
+  Lean kernel: the table of the first 80 squares (`Prefix.lean`), the first 70 terms
+  (`Check.lean`), the picture in `Statement.lean`, and a few start values.
+- Extra, not needed for the claim: `leanchecker` (a second run of the kernel over the compiled
+  files) accepts every module that contains declarations. The tool itself crashes on some runs
+  while loading files, before it checks anything, and always on the root module `Falafel`,
+  which has no declarations. So it never rejected anything, but it is not one clean pass.
+- All laps R ≥ 4 are covered directly. No lemma has a bound on R, and nothing is "checked up to
+  a lap and then extended".
+
+## What a reader must check
+
+1. `Statement.lean`, 70 lines: the spiral number, the moves, `IsWalk`, and the four claims.
+   Nothing else has to be trusted.
+2. That the four theorems in `Falafel/Theorems.lean` have those four claims as their types.
+3. That the build prints the axiom lines above and no error.
+
+Two things support the statement itself:
+
+- `Statement.lean` contains the 5 by 5 picture of the spiral from the OEIS page as a checked
+  example.
+- `Falafel/Check.lean` proves that the first 70 terms of the walk are the 70 DATA terms of
+  A399160 (fetched from oeis.org on 23 Nov 2026). With `deterministic` this ties `IsWalk` to
+  the OEIS entry.
+
+Martin approved the statement on 23 Nov 2026: the first three claims first, the fourth claim
+later the same day. On 24 Nov 2026 he approved the present text, in which the third and fourth
+claim are completed so that the four claims match the paper item by item.
+
+## How the proof goes
+
+It does not follow the write-up (`doc/falafel-proof.md`). There are no addresses and no step
+from finitely many laps to all laps.
+
+- **Coordinates.** u = (x + y)/2, v = (x - y)/2. The Falafel is a rook limited to 1 or 2 squares.
+- **Model** (`Falafel/Model.lean`, `Falafel/Stamp.lean`). Every square (u, v) gets a stamp: a lap
+  number and an index within the lap. It also gets a move. The first 80 squares are a table and
+  count as lap 3.
+- **Five facts about every square**, each proved for all laps at once by case analysis on the
+  region of the square and `omega`:
+  - the index is in the range of its lap (`pos_range`);
+  - the closed-form path inverts (lap, index), so different squares have different stamps
+    (`sq_pos`);
+  - the move leads to the next stamp (`step_big`);
+  - the move is a rook move of 1 or 2 (`rook_big`);
+  - a neighbour with a later stamp has no lower spiral number than the square the walk moves to
+    (`greedy_e1` to `greedy_s2`, one file per neighbour).
+- **First 80 squares** (`Falafel/Prefix.lean`). The same facts, by evaluation.
+- **Spiral order** (`Falafel/Spiral.lean`). The spiral number is (2 ring - 1)² + position, so
+  comparing spiral numbers is comparing (ring, position).
+- **Induction** (`Falafel/Main.lean`). The walk is the step iterated from the origin. Its stamps
+  increase by one position per step. So after step n the visited squares are exactly the squares
+  with stamp up to that of step n. With the greedy fact this gives `IsWalk`.
+- **Odd numbers** (`Falafel/Numbers.lean`). Three facts about the spiral number of any square
+  (x, y): it is positive (`spiral_pos`); it has the parity of x + y + 1 (`spiral_parity`); every
+  positive integer is the spiral number of some square (`spiral_surjective`). So an odd positive
+  integer is the number of a square with x + y even, the walk visits that square, and different
+  steps have different numbers.
+
+Two more results come out of this, in `Falafel/Main.lean`:
+
+- **Exact cover**, which the write-up only observed: the walk visits the squares in the order of
+  their stamps, so the squares with lap number R are exactly the squares visited in lap R.
+- **`walk_follows_path`**: in every lap R ≥ 4 the walk runs through the closed-form path
+  `(squ R j, sqv R j)` of `Model.lean` in order.
+- **`walk_eq_path`** (`Falafel/Start.lean`): lap R ≥ 4 starts at step
+  `start R` = (27R² − 22R − 24 − 9·(R mod 2))/4, so for `start R ≤ n < start (R + 1)` the n-th
+  square is the square at index `lo R + (n − start R)` of that path.
+- **`term_formula`** (`Falafel/Terms.lean`): the claim `TermFormula` of `PathStatement.lean`, a
+  second statement file. It gives the number of the square at every step n ≥ 80 as a table of 38
+  rows, each an odd square plus a linear remainder. This is Corollary 9 of the paper, and the
+  table is its Table 5.
+- **`lapnum_eq_iff`**: for R ≥ 4 the squares with lap number R are exactly the squares of that
+  path. **`lapnum_le_three_iff`**: the squares with lap number at most 3 are exactly the first
+  80 squares of the walk.
+
+Checked in Python, not proved in Lean (`py/test_writeup.py`): the Lean path is the move table of
+the write-up (laps 4 to 400), and the Lean lap number is the L of its section 4 (|u|, |v| ≤ 400).
+
+## Build
+
+Install Lean through [elan](https://github.com/leanprover/elan). Then, in this folder:
+
+```
+lake exe cache get
+lake build
+```
+
+The first command fetches the prebuilt Mathlib, so that only the files of this folder are
+compiled. `lean-toolchain` and `lake-manifest.json` fix Lean v4.36.0 and Mathlib v4.36.0.
+
+Measured on 23 and 24 Nov 2026 on a laptop that was running other jobs at the same time:
+
+| What | Time |
+| --- | --- |
+| Clean build of the Falafel files (Mathlib prebuilt), before the fourth theorem | 1 min 35 s wall, 8.0 min of CPU |
+| `lake build Leaper` | 37 s wall |
+| Fetching Lean, the Mathlib source and the prebuilt Mathlib | 2 min 36 s, about 1.6 GB received |
+
+Disk: Lean itself takes 3.0 GB and the folder `.lake` (Mathlib and its dependencies, prebuilt)
+takes 7.9 GB.
+
+The build prints a warning per file that Mathlib is designed for the module system. It is
+harmless.
+
+## Files
+
+| Path | What it is |
+| --- | --- |
+| `Statement.lean` | The statement. The only trusted file. |
+| `PathStatement.lean` | Second statement file: the table of terms and the claim that it gives the sequence. |
+| `Falafel/Theorems.lean` | The four theorems. |
+| `Falafel.lean` | Root of the library, with `#print axioms`. |
+| `Falafel/Model.lean` | Lap number, index, move, closed-form path, ring and position, in (u, v). |
+| `Falafel/Stamp.lean` | Table of the first 80 squares; lap, index and step for every square. |
+| `Falafel/Tactic.lean` | `split_cases`, `split_omega`: split on `if`, drop impossible cases, `omega`. |
+| `Falafel/Laps.lean`, `Step.lean` | Range, rook move, inverse map, next stamp, for laps R ≥ 4. |
+| `Falafel/Greedy/*.lean`, `Greedy.lean` | The greedy fact for each of the 8 neighbours, for laps R ≥ 4. |
+| `Falafel/Prefix.lean` | The first 80 squares, by evaluation. |
+| `Falafel/Squares.lean` | The facts for all squares. |
+| `Falafel/Spiral.lean` | Spiral numbers in (u, v). |
+| `Falafel/Numbers.lean` | Spiral numbers of all squares: positive, parity, every positive integer occurs. |
+| `Falafel/Main.lean` | The walk, the induction, uniqueness, every even square, every odd number once. |
+| `Falafel/Start.lean` | The step at which each lap starts. |
+| `Falafel/Terms.lean` | Proof of the term table: ring and position of every square of a lap, one case per row. |
+| `Falafel/Check.lean` | The first 70 terms against the OEIS data. |
+| `py/` | Python tests, see below. Not part of the proof. |
+
+## Python tests (not proof)
+
+They were used to get the definitions right before Lean saw them. They read the definitions out
+of the Lean files, so they test the text that Lean checks.
+
+```
+python3 py/test_statement.py        Statement.lean mirrored by hand: OEIS picture, 70 terms, deviations rejected,
+                                    3000 terms odd and distinct
+python3 py/test_lemmas.py 300 300000   every lemma statement on the box |u|, |v| <= 300; exact cover and the
+                                    write-up's closed forms for laps 4 to 148; the walk against a simulation
+python3 -B py/test_writeup.py 400 400  the Lean lap number and path against the write-up's L and move table
+```
+
+All three pass. The second takes 6 s.
+
+## Not done
+
+- The proof files have had no reader other than the Lean kernel and Claude. The kernel checks
+  the proof. Only a person can check that `Statement.lean` says what is meant; Martin has
+  approved it, nobody else has read it.
+
+## Second library: `Leaper` (Ferz and Alfil), 24 Nov 2026
+
+The same Lake project holds a second library for the (s, s)-leaper: the Ferz is s = 1
+(OEIS A316884) and the Alfil is s = 2 (OEIS A317467). Build it with `lake build Leaper`.
+
+- **Statement:** `LeaperStatement.lean`, 50 lines. It uses `Falafel.spiral` of `Statement.lean`.
+  The condition s > 0 is inside the three general claims. Martin approved it on 24 Nov 2026.
+- **Theorems** (`Leaper/Theorems.lean`), the first three for every s > 0:
+  `deterministic`, `never_trapped`, `visits_exactly_reachable_squares`,
+  `ferz_permutation_of_odd_numbers`.
+- **Check** (`Leaper/Check.lean`): the first 62 terms for s = 1 and the first 54 for s = 2 are
+  the DATA terms of the two OEIS entries, by `decide +kernel`.
+- **Axioms:** `propext`, `Classical.choice`, `Quot.sound`. No `sorry`, no `native_decide`.
+
+How the proof goes (`doc/pieces.md` has it for human readers):
+
+- `Leaper/Spiral.lean`: spiral number = (2 ring - 1)² + position, for all squares.
+- `Leaper/Model.lean`: the path of the (1, 1)-leaper round the diamonds |p| + |q| = 2k: next
+  square, place on the diamond, and the rank `rk` (the step at which a square is reached). The
+  next square has rank + 1, and the rank determines the square.
+- `Leaper/Greedy.lean`: a diagonal neighbour that does not come before a square on the path has
+  no lower spiral number than the next square, after scaling by s. The leap length enters only
+  through sign facts about s p and s q, so everything is linear and `omega` closes it.
+- `Leaper/Main.lean`: the walk is the path scaled by s; it satisfies `IsWalk s` and is unique.

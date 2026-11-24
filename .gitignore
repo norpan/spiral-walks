@@ -1,0 +1,5 @@
+.lake/
+__pycache__/
+*.ckpt
+*.o
+.DS_Store
