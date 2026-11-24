@@ -68,9 +68,6 @@ The number is the piece's number in Quest for Zero. It is F = 1, W = 2, A = 4, D
 | 31 | Lion | Lioness (Scirocco), Joker | F W A D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 
 - The leapers are read from the Q40 page, where "up to two steps" means 1 or 2 steps.
-- Warrior (11): the page's colours (blue, yellow, red) and its number give F W D. The page's sentence
-  on its move says two steps straight or up to two steps diagonally, which would be F A D, the same
-  as Alfilerzbaba. F W D is taken here. Either way the piece is never trapped.
 - For A000027 and A005408 the OEIS entry is the plain sequence, not an entry about the piece.
 - Other names: a selection of names used elsewhere for exactly the same moves, from Wikipedia's
   "List of fairy chess pieces", Jelliss (mayhematics.com), the Chess Variant Pages and the rules
@@ -126,7 +123,10 @@ finite computation, and the largest takes 2.6x10^8 steps.
 - **Fewest unvisited moves.** A trap is an arrival with 0. The count is how often the lowest value
   occurred.
 - **Skipped.** A square that the walk can no longer visit. None so far, for any of the three.
-- **Gap.** On arrival, how many rings further in the lowest unvisited square of the same line lies.
+- **Gap.** Take the squares straight inward from the square of arrival: those with the same y on
+  the right and left sides of the ring, with the same x on the top and bottom sides. The gap is how
+  many rings further in the lowest unvisited one of them lies. All 26 gaps of 3 are exactly 3; no
+  gap of 4 has occurred.
 - All of this is observed, not proved. The runs are still going.
 
 ## How the OEIS list was made
@@ -205,8 +205,9 @@ results and says how each is proved.
 4. **Sequence.** Every term of A399160 is an odd positive integer, and every odd positive integer
    is a term exactly once. So A399160 is a permutation of the odd positive integers.
 5. **Terms.** From its 81st term on the sequence is given by a formula. The walk runs in laps
-   R = 4, 5, 6, ..., lap R starts at step (27R² − 22R − 24)/4 for even R and (27R² − 22R − 33)/4 for
-   odd R, and within a lap every term is the square of an odd number plus a linear remainder. The
+   R = 4, 5, 6, ..., lap R starts with term number s(R) + 1, where s(R) = (27R² − 22R − 24)/4 for
+   even R and (27R² − 22R − 33)/4 for odd R, so lap 4 starts with the 81st term. (The paper counts
+   steps from 0, so there lap R starts at step s(R).) Within a lap every term is the square of an odd number plus a linear remainder. The
    table has 38 rows; it is Table 5 of the paper.
 
 ### How it is proved
