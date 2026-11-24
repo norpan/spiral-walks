@@ -7,6 +7,13 @@ This repository holds proofs, programs and write-ups for the pieces made of the 
 W (0,1), F (1,1), D (0,2), N (1,2) and A (2,2). There are 31 such pieces. `doc/pieces.md` lists
 them all with their OEIS entries.
 
+## Read first
+
+- The paper for F+A: [web page](https://norpan.github.io/spiral-walks/doc/falafel-paper/falafel-paper.html),
+  [PDF](https://norpan.github.io/spiral-walks/doc/falafel-paper/falafel-paper.pdf). It is a draft.
+- [The 31 pieces](doc/pieces.md): what is proved, what is trapped, what is open.
+- [The walk viewer](https://norpan.github.io/spiral-walks/viz/walk-viewer.html): runs the walk of any piece in the browser.
+
 ## Results
 
 Three kinds of claim are kept apart: proved, checked by program up to a bound, and observed.
