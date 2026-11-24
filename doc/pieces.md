@@ -19,8 +19,7 @@ trust four short statement files, which are linked below.
 
 | Status | Pieces | Count |
 | --- | --- | --- |
-| Never trapped, proved in Lean, easy | all 16 with W; D, DA (Section "Wazir, Dabbaba, Alibaba") | 18 |
-| Never trapped, short argument, not in Lean | FD, FDA | 2 |
+| Never trapped, proved in Lean, easy | all 16 with W; D, DA; FD, FDA (Section "Wazir, Dabbaba, Alibaba") | 20 |
 | Never trapped, proved in Lean | F, A (Section "Ferz and Alfil"), FA (Section "Falafel") | 3 |
 | Trapped, found by program | N, FN, AN, DN, FAN | 5 |
 | Trapped at once | the Zero | 1 |
@@ -43,11 +42,11 @@ The number is the piece's number in Quest for Zero. It is F = 1, W = 2, A = 4, D
 | 6 | Phoenix | Waffle (Betza), Caliph (Jelliss) | W A | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 7 | Prince Elephant | War Elephant | F W A | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 8 | Dabbaba | War Machine | D | A399158 | never trapped | the squares with both coordinates even, in increasing order, are one D move apart (Lean) |
-| 9 | Fortress | Kirin (Chu shogi), Diamond (Jelliss) | F D | A005408 | never trapped | n and n+2 are one D or F move apart, so it walks 1, 3, 5, ... |
+| 9 | Fortress | Kirin (Chu shogi), Diamond (Jelliss) | F D | A005408 | never trapped | n and n+2 are one D or F move apart, so it walks 1, 3, 5, ... (Lean) |
 | 10 | Machine | Wazaba, Woody Rook (Betza) | W D | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 11 | Warrior | Champion (Begnis) | F W D | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 12 | Alibaba | â€“ | A D | A399158 | never trapped | the squares with both coordinates even, in increasing order, are one D move apart (Lean) |
-| 13 | Alfilerzbaba | FAD (Betza), Feralfda | F A D | A005408 | never trapped | n and n+2 are one D or F move apart, so it walks 1, 3, 5, ... |
+| 13 | Alfilerzbaba | FAD (Betza), Feralfda | F A D | A005408 | never trapped | n and n+2 are one D or F move apart, so it walks 1, 3, 5, ... (Lean) |
 | 14 | Master | Champion (Omega Chess) | W A D | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 15 | Pasha | Mastodon, Mammoth, Squire | F W A D | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 16 | Horse | Knight | N | A316667 | trapped at step 2016 | program |
@@ -83,7 +82,7 @@ The number is the piece's number in Quest for Zero. It is F = 1, W = 2, A = 4, D
 | --- | --- | --- | --- | --- |
 | The 16 pieces with W | 1, 2, 3, ... | A000027 | Squares n and n+1 are one W move apart. | Lean: [`StraightStatement.lean`](../lean/StraightStatement.lean), s = 1 |
 | D (Dabbaba), DA (Alibaba) | 1, 11, 13, ..., 25, 51, ... | A399158 | The squares with both coordinates even, in increasing order. Each is one D move from the one before. | Lean: [`StraightStatement.lean`](../lean/StraightStatement.lean), s = 2 |
-| FD (Fortress), FDA (Alfilerzbaba) | 1, 3, 5, ... | A005408 | Squares n and n+2 are one D move or one F move apart. The piece only reaches odd squares. | This argument; program |
+| FD (Fortress), FDA (Alfilerzbaba) | 1, 3, 5, ... | A005408 | Squares n and n+2 are one D move or one F move apart. The piece only reaches odd squares. | Lean: [`FortressStatement.lean`](../lean/FortressStatement.lean) |
 
 - In each row the lowest unvisited square the piece can ever reach is always one move away.
 - Checked by program: W, WF, WN, WA, WD, WFDNA for 20,000 terms; FD, FDA, D, DA for 200,000 terms.
@@ -186,7 +185,12 @@ the piece can ever reach. So it is the lowest unvisited square one move away. âˆ
   by s.
 - **Checked by program:** for the Dabbaba and the Alibaba the walk by the rule equals the sorted
   list of the numbers of the squares with both coordinates even, for 200,000 terms.
-- **Not in Lean:** the Fortress (F + D) and the Alfilerzbaba (F + A + D), which walk 1, 3, 5, ....
+- **Fortress and Alfilerzbaba, proved in Lean 4** (24 Nov 2026): [`Fortress/`](../lean/Fortress/),
+  statement in [`FortressStatement.lean`](../lean/FortressStatement.lean) (42 lines), for
+  every piece that has the moves of the Ferz and of the Dabbaba and whose moves all change x + y by
+  an even number. Three claims: the rule allows at most one walk; a walk exists; its terms are
+  1, 3, 5, .... The Lean proof takes the walk to be every second square of the spiral. Same
+  axioms, no `sorry`, no `native_decide`.
 - **Not done.** Nothing is posted on OEIS.
 
 ---

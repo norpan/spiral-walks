@@ -17,3 +17,7 @@ roots = ["LeaperStatement", "Leaper"]
 [[lean_lib]]
 name = "Straight"
 roots = ["StraightStatement", "Straight"]
+
+[[lean_lib]]
+name = "Fortress"
+roots = ["FortressStatement", "Fortress"]

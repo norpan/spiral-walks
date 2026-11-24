@@ -218,3 +218,21 @@ analysis, `nxt_key`).
   `w` with `spiral (w n) = n + 1`. Scaling by s multiplies ring and position by s (`rg_scale`,
   `ps_scale`), so it keeps the order of the numbers (`scale_lt`). The walk is s times `w`. It
   reuses `Leaper/Spiral.lean`.
+
+## Fortress and Alfilerzbaba: the walk 1, 3, 5, ...
+
+A fourth library, `Fortress`, in the same Lake project. Build it with `lake build Fortress`
+(33 s wall on 24 Nov 2026, with three other jobs running and `Straight` already built).
+
+- **Statement:** `FortressStatement.lean`, 42 lines. `MovesLikeFortress M` says that the piece
+  has the four moves of the Ferz and the four moves of the Dabbaba and that all its moves change
+  x + y by an even number. It uses `Falafel.spiral` and `Straight.IsWalk`.
+- **Theorems** (`Fortress/Theorems.lean`), for every such `M`: `deterministic`,
+  `never_trapped`, `walks_odd_numbers` (term number n, counted from 0, is 2n + 1).
+- **Instances:** `fortress_never_trapped`, `alfilerzbaba_never_trapped`, and
+  `alfilerzbaba_eq_fortress` (the two make the same walk).
+- **How the proof goes** (`Fortress/Main.lean`): the walk is every second square of the spiral,
+  `Straight.w (2 * n)`. Two steps along the spiral are a Ferz move or a Dabbaba move
+  (`step2_mem`). A move that keeps the parity of x + y leads from an odd number to an odd number
+  (`Falafel.spiral_parity`), so no reachable square with a lower number is unvisited.
+- Axioms: `propext`, `Classical.choice`, `Quot.sound`. No `sorry`, no `native_decide`.
