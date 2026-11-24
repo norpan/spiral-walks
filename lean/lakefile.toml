@@ -13,3 +13,7 @@ roots = ["Statement", "PathStatement", "Falafel"]
 [[lean_lib]]
 name = "Leaper"
 roots = ["LeaperStatement", "Leaper"]
+
+[[lean_lib]]
+name = "Straight"
+roots = ["StraightStatement", "Straight"]

@@ -195,3 +195,26 @@ How the proof goes (`doc/pieces.md` has it for human readers):
   no lower spiral number than the next square, after scaling by s. The leap length enters only
   through sign facts about s p and s q, so everything is linear and `omega` closes it.
 - `Leaper/Main.lean`: the walk is the path scaled by s; it satisfies `IsWalk s` and is unique.
+
+## Wazir, Dabbaba, Alibaba: pieces that can move straight
+
+A third library, `Straight`, in the same Lake project. Build it with `lake build Straight`
+(2 min 25 s wall on 24 Nov 2026, with three other jobs running; nearly all of it is one case
+analysis, `nxt_key`).
+
+- **Statement:** `StraightStatement.lean`, 57 lines. A piece is a set `M` of moves. The
+  condition `MovesStraight s M` says that the piece can move s squares straight in each of the
+  four directions and that all its moves change both coordinates by multiples of s. It uses
+  `Falafel.spiral` of `Statement.lean`.
+- **Theorems** (`Straight/Theorems.lean`), for every s > 0 and every such `M`:
+  `deterministic`, `never_trapped`, `visits_lattice_in_order` (the walk visits exactly the
+  squares with both coordinates multiples of s, and its numbers increase), and
+  `wazir_walks_in_order` (for s = 1 the n-th term is n).
+- **Instances:** `wazir_never_trapped`, `dabbaba_never_trapped` (OEIS A399158),
+  `alibaba_never_trapped`, and `alibaba_eq_dabbaba` (the two make the same walk). With s = 1 the
+  theorems cover all 16 pieces that have the Wazir's moves.
+- **How the proof goes** (`Straight/Main.lean`): `nx`, `ny` give the square after (x, y) along
+  the spiral, and `spiral_nxt` says its number is one more. So the spiral itself is a sequence
+  `w` with `spiral (w n) = n + 1`. Scaling by s multiplies ring and position by s (`rg_scale`,
+  `ps_scale`), so it keeps the order of the numbers (`scale_lt`). The walk is s times `w`. It
+  reuses `Leaper/Spiral.lean`.

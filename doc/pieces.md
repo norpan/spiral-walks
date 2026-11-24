@@ -1,15 +1,16 @@
-# The 31 pieces of Quest for Zero on the square spiral
+# The 32 pieces of Quest for Zero on the square spiral
 
 Written 24 Nov 2026. Figures of the live runs were read from their logs that day at 20:01.
 
 Every proof named here is checked by Lean 4 (version 4.36.0, with Mathlib). The Lean project is
 [`lean/`](../lean/); `lake build` in that folder checks all of it. A reader only has to
-trust three short statement files, which are linked below.
+trust four short statement files, which are linked below.
 
 ## The question
 
-- **Pieces.** The game Quest for Zero (https://bradspellman.com/q40/) has one piece for every non-empty
-  combination of the five leapers W (0,1), F (1,1), D (0,2), N (1,2), A (2,2). That is 31 pieces.
+- **Pieces.** The game Quest for Zero (https://bradspellman.com/q40/) has one piece for every
+  combination of the five leapers W (0,1), F (1,1), D (0,2), N (1,2), A (2,2). That is 32 pieces:
+  31 that can move, and the Zero, which has no leaper.
 - **Walk.** The piece starts on square 1 of the square spiral and always moves to the lowest-numbered
   unvisited square it can reach. It is trapped when no such square exists.
 - **Question per piece.** Is it ever trapped?
@@ -18,14 +19,16 @@ trust three short statement files, which are linked below.
 
 | Status | Pieces | Count |
 | --- | --- | --- |
-| Never trapped, proved, trivial | all 16 with W; D, DA, FD, FDA | 20 |
+| Never trapped, proved in Lean, easy | all 16 with W; D, DA (Section "Wazir, Dabbaba, Alibaba") | 18 |
+| Never trapped, short argument, not in Lean | FD, FDA | 2 |
 | Never trapped, proved in Lean | F, A (Section "Ferz and Alfil"), FA (Section "Falafel") | 3 |
 | Trapped, found by program | N, FN, AN, DN, FAN | 5 |
+| Trapped at once | the Zero | 1 |
 | Open | DAN, FDN, FDAN | 3 |
 
-The Zero, the game's 32nd piece, cannot move. Its walk is the single term 1: trapped at step 1 on square 1.
+The Zero cannot move. Its walk is the single term 1: trapped at step 1 on square 1.
 
-## All 31 pieces
+## All 32 pieces
 
 The number is the piece's number in Quest for Zero. It is F = 1, W = 2, A = 4, D = 8, N = 16 added up. The Zero has number 0 and no leaper.
 
@@ -33,36 +36,36 @@ The number is the piece's number in Quest for Zero. It is F = 1, W = 2, A = 4, D
 | --- | --- | --- | --- | --- | --- | --- |
 | 0 | Zero | – | none | none | trapped at step 1 | it cannot move |
 | 1 | Ferz | Fers | F | A316884 | never trapped | it walks round the diamonds abs(x) + abs(y) = 2k clockwise; the next square on the diamond always has a lower number than the squares further out (Lean) |
-| 2 | Wazir | Vizir | W | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... |
-| 3 | King | Man, Commoner, Guard | F W | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... |
+| 2 | Wazir | Vizir | W | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
+| 3 | King | Man, Commoner, Guard | F W | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 4 | Alfil | Elephant (old), Fil | A | A317467 | never trapped | the Ferz walk at twice the size: diamonds abs(x) + abs(y) = 4k, clockwise (Lean) |
 | 5 | Elephant (our Falafel) | Falafel (Betza), Ferfil (Jelliss), modern Elephant | F A | A399160 | never trapped | after its first 80 squares it walks laps 4, 5, 6, ..., each made of the same nine pieces; every square gets a lap and a place, and the rule always picks the next place (Lean) |
-| 6 | Phoenix | Waffle (Betza), Caliph (Jelliss) | W A | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... |
-| 7 | Prince Elephant | War Elephant | F W A | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... |
-| 8 | Dabbaba | War Machine | D | A399158 | never trapped | the squares with both coordinates even, in increasing order, are one D move apart |
+| 6 | Phoenix | Waffle (Betza), Caliph (Jelliss) | W A | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
+| 7 | Prince Elephant | War Elephant | F W A | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
+| 8 | Dabbaba | War Machine | D | A399158 | never trapped | the squares with both coordinates even, in increasing order, are one D move apart (Lean) |
 | 9 | Fortress | Kirin (Chu shogi), Diamond (Jelliss) | F D | A005408 | never trapped | n and n+2 are one D or F move apart, so it walks 1, 3, 5, ... |
-| 10 | Machine | Wazaba, Woody Rook (Betza) | W D | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... |
-| 11 | Warrior | Champion (Begnis) | F W D | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... |
-| 12 | Alibaba | – | A D | A399158 | never trapped | the squares with both coordinates even, in increasing order, are one D move apart |
+| 10 | Machine | Wazaba, Woody Rook (Betza) | W D | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
+| 11 | Warrior | Champion (Begnis) | F W D | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
+| 12 | Alibaba | – | A D | A399158 | never trapped | the squares with both coordinates even, in increasing order, are one D move apart (Lean) |
 | 13 | Alfilerzbaba | FAD (Betza), Feralfda | F A D | A005408 | never trapped | n and n+2 are one D or F move apart, so it walks 1, 3, 5, ... |
-| 14 | Master | Champion (Omega Chess) | W A D | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... |
-| 15 | Pasha | Mastodon, Mammoth, Squire | F W A D | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... |
+| 14 | Master | Champion (Omega Chess) | W A D | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
+| 15 | Pasha | Mastodon, Mammoth, Squire | F W A D | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 16 | Horse | Knight | N | A316667 | trapped at step 2016 | program |
 | 17 | Priest | Prince (Jelliss), Dullahan (Knappen) | F N | A398717 | trapped at step 1051 | program |
-| 18 | Emperor | Marquis (Scirocco) | W N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... |
-| 19 | Centaur | Crowned Knight, Paladin | F W N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... |
+| 18 | Emperor | Marquis (Scirocco) | W N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
+| 19 | Centaur | Crowned Knight, Paladin | F W N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 20 | Kangaroo | Hospitaller (Jelliss), Priestess | A N | A398779 | trapped at step 59,677 | program |
 | 21 | Leopard | High Priestess (Joyce) | F A N | A399167 | trapped at step 256,730,882 | program |
-| 22 | Deer | – | W A N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... |
-| 23 | Raccoon | – | F W A N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... |
+| 22 | Deer | – | W A N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
+| 23 | Raccoon | – | F W A N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 24 | Carpenter | Templar (Jelliss), Scribe, Doughnut (Betza) | D N | A398965 | trapped at step 253,925,076 | program |
 | 25 | Civet | – | F D N | A398194 | **open** | 9.27x10^12 steps without a trap |
-| 26 | Minister | Duke (Musketeer Chess) | W D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... |
-| 27 | Cannon | – | F W D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... |
+| 26 | Minister | Duke (Musketeer Chess) | W D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
+| 27 | Cannon | – | F W D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 28 | Squirrel | Castle, Bear, Centurion (Knappen) | A D N | A399315 | **open** | 1.046x10^13 steps without a trap |
 | 29 | Spider | – | F A D N | A396103 | **open** | 9.68x10^12 steps without a trap |
-| 30 | Elk | – | W A D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... |
-| 31 | Lion | Lioness (Scirocco), Joker | F W A D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... |
+| 30 | Elk | – | W A D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
+| 31 | Lion | Lioness (Scirocco), Joker | F W A D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 
 - The leapers are read from the Q40 page, where "up to two steps" means 1 or 2 steps.
 - Warrior (11): the page's colours (blue, yellow, red) and its number give F W D. The page's sentence
@@ -77,13 +80,13 @@ The number is the piece's number in Quest for Zero. It is F = 1, W = 2, A = 4, D
   Dullahan, Doughnut, Duke, Castle, Bear, Centurion. "Civet" and "Spider" for these moves were
   not found outside Q40 and OEIS.
 
-## 1. Never trapped: trivial (20 pieces)
+## 1. Never trapped: easy (20 pieces)
 
-| Pieces | Walk | OEIS | Why |
-| --- | --- | --- | --- |
-| The 16 pieces with W | 1, 2, 3, ... | A000027 | Squares n and n+1 are one W move apart. |
-| FD (Fortress), FDA (Alfilerzbaba) | 1, 3, 5, ... | A005408 | Squares n and n+2 are one D move or one F move apart. The piece only reaches odd squares. |
-| D (Dabbaba), DA (Alibaba) | 1, 11, 13, ..., 25, 51, ... | A399158 | The squares with both coordinates even, in increasing order. Each is one D move from the one before. |
+| Pieces | Walk | OEIS | Why | Basis |
+| --- | --- | --- | --- | --- |
+| The 16 pieces with W | 1, 2, 3, ... | A000027 | Squares n and n+1 are one W move apart. | Lean: [`StraightStatement.lean`](../lean/StraightStatement.lean), s = 1 |
+| D (Dabbaba), DA (Alibaba) | 1, 11, 13, ..., 25, 51, ... | A399158 | The squares with both coordinates even, in increasing order. Each is one D move from the one before. | Lean: [`StraightStatement.lean`](../lean/StraightStatement.lean), s = 2 |
+| FD (Fortress), FDA (Alfilerzbaba) | 1, 3, 5, ... | A005408 | Squares n and n+2 are one D move or one F move apart. The piece only reaches odd squares. | This argument; program |
 
 - In each row the lowest unvisited square the piece can ever reach is always one move away.
 - Checked by program: W, WF, WN, WA, WD, WFDNA for 20,000 terms; FD, FDA, D, DA for 200,000 terms.
@@ -132,6 +135,59 @@ finite computation, and the largest takes 2.6x10^8 steps.
 - For every entry named above, our first 40 terms equal the entry's data.
 - "Stated on OEIS" was read from the keyword `fini` and from comments that contain words such as
   "finite" or "trapped". Not every comment was read in full.
+
+---
+
+## Wazir, Dabbaba, Alibaba
+
+### Statement
+
+Let s ≥ 1. Take any piece that can move s squares straight in each of the four directions and
+whose moves all change both coordinates by multiples of s.
+
+- s = 1: the Wazir, and every piece that has the Wazir's moves. These are the 16 pieces with W.
+- s = 2: the Dabbaba, and the Alibaba (Dabbaba + Alfil).
+
+**Theorem.** The walk of such a piece visits the squares with both coordinates multiples of s, in
+increasing order of their numbers. Hence:
+
+1. The piece is never trapped.
+2. It visits every such square exactly once, and no other square.
+3. The sequence is increasing. For s = 1 it is 1, 2, 3, ... (A000027).
+
+So A399158 (Dabbaba) is infinite and increasing, its terms are the numbers of the squares with
+both coordinates even, and the Alibaba makes the same walk.
+
+### Proof
+
+Ring r is the set of squares with max(|x|, |y|) = r. A square with both coordinates multiples of
+s lies on a ring whose number is a multiple of s. Call these squares the lattice.
+
+**Listed in increasing order, each lattice square is one straight move from the one before.**
+Along ring sm the lattice squares sit s apart on each side, and the four corners are among them.
+The last one on ring sm is the corner (sm, −sm), which is the last square of the ring. The first
+one on ring s(m+1) is (s(m+1), −sm), one move to the right of that corner. The list starts with
+(0, 0) and then (s, 0).
+
+**So the rule follows the list.** Suppose the piece has visited exactly the first k squares of the
+list. The next square of the list is one move away, and it is the lowest-numbered unvisited square
+the piece can ever reach. So it is the lowest unvisited square one move away. ∎
+
+### Status of this proof
+
+- **Proved in Lean 4** (24 Nov 2026), for every s ≥ 1 and every such set of moves:
+  [`Straight/`](../lean/Straight/), statement in
+  [`StraightStatement.lean`](../lean/StraightStatement.lean) (57 lines). Four claims: the
+  rule allows at most one walk; a walk exists; it visits exactly the squares with both
+  coordinates multiples of s, with increasing numbers; a piece with the Wazir's moves has n-th
+  term n. Axioms: `propext`, `Classical.choice`, `Quot.sound`. No `sorry`, no `native_decide`.
+- **Also in Lean:** the Wazir, the Dabbaba and the Alibaba as instances, and that the Dabbaba and
+  the Alibaba make the same walk. The Lean proof takes the walk to be the spiral itself, scaled
+  by s.
+- **Checked by program:** for the Dabbaba and the Alibaba the walk by the rule equals the sorted
+  list of the numbers of the squares with both coordinates even, for 200,000 terms.
+- **Not in Lean:** the Fortress (F + D) and the Alfilerzbaba (F + A + D), which walk 1, 3, 5, ....
+- **Not done.** Nothing is posted on OEIS.
 
 ---
 
