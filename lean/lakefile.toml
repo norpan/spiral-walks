@@ -21,3 +21,11 @@ roots = ["StraightStatement", "Straight"]
 [[lean_lib]]
 name = "Fortress"
 roots = ["FortressStatement", "Fortress"]
+
+[[lean_lib]]
+name = "TrapCheck"
+precompileModules = true
+
+[[lean_lib]]
+name = "Trap"
+roots = ["TrapStatement", "Trap"]

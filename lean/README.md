@@ -236,3 +236,34 @@ A fourth library, `Fortress`, in the same Lake project. Build it with `lake buil
   (`step2_mem`). A move that keeps the parity of x + y leads from an odd number to an odd number
   (`Falafel.spiral_parity`), so no reachable square with a lower number is unvisited.
 - Axioms: `propext`, `Classical.choice`, `Quot.sound`. No `sorry`, no `native_decide`.
+
+## The trapped pieces: Knight, Priest, Kangaroo, Carpenter, Leopard (25 Nov 2026)
+
+Two more libraries in the same Lake project: `TrapCheck` (a program, compiled) and `Trap` (the
+proofs). Build with `lake build Trap`: 9 min 39 s wall and 15 GB of memory at the peak on
+25 Nov 2026, with three other jobs running (Kangaroo 529 s, Carpenter and Leopard 295 s).
+
+- **Statement:** `TrapStatement.lean`, 108 lines. `IsRun M L a` asks the conditions of
+  `Straight.IsWalk` of the first `L` moves only. `TrappedAfter M L t`: there is a run of `L`
+  moves that ends on square `t`, and every square one move away from it was visited. The walk
+  then has `L + 1` terms. `BeginsWith M l`: every run begins with the numbers of `l`.
+- **General theorems** (`Trap/Main.lean`, no computation): `runs_agree`, `trap_is_the_end` (a
+  trapped piece has no longer run and no `IsWalk`).
+- **Per piece** (`Trap/Theorems.lean`, `Trap/Kangaroo.lean`, `Trap/Big.lean`): `knight_trapped`
+  (2015 moves, square 2084), `priest_trapped` (1050, 858), `kangaroo_trapped` (59,676, 57,552),
+  `carpenter_trapped` (253,925,075, 259,115,490), `leopard_trapped` (256,730,881, 267,545,105),
+  and `knight_begins` to `leopard_begins`: the walk begins with the DATA line of the OEIS entry.
+- **How the proof goes.** `TrapCheck/Check.lean` (no Mathlib) is the walk as a program, over a
+  store of visited squares. `Trap/Machine.lean` proves `check_sound`: if `check S ms L t` is
+  true for a lawful store, then `TrappedAfter {d | d ∈ ms} L t`. Two stores are proved lawful: the
+  bits of one number (for the kernel) and an array (for compiled code).
+- **Knight, Priest, Kangaroo, and all five `_begins`:** the kernel runs the program
+  (`decide +kernel`). Axioms: `propext`, `Classical.choice`, `Quot.sound`. The Kangaroo is cut
+  into 12 pieces of 5000 moves, since the kernel needs about 2 GB per 1000 moves;
+  `Trap/KangarooData.lean` holds the generated states between the pieces, and the kernel checks
+  each piece against them.
+- **Carpenter, Leopard:** `native_decide` runs the compiled program. `#print axioms` shows one
+  extra axiom for each (`..._check._native.native_decide.ax_1_1`): the Lean compiler is trusted
+  for the run. `native_decide` uses compiled code only when built by `lake build`.
+- No `sorry`.
+

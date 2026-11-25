@@ -4,7 +4,8 @@ Written 24 Nov 2026. Figures of the live runs were read from their logs on 25 No
 
 Every proof named here is checked by Lean 4 (version 4.36.0, with Mathlib). The Lean project is
 [`lean/`](../lean/); `lake build` in that folder checks all of it. A reader only has to
-trust five short statement files, which are linked below.
+trust six short statement files, which are linked below, and for two of the trapped pieces also the
+Lean compiler (Section 3).
 
 ## The question
 
@@ -21,7 +22,7 @@ trust five short statement files, which are linked below.
 | --- | --- | --- |
 | Never trapped, proved in Lean, easy | all 16 with W; D, DA; FD, FDA (Section "The easy pieces") | 20 |
 | Never trapped, proved in Lean | F, A (Section "Ferz and Alfil"), FA (Section "Falafel") | 3 |
-| Trapped, found by program | N, FN, AN, DN, FAN | 5 |
+| Trapped, proved in Lean | N, FN, AN; DN and FAN with compiled code (Section 3) | 5 |
 | Trapped at once | the Zero | 1 |
 | Open | DAN, FDN, FDAN | 3 |
 
@@ -49,15 +50,15 @@ The number is the piece's number in Quest for Zero. It is F = 1, W = 2, A = 4, D
 | 13 | Alfilerzbaba | FAD (Betza), Feralfda | F A D | A005408 | never trapped | n and n+2 are one D or F move apart, so it walks 1, 3, 5, ... (Lean) |
 | 14 | Master | Champion (Omega Chess) | W A D | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 15 | Pasha | Mastodon, Mammoth, Squire | F W A D | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
-| 16 | Horse | Knight | N | A316667 | trapped at step 2016 | program |
-| 17 | Priest | Prince (Jelliss), Dullahan (Knappen) | F N | A398717 | trapped at step 1051 | program |
+| 16 | Horse | Knight | N | A316667 | trapped at step 2016 | the Lean kernel runs the walk (Lean) |
+| 17 | Priest | Prince (Jelliss), Dullahan (Knappen) | F N | A398717 | trapped at step 1051 | the Lean kernel runs the walk (Lean) |
 | 18 | Emperor | Marquis (Scirocco) | W N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 19 | Centaur | Crowned Knight, Paladin | F W N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
-| 20 | Kangaroo | Hospitaller (Jelliss), Priestess | A N | A398779 | trapped at step 59,677 | program |
-| 21 | Leopard | High Priestess (Joyce) | F A N | A399167 | trapped at step 256,730,882 | program |
+| 20 | Kangaroo | Hospitaller (Jelliss), Priestess | A N | A398779 | trapped at step 59,677 | the Lean kernel runs the walk (Lean) |
+| 21 | Leopard | High Priestess (Joyce) | F A N | A399167 | trapped at step 256,730,882 | a program proved correct in Lean runs the walk, compiled (Lean with `native_decide`) |
 | 22 | Deer | – | W A N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 23 | Raccoon | – | F W A N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
-| 24 | Carpenter | Templar (Jelliss), Scribe, Doughnut (Betza) | D N | A398965 | trapped at step 253,925,076 | program |
+| 24 | Carpenter | Templar (Jelliss), Scribe, Doughnut (Betza) | D N | A398965 | trapped at step 253,925,076 | a program proved correct in Lean runs the walk, compiled (Lean with `native_decide`) |
 | 25 | Civet | – | F D N | A398194 | **open** | 1.364x10^13 steps without a trap |
 | 26 | Minister | Duke (Musketeer Chess) | W D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 27 | Cannon | – | F W D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
@@ -100,16 +101,37 @@ On 24 Nov 2026 none of the three OEIS entries said whether the walk ends.
 
 ## 3. Trapped (5 pieces)
 
-| Piece | Q40 name | OEIS | Trapped at step | On square | Stated on OEIS |
-| --- | --- | --- | --- | --- | --- |
-| N | Horse | A316667 | 2016 | 2084 | yes |
-| FN | Priest | A398717 | 1051 | 858 | yes |
-| AN | Kangaroo | A398779 | 59,677 | 57,552 | yes |
-| DN | Carpenter | A398965 | 253,925,076 | 259,115,490 | yes |
-| FAN | Leopard | A399167 | 256,730,882 | 267,545,105 | proposed 23 Nov 2026, not yet approved |
+| Piece | Q40 name | OEIS | Trapped at step | On square | Stated on OEIS | The run is checked by |
+| --- | --- | --- | --- | --- | --- | --- |
+| N | Horse | A316667 | 2016 | 2084 | yes | the Lean kernel |
+| FN | Priest | A398717 | 1051 | 858 | yes | the Lean kernel |
+| AN | Kangaroo | A398779 | 59,677 | 57,552 | yes | the Lean kernel, in 12 pieces |
+| DN | Carpenter | A398965 | 253,925,076 | 259,115,490 | yes | compiled code (`native_decide`) |
+| FAN | Leopard | A399167 | 256,730,882 | 267,545,105 | proposed 23 Nov 2026, not yet approved | compiled code (`native_decide`) |
 
-All five were reproduced with the program `walk.c` on 24 Nov 2026. None is proved in Lean: a trap is a
-finite computation, and the largest takes 2.6x10^8 steps.
+"Trapped at step n" means that the walk has n terms: the piece makes n − 1 moves.
+
+**Proved in Lean 4** (25 Nov 2026). Statement: [`TrapStatement.lean`](../lean/TrapStatement.lean)
+(108 lines). Proofs: [`Trap/`](../lean/Trap/). It uses the same spiral and the same rule
+as the other statement files.
+
+- **Per piece, two claims.** The piece is trapped after n − 1 moves on the square in the table:
+  there is a run of that many moves, and every square one move from its last square was visited.
+  And the walk begins with the terms of the DATA line of the OEIS entry (66, 81, 71, 77 and 76
+  terms, read 25 Nov 2026).
+- **For every piece, two general claims.** Two runs of the same piece agree as far as both go. A
+  trapped piece has no longer run and no infinite run.
+- **How.** A trap is a finite computation, so the proof runs the walk. The walk is a program of
+  about 100 lines, [`TrapCheck/Check.lean`](../lean/TrapCheck/Check.lean). Lean proves
+  that if the program answers "trapped after L moves on square t", then the claim holds.
+- **Knight, Priest, Kangaroo.** The Lean kernel runs the program. Axioms: `propext`,
+  `Classical.choice`, `Quot.sound`. No `sorry`, no `native_decide`. The Kangaroo's run is cut
+  into 12 pieces, because the kernel needs about 2 GB of memory per 1000 moves.
+- **Carpenter, Leopard.** 2.5x10^8 moves are too many for the kernel. The program is run as
+  compiled code (`native_decide`). That adds one axiom for each: the Lean compiler has to be
+  trusted for the run itself. That the program's answer gives the claim is still proved in the
+  kernel. The first terms of these two are checked by the kernel.
+- **Also by program.** All five were reproduced with the C program `walk.c` on 24 Nov 2026.
 
 ## 4. Open (3 pieces)
 
