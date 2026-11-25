@@ -31,11 +31,11 @@ Three kinds of claim are kept apart: proved, checked by program up to a bound, a
 | A+N | A398779 | trapped at step 59,677 | Known. Proved in Lean 4. `lean/Trap/` |
 | D+N | A398965 | trapped at step 253,925,076 | Known. Proved in Lean 4 with `native_decide`: a program proved correct in Lean, run as compiled code. `lean/Trap/` |
 | F+A+N | A399167 | trapped at step 256,730,882 on square 267,545,105 | Proved in Lean 4 with `native_decide`, as for D+N. Proposed as a comment on the OEIS entry on 23 Nov 2026. |
-| D+A+N (Squirrel) | A399315 | open | No trap in 1.0×10¹³ steps (observed). |
-| F+D+N | A398194 | open | No trap in 9×10¹² steps (observed). |
-| F+D+A+N | A396103 | open | No trap in 9×10¹² steps (observed). |
+| D+A+N (Squirrel) | A399315 | open | No trap in 1.49×10¹³ steps (observed). |
+| F+D+N | A398194 | open | No trap in 1.36×10¹³ steps (observed). |
+| F+D+A+N | A396103 | open | No trap in 1.42×10¹³ steps (observed). |
 
-The figures for the three open pieces were read on 24 Nov 2026; `doc/pieces.md`
+The figures for the three open pieces were read on 25 Nov 2026; `doc/pieces.md`
 has them in full.
 
 ## The Lean proofs
