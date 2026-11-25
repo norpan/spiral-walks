@@ -1,10 +1,10 @@
 # The 32 pieces of Quest for Zero on the square spiral
 
-Written 24 Nov 2026. Figures of the live runs were read from their logs that day at 20:01.
+Written 24 Nov 2026. Figures of the live runs were read from their logs on 25 Nov 2026 at 09:32.
 
 Every proof named here is checked by Lean 4 (version 4.36.0, with Mathlib). The Lean project is
 [`lean/`](../lean/); `lake build` in that folder checks all of it. A reader only has to
-trust four short statement files, which are linked below.
+trust five short statement files, which are linked below.
 
 ## The question
 
@@ -19,7 +19,7 @@ trust four short statement files, which are linked below.
 
 | Status | Pieces | Count |
 | --- | --- | --- |
-| Never trapped, proved in Lean, easy | all 16 with W; D, DA; FD, FDA (Section "Wazir, Dabbaba, Alibaba") | 20 |
+| Never trapped, proved in Lean, easy | all 16 with W; D, DA; FD, FDA (Section "The easy pieces") | 20 |
 | Never trapped, proved in Lean | F, A (Section "Ferz and Alfil"), FA (Section "Falafel") | 3 |
 | Trapped, found by program | N, FN, AN, DN, FAN | 5 |
 | Trapped at once | the Zero | 1 |
@@ -58,16 +58,17 @@ The number is the piece's number in Quest for Zero. It is F = 1, W = 2, A = 4, D
 | 22 | Deer | – | W A N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 23 | Raccoon | – | F W A N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 24 | Carpenter | Templar (Jelliss), Scribe, Doughnut (Betza) | D N | A398965 | trapped at step 253,925,076 | program |
-| 25 | Civet | – | F D N | A398194 | **open** | 9.27x10^12 steps without a trap |
+| 25 | Civet | – | F D N | A398194 | **open** | 1.364x10^13 steps without a trap |
 | 26 | Minister | Duke (Musketeer Chess) | W D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 27 | Cannon | – | F W D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
-| 28 | Squirrel | Castle, Bear, Centurion (Knappen) | A D N | A399315 | **open** | 1.046x10^13 steps without a trap |
-| 29 | Spider | – | F A D N | A396103 | **open** | 9.68x10^12 steps without a trap |
+| 28 | Squirrel | Castle, Bear, Centurion (Knappen) | A D N | A399315 | **open** | 1.499x10^13 steps without a trap |
+| 29 | Spider | – | F A D N | A396103 | **open** | 1.424x10^13 steps without a trap |
 | 30 | Elk | – | W A D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 31 | Lion | Lioness (Scirocco), Joker | F W A D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 
 - The leapers are read from the Q40 page, where "up to two steps" means 1 or 2 steps.
 - For A000027 and A005408 the OEIS entry is the plain sequence, not an entry about the piece.
+  A399158 is titled for the Dabbaba only; the Alibaba has no entry of its own.
 - Other names: a selection of names used elsewhere for exactly the same moves, from Wikipedia's
   "List of fairy chess pieces", Jelliss (mayhematics.com), the Chess Variant Pages and the rules
   of Scirocco. "–" means none was found in these sources, not that none exists. Several names
@@ -86,7 +87,6 @@ The number is the piece's number in Quest for Zero. It is F = 1, W = 2, A = 4, D
 
 - In each row the lowest unvisited square the piece can ever reach is always one move away.
 - Checked by program: W, WF, WN, WA, WD, WFDNA for 20,000 terms; FD, FDA, D, DA for 200,000 terms.
-- FD, FDA and DA have no OEIS entry of their own. A399158 is titled for the Dabbaba only.
 
 ## 2. Never trapped: proved (3 pieces)
 
@@ -115,16 +115,16 @@ finite computation, and the largest takes 2.6x10^8 steps.
 
 | Piece | Q40 name | OEIS | Steps without a trap | Fewest unvisited moves on arrival | Squares skipped | Deepest gap |
 | --- | --- | --- | --- | --- | --- | --- |
-| DAN | Squirrel | A399315 | 1.046x10^13 | 2 (5,842 times) | 0 | 3 (26 times) |
-| FDN | Civet | A398194 | 9.27x10^12 | 3 (2,246,776 times) | 0 | 2 |
-| FDAN | Spider | A396103 | 9.68x10^12 | 6 (286,633,875 times) | 0 | 1 |
+| DAN | Squirrel | A399315 | 1.499x10^13 | 2 (8,036 times) | 0 | 3 (30 times) |
+| FDN | Civet | A398194 | 1.364x10^13 | 3 (3,302,233 times) | 0 | 2 |
+| FDAN | Spider | A396103 | 1.424x10^13 | 6 (421,971,600 times) | 0 | 1 |
 
 - **Fewest unvisited moves.** A trap is an arrival with 0. The count is how often the lowest value
   occurred.
 - **Skipped.** A square that the walk can no longer visit. None so far, for any of the three.
 - **Gap.** Take the squares straight inward from the square of arrival: those with the same y on
   the right and left sides of the ring, with the same x on the top and bottom sides. The gap is how
-  many rings further in the lowest unvisited one of them lies. All 26 gaps of 3 are exactly 3; no
+  many rings further in the lowest unvisited one of them lies. All 30 gaps of 3 are exactly 3; no
   gap of 4 has occurred.
 - All of this is observed, not proved. The runs are still going.
 
@@ -137,7 +137,9 @@ finite computation, and the largest takes 2.6x10^8 steps.
 
 ---
 
-## Wazir, Dabbaba, Alibaba
+## The easy pieces
+
+Wazir, Dabbaba and Alibaba first, then Fortress and Alfilerzbaba.
 
 ### Statement
 
@@ -171,6 +173,21 @@ one on ring s(m+1) is (s(m+1), −sm), one move to the right of that corner. The
 **So the rule follows the list.** Suppose the piece has visited exactly the first k squares of the
 list. The next square of the list is one move away, and it is the lowest-numbered unvisited square
 the piece can ever reach. So it is the lowest unvisited square one move away. ∎
+
+### Fortress and Alfilerzbaba
+
+Take any piece that has the moves of the Ferz and of the Dabbaba and whose moves all change x + y
+by an even number. The Fortress (F + D) and the Alfilerzbaba (F + D + A) are such pieces.
+
+**Theorem.** The walk of such a piece is 1, 3, 5, ... (A005408): term number n, counted from 0, is
+2n + 1. So the piece is never trapped.
+
+**Proof.** One step along the spiral changes the number by 1 and x + y by 1, and square 1 has
+x + y = 0. So the odd squares are the squares with x + y even, and the piece never leaves them.
+Squares n and n + 2 are two steps of the spiral apart. Two steps in a row go the same way or turn
+a corner, so n + 2 is two squares straight from n (a Dabbaba move) or one square diagonally (a
+Ferz move). So after 1, 3, ..., n the square n + 2 is one move away, and it is the lowest-numbered
+unvisited square the piece can ever reach. ∎
 
 ### Status of this proof
 

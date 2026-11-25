@@ -89,7 +89,7 @@ This needs a board of 18,001 × 18,001 squares, one bit each, about 40 MB.
 
 The proofs, programs and texts were written with Claude (Anthropic), in sessions directed by
 Martin Norbäck Olivers. The Lean kernel checks the proofs, so they do not rest on who wrote
-them. What rests on a person is that the four statement files say what is meant. Martin has read
+them. What rests on a person is that the five statement files say what is meant. Martin has read
 and approved them. Nobody else has reviewed them yet.
 
 ## Licence
