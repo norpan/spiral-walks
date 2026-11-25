@@ -235,7 +235,9 @@ class Conv:
         if m:
             self.n["appendix"] += 1
             assert m[1] == chr(64 + self.n["appendix"]), title
-            first = r"\appendix" + "\n\n" if self.n["appendix"] == 1 else ""
+            # A later appendix starts a page: after the full-page tables of Appendix A only the
+            # heading and the top rule of the listing would fit on the page before.
+            first = r"\appendix" + "\n\n" if self.n["appendix"] == 1 else r"\clearpage" + "\n\n"
             return [("env", first + r"\section{%s}" % m[2])]
         assert title == "References", title                # thebibliography prints this heading
         return []

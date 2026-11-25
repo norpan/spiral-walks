@@ -136,7 +136,7 @@ window.MathJax = {
 
 <h1>The Falafel&rsquo;s walk on the square spiral never&nbsp;ends</h1>
 <p class="author">Martin Norb&auml;ck Olivers</p>
-<p class="date">Draft, 24 November 2026</p>
+<p class="date">Draft, 25 November 2026</p>
 
 <div class="abstract">
 <p><b>Abstract.</b> The Falafel is the chess piece that moves one or two squares diagonally. Put it on
@@ -749,7 +749,7 @@ Table&nbsp;1. The grey dots are the squares visited before lap 6.</figcaption>
 </tbody></table></div>
 </figure>
 
-<p>Let \(T_0, T_1, \dots, T_{79}\) be the 80 squares of Table&nbsp;6 in Appendix&nbsp;A.</p>
+<p>Let \(T_0, T_1, \dots, T_{79}\) be the 80 squares of Table&nbsp;4 in Appendix&nbsp;A.</p>
 
 <div class="thm">
 <p><span class="head">Theorem 2.</span> Let \(W_0, W_1, W_2, \dots\) be the sequence that consists of
@@ -779,7 +779,7 @@ it gives the lap and the index of a given square (Lemma&nbsp;3).</p>
 <div class="thm def">
 <p><span class="head">Definition 5</span><span class="note">(lap number and index).</span> The
 <i>lap number</i> \(\lambda(u,v)\) of a square is given by Table&nbsp;2. For a square with
-\(\lambda(u,v) \ge 4\), its <i>index</i> \(\kappa(u,v)\) is given by Table&nbsp;4 in
+\(\lambda(u,v) \ge 4\), its <i>index</i> \(\kappa(u,v)\) is given by Table&nbsp;5 in
 Appendix&nbsp;A.</p>
 </div>
 
@@ -1495,7 +1495,7 @@ them.</p>
 </div>
 
 <div class="rem">
-<p><span class="head">Example.</span> The square \(s = (-5,-2)\) lies in region 4. Tables 2 and 4
+<p><span class="head">Example.</span> The square \(s = (-5,-2)\) lies in region 4. Tables 2 and 5
 give</p>
 \[ \lambda(s) = \lfloor (1+5+2)/2 \rfloor = 4, \qquad \kappa(s) = 4 \cdot 4 - 2 - 5 + 2 = 11. \]
 <p class="noindent">In Table&nbsp;1 with \(R = 4\), the index \(11 = 2R + 2 + 1\) belongs to piece D
@@ -1559,7 +1559,7 @@ number than the next square \(s^+\).</p>
 shows that all squares with \(\lambda \le 3\) lie in the box \(-4 \le u \le 6\),
 \(-5 \le v \le 4\). For them the lemmas are checked by evaluation. For a square with
 \(\lambda(s) \ge 4\) the proof splits into cases: by the region of \(s\), by the rows of Tables 2
-and 4, by the remainders these rows use, and in Lemmas 5 and 6 also by the region of the second
+and 5, by the remainders these rows use, and in Lemmas 5 and 6 also by the region of the second
 square. In every case each quantity is an explicit expression in \(u\) and \(v\) that is linear
 apart from division by 2, 3 or 6 with remainder. So every case is a statement of linear arithmetic
 over the integers, and such statements can be decided mechanically. Lemma&nbsp;6 compares spiral
@@ -1636,7 +1636,7 @@ Lemma&nbsp;7.<span class="qed">&#9633;</span></p>
 \(n \ge 80\) let \(R\) be the largest integer with \(\mathrm{start}(R) \le n\). Then \(W_n\) lies in
 lap \(R\), and</p>
 \[ W_n = P_R\bigl(\mathrm{lo}(R) + n - \mathrm{start}(R)\bigr). \]
-<p class="noindent">The \((n+1)\)-th term of A399160 is \((2\rho(W_n) - 1)^2 + \pi(W_n)\). Table&nbsp;5
+<p class="noindent">The \((n+1)\)-th term of A399160 is \((2\rho(W_n) - 1)^2 + \pi(W_n)\). Table&nbsp;6
 in Appendix&nbsp;A gives this number as a function of \(R\) and the index
 \(j = \mathrm{lo}(R) + n - \mathrm{start}(R)\).</p>
 </div>
@@ -1651,7 +1651,7 @@ before \(W_{\mathrm{start}(R+1)}\). The numbers \(\mathrm{start}(R)\) increase w
 with \(n \ge 80\) lies in lap \(R\) exactly if \(R\) is the largest integer with
 \(\mathrm{start}(R) \le n\), and then it is the square of lap \(R\) at index
 \(\mathrm{lo}(R) + n - \mathrm{start}(R)\). On every row of Table&nbsp;1 the ring \(\rho\) and the
-position \(\pi\) are linear in \(R\) and \(j\), and Table&nbsp;5 is
+position \(\pi\) are linear in \(R\) and \(j\), and Table&nbsp;6 is
 \((2\rho - 1)^2 + \pi\) for that row.<span class="qed">&#9633;</span></p>
 </div>
 
@@ -1672,9 +1672,10 @@ four claims: Remark&nbsp;1, Theorem&nbsp;1&nbsp;(a), Theorem&nbsp;1&nbsp;(b) and
 The laps, the lap number, the index and the stamps are only tools of
 the proof. A mistake in them could make the proof fail. It could not make a false theorem pass. Corollary&nbsp;9 is
 proved in Lean as a formula for the terms: for every \(n \ge 80\) the number of \(a_n\) is the
-entry of Table&nbsp;5 (<code>term_formula</code>). Its statement is in a second file, which
-defines \(\mathrm{start}\), \(\mathrm{lo}\) and the numbers of Table&nbsp;5 and mentions no
-square and no lap. A reader who wants that claim has to trust that file as well.</p>
+entry of Table&nbsp;6 (<code>term_formula</code>). Its statement is in a second file, which
+defines \(\mathrm{start}\), \(\mathrm{lo}\) and the numbers of Table&nbsp;6 and mentions no
+square and no lap. Appendix&nbsp;B shows it without the rows of the table. A reader who wants
+that claim has to trust that file as well.</p>
 
 <p><i>What corresponds to what.</i> Table&nbsp;3 lists the Lean theorem behind each statement of this
 paper. Lean also proves that the first 70 squares of its walk have the 70 numbers listed in the OEIS
@@ -1705,7 +1706,7 @@ behind them.</figcaption>
 </figure>
 
 <p><i>Where Lean and this paper differ.</i> Lean defines the next square by a table of moves, one
-move for every square, arranged by region like Table&nbsp;4. It proves that this move is a step and
+move for every square, arranged by region like Table&nbsp;5. It proves that this move is a step and
 leads to the square with the next stamp. With Lemma&nbsp;3 this is Lemma&nbsp;5. Lean also proves that
 a lap is exactly a level set of the lap number: for \(R \ge 4\), \(\lambda(s) = R\) exactly if
 \(s = P_R(j)\) for some \(j\) with \(\mathrm{lo}(R) \le j &lt; \mathrm{hi}(R)\)
@@ -1717,13 +1718,13 @@ the number of a square (the first row of Table&nbsp;3). It proves Lemma&nbsp;7 f
 
 <p><i>What is not formalised.</i> The tables of this paper are a transcription of the Lean
 definitions. A program printed them from expressions that it first compared with the Lean
-definitions: Tables 2 and 4, \(\rho\) and \(\pi\) for all squares with \(|u|, |v| \le 300\), and
+definitions: Tables 2 and 5, \(\rho\) and \(\pi\) for all squares with \(|u|, |v| \le 300\), and
 Table&nbsp;1 with \(\mathrm{lo}\) and \(\mathrm{hi}\) for the laps \(4 \le R \le 300\). The same
 program compared the sequence \(W\) of Theorem&nbsp;2 with a direct simulation of the rule for the
 first 200,000 steps, and it tested Lemmas 2, 3, 5 and 6 in the wording of this paper for all squares
 with \(|u|, |v| \le 120\). It also checked that formula (1) gives the numbers of the first
 160,801 squares along the spiral. The description of a lap and of the visited rings in
-Section&nbsp;3 is not formalised either. The program compared Table&nbsp;5 with the Lean table of
+Section&nbsp;3 is not formalised either. The program compared Table&nbsp;6 with the Lean table of
 the terms and with the numbers of the squares of Table&nbsp;1 for \(4 \le R \le 300\), and with
 the simulation. It compared the formula for \(\mathrm{start}(R)\) with the Lean definition, which
 is one expression for both parities of \(R\), and with the lengths of the laps for
@@ -1733,10 +1734,27 @@ is one expression for both parities of \(R\), and with the lengths of the laps f
 written with the help of Claude, an AI system made by Anthropic. The correctness of the result rests
 on the Lean kernel and on the statement in Appendix&nbsp;B, not on how the proof was written.</p>
 
-<h2>Appendix A. The index, the terms and the first 80 squares</h2>
+<h2>Appendix A. The first 80 squares, the index and the terms</h2>
 
 <figure class="tab">
-<figcaption><span class="lab">Table 4.</span> The index \(\kappa(u,v)\) of a square with lap number
+<figcaption><span class="lab">Table 4.</span> The first 80 squares \(T_0, \dots, T_{79}\) of the
+walk, in the coordinates \((u,v)\). Each row holds eight squares.</figcaption>
+<div class="tablewrap"><table class="prefix"><thead><tr><th>\(i\)</th><th colspan="8">\(T_i,\ T_{i+1},\ \dots,\ T_{i+7}\)</th></tr></thead><tbody>
+<tr><td>0</td><td>\((0,\,0)\)</td><td>\((1,\,0)\)</td><td>\((-1,\,0)\)</td><td>\((-1,\,-1)\)</td><td>\((0,\,-1)\)</td><td>\((0,\,1)\)</td><td>\((1,\,1)\)</td><td>\((1,\,-1)\)</td></tr>
+<tr><td>8</td><td>\((2,\,-1)\)</td><td>\((2,\,0)\)</td><td>\((2,\,1)\)</td><td>\((2,\,2)\)</td><td>\((0,\,2)\)</td><td>\((1,\,2)\)</td><td>\((-1,\,2)\)</td><td>\((-1,\,1)\)</td></tr>
+<tr><td>16</td><td>\((-2,\,1)\)</td><td>\((-2,\,0)\)</td><td>\((-2,\,-1)\)</td><td>\((-2,\,-2)\)</td><td>\((0,\,-2)\)</td><td>\((1,\,-2)\)</td><td>\((-1,\,-2)\)</td><td>\((-1,\,-3)\)</td></tr>
+<tr><td>24</td><td>\((0,\,-3)\)</td><td>\((1,\,-3)\)</td><td>\((2,\,-3)\)</td><td>\((2,\,-2)\)</td><td>\((3,\,-2)\)</td><td>\((3,\,0)\)</td><td>\((3,\,1)\)</td><td>\((3,\,-1)\)</td></tr>
+<tr><td>32</td><td>\((4,\,-1)\)</td><td>\((4,\,0)\)</td><td>\((4,\,1)\)</td><td>\((4,\,2)\)</td><td>\((3,\,2)\)</td><td>\((3,\,3)\)</td><td>\((1,\,3)\)</td><td>\((0,\,3)\)</td></tr>
+<tr><td>40</td><td>\((-1,\,3)\)</td><td>\((-2,\,3)\)</td><td>\((-2,\,2)\)</td><td>\((-3,\,2)\)</td><td>\((-3,\,0)\)</td><td>\((-3,\,-1)\)</td><td>\((-3,\,1)\)</td><td>\((-4,\,1)\)</td></tr>
+<tr><td>48</td><td>\((-4,\,0)\)</td><td>\((-4,\,-1)\)</td><td>\((-4,\,-2)\)</td><td>\((-3,\,-2)\)</td><td>\((-3,\,-3)\)</td><td>\((-2,\,-3)\)</td><td>\((-2,\,-4)\)</td><td>\((0,\,-4)\)</td></tr>
+<tr><td>56</td><td>\((1,\,-4)\)</td><td>\((-1,\,-4)\)</td><td>\((-1,\,-5)\)</td><td>\((0,\,-5)\)</td><td>\((1,\,-5)\)</td><td>\((2,\,-5)\)</td><td>\((2,\,-4)\)</td><td>\((3,\,-4)\)</td></tr>
+<tr><td>64</td><td>\((3,\,-3)\)</td><td>\((4,\,-3)\)</td><td>\((4,\,-2)\)</td><td>\((5,\,-2)\)</td><td>\((5,\,0)\)</td><td>\((5,\,1)\)</td><td>\((5,\,-1)\)</td><td>\((6,\,-1)\)</td></tr>
+<tr><td>72</td><td>\((6,\,0)\)</td><td>\((6,\,1)\)</td><td>\((6,\,2)\)</td><td>\((5,\,2)\)</td><td>\((5,\,3)\)</td><td>\((4,\,3)\)</td><td>\((2,\,3)\)</td><td>\((2,\,4)\)</td></tr>
+</tbody></table></div>
+</figure>
+
+<figure class="tab">
+<figcaption><span class="lab">Table 5.</span> The index \(\kappa(u,v)\) of a square with lap number
 \(R = \lambda(u,v) \ge 4\). The regions are those of Table&nbsp;2, and \(q\) and \(m\) are as
 there.</figcaption>
 <div class="tablewrap"><table class="reg"><thead><tr>
@@ -1781,7 +1799,7 @@ there.</figcaption>
 </figure>
 
 <figure class="tab">
-<figcaption><span class="lab">Table 5.</span> The number \(\sigma(P_R(j))\) of the square at index
+<figcaption><span class="lab">Table 6.</span> The number \(\sigma(P_R(j))\) of the square at index
 \(j\) of lap \(R \ge 4\). The pieces and the ranges of \(t\) are those of Table&nbsp;1, and
 \(k = \lfloor t/3 \rfloor\). Lean proves that these are the terms of A399160 from the 81st on
 (Corollary&nbsp;9 and Section&nbsp;7).</figcaption>
@@ -1840,29 +1858,11 @@ there.</figcaption>
 </tbody></table></div>
 </figure>
 
-<figure class="tab">
-<figcaption><span class="lab">Table 6.</span> The first 80 squares \(T_0, \dots, T_{79}\) of the
-walk, in the coordinates \((u,v)\). Each row holds eight squares.</figcaption>
-<div class="tablewrap"><table class="prefix"><thead><tr><th>\(i\)</th><th colspan="8">\(T_i,\ T_{i+1},\ \dots,\ T_{i+7}\)</th></tr></thead><tbody>
-<tr><td>0</td><td>\((0,\,0)\)</td><td>\((1,\,0)\)</td><td>\((-1,\,0)\)</td><td>\((-1,\,-1)\)</td><td>\((0,\,-1)\)</td><td>\((0,\,1)\)</td><td>\((1,\,1)\)</td><td>\((1,\,-1)\)</td></tr>
-<tr><td>8</td><td>\((2,\,-1)\)</td><td>\((2,\,0)\)</td><td>\((2,\,1)\)</td><td>\((2,\,2)\)</td><td>\((0,\,2)\)</td><td>\((1,\,2)\)</td><td>\((-1,\,2)\)</td><td>\((-1,\,1)\)</td></tr>
-<tr><td>16</td><td>\((-2,\,1)\)</td><td>\((-2,\,0)\)</td><td>\((-2,\,-1)\)</td><td>\((-2,\,-2)\)</td><td>\((0,\,-2)\)</td><td>\((1,\,-2)\)</td><td>\((-1,\,-2)\)</td><td>\((-1,\,-3)\)</td></tr>
-<tr><td>24</td><td>\((0,\,-3)\)</td><td>\((1,\,-3)\)</td><td>\((2,\,-3)\)</td><td>\((2,\,-2)\)</td><td>\((3,\,-2)\)</td><td>\((3,\,0)\)</td><td>\((3,\,1)\)</td><td>\((3,\,-1)\)</td></tr>
-<tr><td>32</td><td>\((4,\,-1)\)</td><td>\((4,\,0)\)</td><td>\((4,\,1)\)</td><td>\((4,\,2)\)</td><td>\((3,\,2)\)</td><td>\((3,\,3)\)</td><td>\((1,\,3)\)</td><td>\((0,\,3)\)</td></tr>
-<tr><td>40</td><td>\((-1,\,3)\)</td><td>\((-2,\,3)\)</td><td>\((-2,\,2)\)</td><td>\((-3,\,2)\)</td><td>\((-3,\,0)\)</td><td>\((-3,\,-1)\)</td><td>\((-3,\,1)\)</td><td>\((-4,\,1)\)</td></tr>
-<tr><td>48</td><td>\((-4,\,0)\)</td><td>\((-4,\,-1)\)</td><td>\((-4,\,-2)\)</td><td>\((-3,\,-2)\)</td><td>\((-3,\,-3)\)</td><td>\((-2,\,-3)\)</td><td>\((-2,\,-4)\)</td><td>\((0,\,-4)\)</td></tr>
-<tr><td>56</td><td>\((1,\,-4)\)</td><td>\((-1,\,-4)\)</td><td>\((-1,\,-5)\)</td><td>\((0,\,-5)\)</td><td>\((1,\,-5)\)</td><td>\((2,\,-5)\)</td><td>\((2,\,-4)\)</td><td>\((3,\,-4)\)</td></tr>
-<tr><td>64</td><td>\((3,\,-3)\)</td><td>\((4,\,-3)\)</td><td>\((4,\,-2)\)</td><td>\((5,\,-2)\)</td><td>\((5,\,0)\)</td><td>\((5,\,1)\)</td><td>\((5,\,-1)\)</td><td>\((6,\,-1)\)</td></tr>
-<tr><td>72</td><td>\((6,\,0)\)</td><td>\((6,\,1)\)</td><td>\((6,\,2)\)</td><td>\((5,\,2)\)</td><td>\((5,\,3)\)</td><td>\((4,\,3)\)</td><td>\((2,\,3)\)</td><td>\((2,\,4)\)</td></tr>
-</tbody></table></div>
-</figure>
-
 <h2>Appendix B. The statement in Lean</h2>
 
 <p>These are the definitions and the four claims as the Lean proof states them. Each claim is one
 statement of this paper and names it in its comment. A square is a pair
-<code>(x, y)</code> of integers, and <code>a n</code> is \(a_n\). The second file, with the
-claim for Corollary&nbsp;9, is not reproduced: its table is Table&nbsp;5.</p>
+<code>(x, y)</code> of integers, and <code>a n</code> is \(a_n\).</p>
 
 <pre>/-- The number of the square (x, y) on the square spiral, as OEIS has it: 1 at (0, 0),
 2 at (1, 0), 3 at (1, 1), then counter-clockwise. Here `r` is the ring max(|x|, |y|),
@@ -1906,6 +1906,28 @@ def PermutationOfOddNumbers : Prop :=
   ∀ a : ℕ → ℤ × ℤ, IsWalk a →
     (∀ n, 0 &lt; spiral (a n) ∧ Odd (spiral (a n))) ∧
     (∀ k : ℤ, 0 &lt; k → Odd k → ∃! n, spiral (a n) = k)</pre>
+
+<p>The second file states Corollary&nbsp;9. This is an excerpt: the file also defines
+<code>backTerm</code> and <code>term</code>, and <code>term R j</code> is the entry of
+Table&nbsp;6 for lap \(R\) and index \(j\). Here <code>start R</code> is \(\mathrm{start}(R)\)
+and <code>first R</code> is \(\mathrm{lo}(R)\).</p>
+
+<pre>/-- The step at which lap R ≥ 4 starts: (27 R² - 22 R - 24)/4 for even R and
+(27 R² - 22 R - 33)/4 for odd R. -/
+def start (R : ℤ) : ℤ := (27 * R ^ 2 - 22 * R - 24 - 9 * (R % 2)) / 4
+
+/-- Lap 4 starts at step 80, lap 5 at step 133 and lap 6 at step 204. -/
+example : start 4 = 80 ∧ start 5 = 133 ∧ start 6 = 204 := by decide
+
+/-- The index of the first step of lap R: -R - 1 for even R and -R - 3 for odd R. -/
+def first (R : ℤ) : ℤ := -(R + 1 + 2 * (R % 2))
+
+/-- Corollary 9. If lap R ≥ 4 has started at step n and lap R + 1 has not, then the number of
+the square at step n is `term R j` with j = first R + (n - start R). This number is
+A399160(n + 1). -/
+def TermFormula : Prop :=
+  ∀ a : ℕ → ℤ × ℤ, IsWalk a → ∀ R : ℤ, 4 ≤ R → ∀ n : ℕ, start R ≤ n → n &lt; start (R + 1) →
+    spiral (a n) = term R (first R + (n - start R))</pre>
 
 <h2>References</h2>
 

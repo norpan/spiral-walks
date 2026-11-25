@@ -93,7 +93,7 @@ Two more results come out of this, in `Falafel/Main.lean`:
 - **`term_formula`** (`Falafel/Terms.lean`): the claim `TermFormula` of `PathStatement.lean`, a
   second statement file. It gives the number of the square at every step n ≥ 80 as a table of 38
   rows, each an odd square plus a linear remainder. This is Corollary 9 of the paper, and the
-  table is its Table 5.
+  table is its Table 6.
 - **`lapnum_eq_iff`**: for R ≥ 4 the squares with lap number R are exactly the squares of that
   path. **`lapnum_le_three_iff`**: the squares with lap number at most 3 are exactly the first
   80 squares of the walk.

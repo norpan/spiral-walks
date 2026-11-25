@@ -111,7 +111,7 @@ PIECES = [  # letter, name, first index (None: the piece is given in j), number 
         ("R % 2 == 1 and t == 3*k + 2", "3*h - 3*k - 2", "h + k + 3")]),
 ]
 
-TERMS = {  # piece -> [(condition, the number of the square)]; Table 5 and the Lean table `term`
+TERMS = {  # piece -> [(condition, the number of the square)]; Table 6 and the Lean table `term`
     "A": [("R % 2 == 0 and j == -R - 1", "(2*R - 1)**2 + 8*R"), ("R % 2 == 0 and j == -R", "(2*R + 1)**2 + 2"),
           ("R % 2 == 1 and j == -R - 3", "(2*R + 3)**2 + 6"), ("R % 2 == 1 and j == -R - 2", "(2*R + 5)**2 + 6"),
           ("R % 2 == 1 and j == -R - 1", "(2*R + 1)**2 + 2"), ("True", "(4*R + 2*j - 1)**2 + 14*R + 6*j")],
@@ -186,7 +186,7 @@ def P(R, j):
         env = dict(R=R, j=j, t=t); env.update({k: ev(e, **env) for k, e in PAUX.items()})
         row = pick(rows, **env)
     return (ev(row[1], **env), ev(row[2], **env))
-def term(R, j):                                           # Table 5: the number of the square P(R, j)
+def term(R, j):                                           # Table 6: the number of the square P(R, j)
     assert lo(R) <= j < hi(R), (R, j)
     starts = [None if s is None else ev(s, R=R) for _, _, s, _, _ in PIECES]
     i = max([n for n, s in enumerate(starts) if s is not None and s <= j], default=0)
@@ -264,7 +264,7 @@ def run_checks():
         elif L >= 4 and kappa(u, v) != LM.pos(u, v): bad += 1
         elif rho(u, v) != LM.ring(u, v) or pi(u, v) != LM.rpos(u, v): bad += 1
         elif sig((u, v)) != (2*rho(u, v) - 1)**2 + pi(u, v): bad += 1
-    check("Tables 2, 4 and the ring position equal the Lean definitions, and Lemma 1 holds, for |u|, |v| <= %d" % BOX, bad == 0)
+    check("Tables 2, 5 and the ring position equal the Lean definitions, and Lemma 1 holds, for |u|, |v| <= %d" % BOX, bad == 0)
     bad = 0
     for R in range(4, RMAX + 1):
         if lo(R) != LM.lo(R) or hi(R) != LM.hi(R): bad += 1
@@ -314,7 +314,7 @@ def run_checks():
     for n in range(80, SIM):
         while start(R + 1) <= n: R += 1
         if term(R, lo(R) + n - start(R)) != sigma(*walkf_xy[n]): sbad += 1
-    check("Table 5 gives the number of every square of Table 1 and equals the Lean table `term` (PathStatement.lean) "
+    check("Table 6 gives the number of every square of Table 1 and equals the Lean table `term` (PathStatement.lean) "
           "for laps 4..%d, and it gives the terms of a simulation of the rule for steps 80..%d" % (RMAX, SIM - 1),
           bad == 0 and sbad == 0)
     lean_start = "def start (R : ℤ) : ℤ := (27 * R ^ 2 - 22 * R - 24 - 9 * (R % 2)) / 4"
@@ -629,6 +629,14 @@ def statement_listing():
     c = s.index("/-- The Falafel (Fers + Alfil)"); d = s.index("end Falafel")
     return html.escape(s[a:b].rstrip("\n") + "\n\n" + s[c:d].rstrip("\n"))
 
+def path_statement_listing():
+    """`start`, `first` and the claim of PathStatement.lean; the tables `backTerm` and `term` are Table 6."""
+    s = open(os.path.join(ROOT, "lean", "PathStatement.lean"), encoding="utf-8").read()
+    a = s.index("/-- The step at which lap R"); b = s.index("/-- The term at place t")
+    c = s.index("/-- Corollary 9."); d = s.index("end Falafel")
+    assert a < b < c < d and "def term " in s[b:c] and "def backTerm " in s[b:c]
+    return html.escape(s[a:b].rstrip("\n") + "\n\n" + s[c:d].rstrip("\n"))
+
 def fill_template(page, fill):
     for k, v in fill.items():
         assert "@@%s@@" % k in page, k
@@ -647,6 +655,7 @@ def main():
         "AUX_Q": tex(AUX["q"]), "AUX_M": tex(AUX["m"]), "PAUX_H": tex(PAUX["h"]), "PAUX_K": tex(PAUX["k"]),
         "FIG_SPIRAL": fig_spiral(), "FIG_LAMBDA": fig_lambda(), "FIG_LAP": fig_lap(W),
         "LEAN_STATEMENT": statement_listing(),
+        "LEAN_PATH_STATEMENT": path_statement_listing(),
         "BOX": str(BOX), "RMAX": str(RMAX), "SIM": "{:,}".format(SIM), "LBOX": str(LBOX),
         "NSPIRAL": "{:,}".format(NSPIRAL), "SMAX": str(SMAX),
         "START_CASES": cases_tex(START), "FIRST_TERMS": ", ".join(str(sig(s)) for s in T),
@@ -660,7 +669,8 @@ def main():
     figures = {"spiral": tikz_spiral(), "lambda": tikz_lambda(), "lap": tikz_lap(W)}
     fill_tex = dict(fill, FIG_SPIRAL='<tikz name="spiral"></tikz>', FIG_LAMBDA='<tikz name="lambda"></tikz>',
                     FIG_LAP='<tikz name="lap"></tikz>')
-    longest = max(len(line) for line in html.unescape(fill["LEAN_STATEMENT"]).split("\n"))
+    longest = max(len(line) for k in ("LEAN_STATEMENT", "LEAN_PATH_STATEMENT")
+                  for line in html.unescape(fill[k]).split("\n"))
     listing_pt = min(8.0, int(10 * TEXTWIDTH_PT / (MONO_ADVANCE * longest)) / 10)   # the longest line just fits
     src, numbers = to_latex.convert(fill_template(template, fill_tex), figures, listing_pt)
     def formulas(text):                                   # every \( .. \) and \[ .. \], in order

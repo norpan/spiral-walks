@@ -251,7 +251,7 @@ results and says how each is proved.
    R = 4, 5, 6, ..., lap R starts with term number s(R) + 1, where s(R) = (27R² − 22R − 24)/4 for
    even R and (27R² − 22R − 33)/4 for odd R, so lap 4 starts with the 81st term. (The paper counts
    steps from 0, so there lap R starts at step s(R).) Within a lap every term is the square of an odd number plus a linear remainder. The
-   table has 38 rows; it is Table 5 of the paper.
+   table has 38 rows; it is Table 6 of the paper.
 
 ### How it is proved
 
