@@ -1,6 +1,7 @@
 # The 32 pieces of Quest for Zero on the square spiral
 
-Written 24 Nov 2026. Figures of the live runs were read from their logs on 25 Nov 2026 at 09:32.
+Written 24 Nov 2026. Run figures updated on 27 Nov 2026: the Squirrel at 3.22x10^13 steps (its STATUS block of that
+step); the Civet and the Spider as they stood when their runs were stopped on 26 Nov 2026.
 
 Every proof named here is checked by Lean 4 (version 4.36.0, with Mathlib). The Lean project is
 [`lean/`](../lean/); `lake build` in that folder checks all of it. A reader only has to
@@ -59,11 +60,11 @@ The number is the piece's number in Quest for Zero. It is F = 1, W = 2, A = 4, D
 | 22 | Deer | – | W A N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 23 | Raccoon | – | F W A N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 24 | Carpenter | Templar (Jelliss), Scribe, Doughnut (Betza) | D N | A398965 | trapped at step 253,925,076 | a program proved correct in Lean runs the walk, compiled (Lean with `native_decide`) |
-| 25 | Civet | – | F D N | A398194 | **open** | 1.364x10^13 steps without a trap |
+| 25 | Civet | – | F D N | A398194 | **open** | 2.104x10^13 steps without a trap |
 | 26 | Minister | Duke (Musketeer Chess) | W D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 27 | Cannon | – | F W D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
-| 28 | Squirrel | Castle, Bear, Centurion (Knappen) | A D N | A399315 | **open** | 1.499x10^13 steps without a trap |
-| 29 | Spider | – | F A D N | A396103 | **open** | 1.424x10^13 steps without a trap |
+| 28 | Squirrel | Castle, Bear, Centurion (Knappen) | A D N | A399315 | **open** | 3.22x10^13 steps without a trap |
+| 29 | Spider | – | F A D N | A396103 | **open** | 2.196x10^13 steps without a trap |
 | 30 | Elk | – | W A D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 31 | Lion | Lioness (Scirocco), Joker | F W A D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 
@@ -137,18 +138,19 @@ as the other statement files.
 
 | Piece | Q40 name | OEIS | Steps without a trap | Fewest unvisited moves on arrival | Squares skipped | Deepest gap |
 | --- | --- | --- | --- | --- | --- | --- |
-| DAN | Squirrel | A399315 | 1.499x10^13 | 2 (8,036 times) | 0 | 3 (30 times) |
-| FDN | Civet | A398194 | 1.364x10^13 | 3 (3,302,233 times) | 0 | 2 |
-| FDAN | Spider | A396103 | 1.424x10^13 | 6 (421,971,600 times) | 0 | 1 |
+| DAN | Squirrel | A399315 | 3.22x10^13 | 2 (16,566 times) | 0 | 3 (61 times) |
+| FDN | Civet | A398194 | 2.104x10^13 | 3 (5,096,537 times) | 0 | 2 |
+| FDAN | Spider | A396103 | 2.196x10^13 | 6 (650,914,385 times) | 0 | 1 |
 
 - **Fewest unvisited moves.** A trap is an arrival with 0. The count is how often the lowest value
   occurred.
 - **Skipped.** A square that the walk can no longer visit. None so far, for any of the three.
 - **Gap.** Take the squares straight inward from the square of arrival: those with the same y on
   the right and left sides of the ring, with the same x on the top and bottom sides. The gap is how
-  many rings further in the lowest unvisited one of them lies. All 30 gaps of 3 are exactly 3; no
-  gap of 4 has occurred.
-- All of this is observed, not proved. The runs are still going.
+  many rings further in the lowest unvisited one of them lies. The Squirrel's 61 deepest gaps are exactly 3;
+  no gap of 4 has occurred.
+- All of this is observed, not proved. The Squirrel run is still going. The Civet and Spider runs were stopped
+  on 26 Nov 2026, at n = 21,041,133,796,953 and n = 21,963,266,704,756.
 
 ## How the OEIS list was made
 
