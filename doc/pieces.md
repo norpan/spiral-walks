@@ -1,7 +1,8 @@
 # The 32 pieces of Quest for Zero on the square spiral
 
-Written 24 Nov 2026. Run figures updated on 27 Nov 2026: the Squirrel at 3.22x10^13 steps (its STATUS block of that
-step); the Civet and the Spider as they stood when their runs were stopped on 26 Nov 2026.
+Written 24 Nov 2026. Updated on 28 Nov 2026: the Squirrel at 3.59x10^13 steps (its STATUS block of that step); the
+Civet and the Spider as they stood when their runs were stopped on 26 Nov 2026; Section 4 now says what is known
+about each open piece.
 
 Every proof named here is checked by Lean 4 (version 4.36.0, with Mathlib). The Lean project is
 [`lean/`](../lean/); `lake build` in that folder checks all of it. A reader only has to
@@ -63,7 +64,7 @@ The number is the piece's number in Quest for Zero. It is F = 1, W = 2, A = 4, D
 | 25 | Civet | – | F D N | A398194 | **open** | 2.104x10^13 steps without a trap |
 | 26 | Minister | Duke (Musketeer Chess) | W D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 27 | Cannon | – | F W D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
-| 28 | Squirrel | Castle, Bear, Centurion (Knappen) | A D N | A399315 | **open** | 3.22x10^13 steps without a trap |
+| 28 | Squirrel | Castle, Bear, Centurion (Knappen) | A D N | A399315 | **open** | 3.59x10^13 steps without a trap |
 | 29 | Spider | – | F A D N | A396103 | **open** | 2.196x10^13 steps without a trap |
 | 30 | Elk | – | W A D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 31 | Lion | Lioness (Scirocco), Joker | F W A D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
@@ -108,7 +109,7 @@ On 24 Nov 2026 none of the three OEIS entries said whether the walk ends.
 | FN | Priest | A398717 | 1051 | 858 | yes | the Lean kernel |
 | AN | Kangaroo | A398779 | 59,677 | 57,552 | yes | the Lean kernel, in 12 pieces |
 | DN | Carpenter | A398965 | 253,925,076 | 259,115,490 | yes | compiled code (`native_decide`) |
-| FAN | Leopard | A399167 | 256,730,882 | 267,545,105 | proposed 23 Nov 2026, not yet approved | compiled code (`native_decide`) |
+| FAN | Leopard | A399167 | 256,730,882 | 267,545,105 | proposed 23 Nov 2026, still not approved on 28 Nov | compiled code (`native_decide`) |
 
 "Trapped at step n" means that the walk has n terms: the piece makes n − 1 moves.
 
@@ -138,7 +139,7 @@ as the other statement files.
 
 | Piece | Q40 name | OEIS | Steps without a trap | Fewest unvisited moves on arrival | Squares skipped | Deepest gap |
 | --- | --- | --- | --- | --- | --- | --- |
-| DAN | Squirrel | A399315 | 3.22x10^13 | 2 (16,566 times) | 0 | 3 (61 times) |
+| DAN | Squirrel | A399315 | 3.59x10^13 | 2 (18,641 times) | 0 | 3 (63 times) |
 | FDN | Civet | A398194 | 2.104x10^13 | 3 (5,096,537 times) | 0 | 2 |
 | FDAN | Spider | A396103 | 2.196x10^13 | 6 (650,914,385 times) | 0 | 1 |
 
@@ -147,10 +148,73 @@ as the other statement files.
 - **Skipped.** A square that the walk can no longer visit. None so far, for any of the three.
 - **Gap.** Take the squares straight inward from the square of arrival: those with the same y on
   the right and left sides of the ring, with the same x on the top and bottom sides. The gap is how
-  many rings further in the lowest unvisited one of them lies. The Squirrel's 61 deepest gaps are exactly 3;
+  many rings further in the lowest unvisited one of them lies. The Squirrel's 63 deepest gaps are exactly 3;
   no gap of 4 has occurred.
 - All of this is observed, not proved. The Squirrel run is still going. The Civet and Spider runs were stopped
   on 26 Nov 2026, at n = 21,041,133,796,953 and n = 21,963,266,704,756.
+- On 28 Nov 2026 none of the three OEIS entries said whether the sequence is finite.
+
+### What is known about each open piece
+
+None of the three is settled. Below, *proved* means a proof (in Lean, by hand, or by an exhaustive program check,
+as stated); *checked* means checked by program on the real walk up to a bound; *observed* means seen in the runs.
+
+**Squirrel (D + A + N, the 16 squares at distance exactly 2).**
+
+- *Proved by hand* (no reader outside the project, not in Lean). Eight lemmas that use only the rule. The main
+  ones: a trap away from corners is entered from one fixed square, so the step into it has one of four sizes.
+  Call it an *outer-before-inner event* when the Squirrel lands 2 rings above an unvisited square of its
+  line, and say the event is *repaired* when the next move goes to that square. A trap needs an earlier event
+  that was not repaired, and if every event is repaired, the Squirrel is never trapped and no square is ever
+  cut off. The lemma that rules out traps on 16 squares near the corners of every ring is
+  checked by program on rings 8 to 120, with an argument for larger rings.
+- *Open.* The repair conjecture: every outer-before-inner event is repaired. With the lemmas it would prove
+  that the walk never ends. It would not prove that every number appears.
+- *Observed* (3.59x10^13 steps). 5,418,640 events, all repaired, in five kinds. 18,641 arrivals with only 2
+  free moves, in seven kinds; none with 1 or 0. 63 gaps of 3 rings, none of 4. Of the 5,418,703 holes below a
+  visited square that were filled, the deepest pit reached was 1 ring (65 times); a trap needs 2.
+  Every number below 30,935,436,122,250 has appeared.
+- *Failed.* Several simple invariants turned out false (always 3 free moves; no gap of 3). Trap searches from
+  made-up boards find traps only by filling in squares the Squirrel never stood on. A line model of the
+  boundary agrees with the real walk but no closed set of its states was found.
+
+**Civet (F + D + N).**
+
+- *Proved by an exhaustive program check* (an independent checker written from a specification; not in Lean).
+  On a straight side away from corners, in a model where each line has a height, a short profile and one bit
+  of history, two invariants are kept by every step. In the first (*frozen terrain*: 86,946 windows of 17
+  lines, 286 patterns of 7 lines) the Civet always moves 2 lines on, leaves no gap and has at least 5 free
+  moves. The second terrain (62,975 windows, 149 patterns) gives no gap and at least 6 free moves.
+- *Checked.* The model agrees with the real walk at every arrival 60 or more lines from a corner in
+  9.13x10^8 steps. On the right side every arrival from ring 2,000 to about ring 32,000 (897,837,532
+  arrivals) is inside the frozen invariant.
+- *Observed.* On the other three sides the frozen terrain is broken by events at a steady rate: from ring
+  8,000 to 30,000 about 60 % of the arrivals on the bottom and top sides and about 40 % on the left are inside
+  it, with about 15 departures per 1,000 arrivals, and these shares do not change with the ring. So the
+  irregular part does not die out. All gaps and all arrivals with 3 or 4 free moves are on these three sides.
+  The corners settle into short cycles (5 passes per 3 rings). Every gap so far is made by the move (-1, 2)
+  over a lower line. Run stopped at 2.104x10^13 steps: fewest free moves 3, deepest gap 2.
+- *Not done.* Corners, the irregular parts of the sides, and a proof that the walk enters the invariant.
+
+**Spider (F + D + A + N, 20 moves).**
+
+- *Proved in Lean* (not part of this repository; nobody outside the project has read the statement). (1) On a
+  straight side, a visit that leaves a gap of 0 or 1 keeps the line form and leaves a move free, so a trap
+  needs an earlier gap of 2 or more. Standard axioms. (2) A side lemma: if the 17 lines round the Spider form
+  one of 17,715,362 windows and the lines further away form one of 1,102 patterns of 7 lines, then the
+  Spider moves, leaves a gap of 0 or 1, and both conditions hold again. Its 117,843,251 cases are checked by
+  compiled code (`native_decide`), which adds two axioms; that the check implies the lemma is proved in the
+  kernel. In all these windows the Spider has at least 6 free moves (checked by a C program).
+- *Observed.* Run stopped at 2.196x10^13 steps: never fewer than 6 free moves, no gap of 2. Corners are
+  easier than sides (at least 7 free moves there). After each corner a side starts as a regular staircase and
+  then becomes irregular; that part is not periodic and changes with the ring.
+- *Failed.* Nine attempts to describe what one lap leaves for the next by a finite set that one pass keeps
+  (corner closures, staircase languages, coarse height bounds, an automaton of block pairs) all kept growing.
+  None of them ever produced a trap or a gap of 2. The attempt was parked on 27 Nov 2026.
+
+**What the three have in common.** On straight sides, away from corners and in regular terrain, the
+step-by-step behaviour can be pinned down by finite checks. What is missing in each case is the same: a
+description of the irregular terrain, and of the corners, that the walk provably keeps from lap to lap.
 
 ## How the OEIS list was made
 
