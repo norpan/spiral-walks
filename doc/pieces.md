@@ -1,6 +1,6 @@
 # The 32 pieces of Quest for Zero on the square spiral
 
-Written 24 Nov 2026. Updated on 28 Nov 2026: the Squirrel at 3.59x10^13 steps (its STATUS block of that step); the
+Written 24 Nov 2026. Updated on 28 Nov 2026: the Squirrel at 3.61x10^13 steps (its STATUS block of that step); the
 Civet and the Spider as they stood when their runs were stopped on 26 Nov 2026; Section 4 now says what is known
 about each open piece.
 
@@ -64,7 +64,7 @@ The number is the piece's number in Quest for Zero. It is F = 1, W = 2, A = 4, D
 | 25 | Civet | – | F D N | A398194 | **open** | 2.104x10^13 steps without a trap |
 | 26 | Minister | Duke (Musketeer Chess) | W D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 27 | Cannon | – | F W D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
-| 28 | Squirrel | Castle, Bear, Centurion (Knappen) | A D N | A399315 | **open** | 3.59x10^13 steps without a trap |
+| 28 | Squirrel | Castle, Bear, Centurion (Knappen) | A D N | A399315 | **open** | 3.61x10^13 steps without a trap |
 | 29 | Spider | – | F A D N | A396103 | **open** | 2.196x10^13 steps without a trap |
 | 30 | Elk | – | W A D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
 | 31 | Lion | Lioness (Scirocco), Joker | F W A D N | A000027 | never trapped | n and n+1 are one W move apart, so it walks 1, 2, 3, ... (Lean) |
@@ -139,7 +139,7 @@ as the other statement files.
 
 | Piece | Q40 name | OEIS | Steps without a trap | Fewest unvisited moves on arrival | Squares skipped | Deepest gap |
 | --- | --- | --- | --- | --- | --- | --- |
-| DAN | Squirrel | A399315 | 3.59x10^13 | 2 (18,641 times) | 0 | 3 (63 times) |
+| DAN | Squirrel | A399315 | 3.61x10^13 | 2 (18,750 times) | 0 | 3 (63 times) |
 | FDN | Civet | A398194 | 2.104x10^13 | 3 (5,096,537 times) | 0 | 2 |
 | FDAN | Spider | A396103 | 2.196x10^13 | 6 (650,914,385 times) | 0 | 1 |
 
@@ -170,10 +170,10 @@ as stated); *checked* means checked by program on the real walk up to a bound; *
   checked by program on rings 8 to 120, with an argument for larger rings.
 - *Open.* The repair conjecture: every outer-before-inner event is repaired. With the lemmas it would prove
   that the walk never ends. It would not prove that every number appears.
-- *Observed* (3.59x10^13 steps). 5,418,640 events, all repaired, in five kinds. 18,641 arrivals with only 2
-  free moves, in seven kinds; none with 1 or 0. 63 gaps of 3 rings, none of 4. Of the 5,418,703 holes below a
+- *Observed* (3.61x10^13 steps). 5,449,710 events, all repaired, in five kinds. 18,750 arrivals with only 2
+  free moves, in seven kinds; none with 1 or 0. 63 gaps of 3 rings, none of 4. Of the 5,449,773 holes below a
   visited square that were filled, the deepest pit reached was 1 ring (65 times); a trap needs 2.
-  Every number below 30,935,436,122,250 has appeared.
+  Every number below 31,106,931,555,914 has appeared.
 - *Failed.* Several simple invariants turned out false (always 3 free moves; no gap of 3). Trap searches from
   made-up boards find traps only by filling in squares the Squirrel never stood on. A line model of the
   boundary agrees with the real walk but no closed set of its states was found.
