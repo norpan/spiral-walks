@@ -13,25 +13,27 @@ namespace Falafel
 theorem start_even (m : ℤ) : start (2 * m) = 27 * m ^ 2 - 11 * m - 6 := by
   unfold start
   have h : (2 * m) % 2 = 0 := by omega
-  rw [h, show 27 * (2 * m) ^ 2 - 22 * (2 * m) - 24 - 9 * 0 = 4 * (27 * m ^ 2 - 11 * m - 6) by ring]
-  exact Int.mul_ediv_cancel_left _ (by norm_num)
+  rw [h, show 27 * (2 * m) ^ 2 - 22 * (2 * m) - 24 - 9 * 0 = 4 * (27 * m ^ 2 - 11 * m - 6) by grind]
+  exact Int.mul_ediv_cancel_left _ (by decide)
 
 theorem start_odd (m : ℤ) : start (2 * m + 1) = 27 * m ^ 2 + 16 * m - 7 := by
   unfold start
   have h : (2 * m + 1) % 2 = 1 := by omega
   rw [h, show 27 * (2 * m + 1) ^ 2 - 22 * (2 * m + 1) - 24 - 9 * 1
-    = 4 * (27 * m ^ 2 + 16 * m - 7) by ring]
-  exact Int.mul_ediv_cancel_left _ (by norm_num)
+    = 4 * (27 * m ^ 2 + 16 * m - 7) by grind]
+  exact Int.mul_ediv_cancel_left _ (by decide)
 
 /-- The starts of two consecutive laps differ by the length of the lap. -/
 theorem start_succ (R : ℤ) : start (R + 1) = start R + (hi R - lo R) := by
-  obtain ⟨m, rfl | rfl⟩ := Int.even_or_odd' R
+  have hR : R = 2 * (R / 2) ∨ R = 2 * (R / 2) + 1 := by omega
+  generalize R / 2 = m at hR
+  rcases hR with rfl | rfl
   · have hl : hi (2 * m) - lo (2 * m) = 27 * m - 1 := by unfold hi lo; omega
     rw [start_odd, start_even, hl]
-    ring
+    grind
   · have hl : hi (2 * m + 1) - lo (2 * m + 1) = 27 * m + 17 := by unfold hi lo; omega
-    rw [show 2 * m + 1 + 1 = 2 * (m + 1) by ring, start_even, start_odd, hl]
-    ring
+    rw [show 2 * m + 1 + 1 = 2 * (m + 1) by omega, start_even, start_odd, hl]
+    grind
 
 /-- From the first index of a lap, the walk is at the first index of the next lap after as many
 steps as the lap has indices. -/
@@ -65,7 +67,7 @@ theorem lap_start (k : ℕ) :
     have e4 : lolap (3 + 1) = lo (4 + ((0 : ℕ) : ℤ)) := by decide
     rw [e, Nat.zero_add, e4] at h
     rw [hs]
-    exact ⟨by norm_num, by simpa using h.1, h.2⟩
+    exact ⟨by decide, by simpa using h.1, h.2⟩
   | succ k ih =>
     obtain ⟨h0, hL, hJ⟩ := ih
     have h3 : ¬ (4 + (k : ℤ)) ≤ 3 := by omega
@@ -73,7 +75,7 @@ theorem lap_start (k : ℕ) :
     have h := next_lap (start (4 + k)).toNat (by rw [hL, lolap_big h3]; exact hJ)
     rw [hL, hilap_big h3, lolap_big h3, lolap_big h3'] at h
     have hlen : 0 ≤ hi (4 + (k : ℤ)) - lo (4 + (k : ℤ)) := by unfold hi lo; omega
-    have hcast : (4 : ℤ) + ((k + 1 : ℕ) : ℤ) = 4 + (k : ℤ) + 1 := by push_cast; ring
+    have hcast : (4 : ℤ) + ((k + 1 : ℕ) : ℤ) = 4 + (k : ℤ) + 1 := by push_cast; omega
     rw [hcast, start_succ, Int.toNat_add h0 hlen]
     exact ⟨by omega, h.1, h.2⟩
 

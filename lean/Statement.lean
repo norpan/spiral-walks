@@ -1,4 +1,4 @@
-import Mathlib
+import Basic
 
 /-!
 # The Falafel walk (OEIS A399160) never ends: the statement
@@ -8,9 +8,10 @@ moves and the walk, and states four claims. Each claim is one statement of the p
 after it in its comment. The proofs are in the other files; `Falafel/Theorems.lean` has the four
 theorems.
 
-Notions taken from Mathlib: `ℕ`, `ℤ`, `|x|` (absolute value), `max`, `x ^ 2`,
-`Function.Injective a` (`a m = a n` only if `m = n`), `Even n` (`n = k + k` for some `k`),
-`Odd k` (`k = 2 * m + 1` for some `m`) and `∃! n, P n` (exactly one `n` has `P n`).
+Notions from Lean itself: `max`, `x ^ 2`, `Function.Injective a` (`a m = a n` only if `m = n`).
+Notions defined in `Basic.lean` (one line each): `ℕ`, `ℤ`, `|x|` (absolute value),
+`Even n` (`n = k + k` for some `k`), `Odd k` (`k = 2 * k' + 1` for some `k'`) and `∃! n, P n`
+(exactly one `n` has `P n`). The project does not use Mathlib.
 -/
 namespace Falafel
 

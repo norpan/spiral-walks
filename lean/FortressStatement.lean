@@ -14,7 +14,7 @@ The square spiral is `Falafel.spiral` of `Statement.lean`, and a walk is `Straig
 `StraightStatement.lean`. The proofs are in the folder `Fortress`; `Fortress/Theorems.lean` has
 the theorems.
 
-Notion taken from Mathlib, beyond those of the two files above: `Even k` (k = r + r for some r).
+Notion beyond those of the two files above: `Even k` (k = r + r for some r), from `Basic.lean`.
 -/
 namespace Fortress
 

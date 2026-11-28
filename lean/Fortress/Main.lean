@@ -20,13 +20,13 @@ def walk (n : ℕ) : ℤ × ℤ := w (2 * n)
 
 theorem walk_succ (n : ℕ) : walk (n + 1) = step (step (walk n)) := by
   unfold walk
-  rw [show 2 * (n + 1) = 2 * n + 1 + 1 by ring, w_succ, w_succ]
+  rw [show 2 * (n + 1) = 2 * n + 1 + 1 by grind, w_succ, w_succ]
 
 theorem spiral_walk (n : ℕ) : spiral (walk n) = 2 * n + 1 := by
   unfold walk
   rw [spiral_w]
   push_cast
-  ring
+  grind
 
 theorem walk_start : walk 0 = (0, 0) := rfl
 
@@ -102,15 +102,15 @@ theorem walk_unique (M : Set (ℤ × ℤ)) (hM : MovesLikeFortress M) (a : ℕ �
       by_cases hmn : m ≤ n
       · exact ih m hmn
       · obtain rfl : m = n + 1 := by omega
-        have han : a n = walk n := ih n (le_refl n)
+        have han : a n = walk n := ih n (Nat.le_refl n)
         have hmv : a (n + 1) - walk n ∈ M := han ▸ ha.move n
-        rcases lt_trichotomy (spiral (a (n + 1))) (spiral (walk (n + 1))) with hlt | heq | hgt
+        rcases Int.lt_trichotomy (spiral (a (n + 1))) (spiral (walk (n + 1))) with hlt | heq | hgt
         · obtain ⟨k, hk, hw⟩ := walk_lowest M hM n (a (n + 1)) hmv hlt
           exact absurd ((ih k hk).trans hw) (ha.injective.ne (by omega))
         · exact spiral_inj' _ _ heq
         · have hmv' : walk (n + 1) - a n ∈ M := han ▸ walk_move M hM n
           obtain ⟨k, hk, hw⟩ := ha.lowest n (walk (n + 1)) hmv' hgt
           exact absurd ((ih k hk).symm.trans hw) (walk_injective.ne (by omega))
-  exact funext fun n => main n n (le_refl n)
+  exact funext fun n => main n n (Nat.le_refl n)
 
 end Fortress

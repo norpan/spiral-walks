@@ -33,7 +33,7 @@ theorem visits_exactly_reachable_squares : VisitsExactlyReachableSquares := by
 /-- **A316884, the Ferz walk, is a permutation of the odd positive integers.** -/
 theorem ferz_permutation_of_odd_numbers : FerzPermutationOfOddNumbers := by
   intro a ha
-  rw [walk_unique 1 one_pos a ha]
+  rw [walk_unique 1 Int.one_pos a ha]
   have hodd : ∀ n, Odd (spiral (walk 1 n)) := fun n => by
     have h := Falafel.spiral_parity (1 * (w n).1) (1 * (w n).2)
     have hp := w_par n
@@ -47,16 +47,16 @@ theorem ferz_permutation_of_odd_numbers : FerzPermutationOfOddNumbers := by
     omega
   refine ⟨(rk x y).toNat, ?_, fun m hm => ?_⟩
   · show spiral (walk 1 (rk x y).toNat) = k
-    rw [walk, w_of_rk x y hpar, one_mul, one_mul, hp]
+    rw [walk, w_of_rk x y hpar, Int.one_mul, Int.one_mul, hp]
   · have e : walk 1 m = walk 1 (rk x y).toNat := by
       apply spiral_inj'
-      rw [hm, walk, w_of_rk x y hpar, one_mul, one_mul, hp]
-    exact walk_injective 1 one_pos e
+      rw [hm, walk, w_of_rk x y hpar, Int.one_mul, Int.one_mul, hp]
+    exact walk_injective 1 Int.one_pos e
 
 /-- The Ferz walk (OEIS A316884) is never trapped. -/
-theorem ferz_never_trapped : ∃ a : ℕ → ℤ × ℤ, IsWalk 1 a := never_trapped 1 one_pos
+theorem ferz_never_trapped : ∃ a : ℕ → ℤ × ℤ, IsWalk 1 a := never_trapped 1 Int.one_pos
 
 /-- The Alfil walk (OEIS A317467) is never trapped. -/
-theorem alfil_never_trapped : ∃ a : ℕ → ℤ × ℤ, IsWalk 2 a := never_trapped 2 two_pos
+theorem alfil_never_trapped : ∃ a : ℕ → ℤ × ℤ, IsWalk 2 a := never_trapped 2 (by decide : (0:ℤ) < 2)
 
 end Leaper

@@ -41,16 +41,19 @@ for each open piece.
 
 ## The Lean proofs
 
-`lean/` is one Lake project with six libraries, on Lean v4.36.0 and Mathlib v4.36.0.
+`lean/` is one Lake project with six libraries, on Lean v4.36.0 alone: it uses no library, not
+even Mathlib.
 Its `README.md` says how to build it and how the proofs go.
 
-A reader who wants to trust the results has to read six short files:
+A reader who wants to trust the results has to read six short files, and `lean/Basic.lean`
+(46 lines), which defines the general notions they use (absolute value, even, odd, sets and a
+few more), one line each:
 
-- `lean/Statement.lean` (70 lines): the spiral, the moves of F+A, the walk, four claims.
+- `lean/Statement.lean` (71 lines): the spiral, the moves of F+A, the walk, four claims.
 - `lean/PathStatement.lean` (92 lines): a table that gives every term of A399160 from the 81st on,
   and the claim that it does. Only needed for that formula.
 - `lean/LeaperStatement.lean` (50 lines): the same for the (s,s)-leaper.
-- `lean/StraightStatement.lean` (57 lines): the same for every piece that can move s squares
+- `lean/StraightStatement.lean` (58 lines): the same for every piece that can move s squares
   straight and stays on the squares with both coordinates multiples of s.
 - `lean/FortressStatement.lean` (42 lines): the same for every piece that has the moves of F and
   of D and whose moves all change x + y by an even number.

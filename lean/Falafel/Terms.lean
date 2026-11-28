@@ -107,149 +107,149 @@ theorem term_eq (R j : ℤ) : term R j = (2 * rho R j - 1) ^ 2 + pi R j := by
       · simp only [ite_eq_right h]
         by_cases h : j = -R
         · simp only [ite_eq_left h]
-          ring
+          grind
         · simp only [ite_eq_right h]
-          ring
+          grind
     · simp only [ite_eq_right h]
       by_cases h : j = -R - 3
       · simp only [ite_eq_left h]
-        ring
+        grind
       · simp only [ite_eq_right h]
         by_cases h : j = -R - 2
         · simp only [ite_eq_left h]
-          ring
+          grind
         · simp only [ite_eq_right h]
           by_cases h : j = -R - 1
           · simp only [ite_eq_left h]
-            ring
+            grind
           · simp only [ite_eq_right h]
-            ring
+            grind
   · simp only [ite_eq_right h]
     by_cases h : j < 2 * R - 4
     · simp only [ite_eq_left h]
       by_cases h : j % 2 = 0
       · simp only [ite_eq_left h]
-        ring
+        grind
       · simp only [ite_eq_right h]
-        ring
+        grind
     · simp only [ite_eq_right h]
       by_cases h : j < 2 * R + 2
       · simp only [ite_eq_left h]
         by_cases h : j = 2 * R - 4
         · simp only [ite_eq_left h]
-          ring
+          grind
         · simp only [ite_eq_right h]
           by_cases h : j = 2 * R - 3
           · simp only [ite_eq_left h]
-            ring
+            grind
           · simp only [ite_eq_right h]
             by_cases h : j = 2 * R - 2
             · simp only [ite_eq_left h]
-              ring
+              grind
             · simp only [ite_eq_right h]
               by_cases h : j = 2 * R - 1
               · simp only [ite_eq_left h]
-                ring
+                grind
               · simp only [ite_eq_right h]
                 by_cases h : j = 2 * R
                 · simp only [ite_eq_left h]
-                  ring
+                  grind
                 · simp only [ite_eq_right h]
-                  ring
+                  grind
       · simp only [ite_eq_right h]
         by_cases h : j < 6 * R - 5
         · simp only [ite_eq_left h]
           by_cases h : j % 2 = 0
           · simp only [ite_eq_left h]
-            ring
+            grind
           · simp only [ite_eq_right h]
-            ring
+            grind
         · simp only [ite_eq_right h]
           by_cases h : j < 6 * R + 1
           · simp only [ite_eq_left h]
             by_cases h : j = 6 * R - 5
             · simp only [ite_eq_left h]
-              ring
+              grind
             · simp only [ite_eq_right h]
               by_cases h : j = 6 * R - 4
               · simp only [ite_eq_left h]
-                ring
+                grind
               · simp only [ite_eq_right h]
                 by_cases h : j = 6 * R - 3
                 · simp only [ite_eq_left h]
-                  ring
+                  grind
                 · simp only [ite_eq_right h]
                   by_cases h : j = 6 * R - 2
                   · simp only [ite_eq_left h]
-                    ring
+                    grind
                   · simp only [ite_eq_right h]
                     by_cases h : j = 6 * R - 1
                     · simp only [ite_eq_left h]
-                      ring
+                      grind
                     · simp only [ite_eq_right h]
-                      ring
+                      grind
           · simp only [ite_eq_right h]
             by_cases h : j < 10 * R - 4
             · simp only [ite_eq_left h]
               by_cases h : j % 2 = 1
               · simp only [ite_eq_left h]
-                ring
+                grind
               · simp only [ite_eq_right h]
-                ring
+                grind
             · simp only [ite_eq_right h]
               by_cases h : j < 10 * R + 2
               · simp only [ite_eq_left h]
                 by_cases h : j = 10 * R - 4
                 · simp only [ite_eq_left h]
-                  ring
+                  grind
                 · simp only [ite_eq_right h]
                   by_cases h : j = 10 * R - 3
                   · simp only [ite_eq_left h]
-                    ring
+                    grind
                   · simp only [ite_eq_right h]
                     by_cases h : j = 10 * R - 2
                     · simp only [ite_eq_left h]
-                      ring
+                      grind
                     · simp only [ite_eq_right h]
                       by_cases h : j = 10 * R - 1
                       · simp only [ite_eq_left h]
-                        ring
+                        grind
                       · simp only [ite_eq_right h]
                         by_cases h : j = 10 * R
                         · simp only [ite_eq_left h]
-                          ring
+                          grind
                         · simp only [ite_eq_right h]
-                          ring
+                          grind
               · simp only [ite_eq_right h]
                 by_cases h : j < 11 * R + 3
                 · simp only [ite_eq_left h]
                   by_cases h : j % 2 = 0
                   · simp only [ite_eq_left h]
-                    ring
+                    grind
                   · simp only [ite_eq_right h]
-                    ring
+                    grind
                 · simp only [ite_eq_right h]
                   by_cases h : R % 2 = 0
                   · simp only [ite_eq_left h]
                     by_cases h : (j - (11 * R + 3)) % 3 = 0
                     · simp only [ite_eq_left h]
-                      ring
+                      grind
                     · simp only [ite_eq_right h]
                       by_cases h : (j - (11 * R + 3)) % 3 = 1
                       · simp only [ite_eq_left h]
-                        ring
+                        grind
                       · simp only [ite_eq_right h]
-                        ring
+                        grind
                   · simp only [ite_eq_right h]
                     by_cases h : (j - (11 * R + 3)) % 3 = 0
                     · simp only [ite_eq_left h]
-                      ring
+                      grind
                     · simp only [ite_eq_right h]
                       by_cases h : (j - (11 * R + 3)) % 3 = 1
                       · simp only [ite_eq_left h]
-                        ring
+                        grind
                       · simp only [ite_eq_right h]
-                        ring
+                        grind
 
 theorem ring_rpos_core (R j u v a b : ℤ) (hR : 4 ≤ R) (h1 : lo R ≤ j) (h2 : j < hi R) :
     squ R j = u → sqv R j = v → rho R j = a → pi R j = b → ring u v = a ∧ rpos u v = b := by

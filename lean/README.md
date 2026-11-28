@@ -1,6 +1,7 @@
 # lean: the Falafel walk (OEIS A399160) never ends, in Lean 4
 
-Written Mon 23 Nov 2026. Lean v4.36.0, Mathlib v4.36.0.
+Written Mon 23 Nov 2026. Lean v4.36.0 alone: no Mathlib, no other package. Until 28 Nov 2026 the
+proofs used Mathlib v4.36.0; see "Without Mathlib" at the end.
 
 ## What is proved
 
@@ -21,7 +22,7 @@ which was the separate theorem `terms_odd_and_positive`).
 
 - `lake build` succeeds. There is no `sorry`.
 - `#print axioms` gives `propext`, `Classical.choice`, `Quot.sound` for all four. These are the
-  standard axioms of Lean and Mathlib.
+  standard axioms of Lean.
 - There is no `native_decide`. The finite checks use `decide`, which is evaluation inside the
   Lean kernel: the table of the first 80 squares (`Prefix.lean`), the first 70 terms
   (`Check.lean`), the picture in `Statement.lean`, and a few start values.
@@ -34,10 +35,12 @@ which was the separate theorem `terms_odd_and_positive`).
 
 ## What a reader must check
 
-1. `Statement.lean`, 70 lines: the spiral number, the moves, `IsWalk`, and the four claims.
-   Nothing else has to be trusted.
-2. That the four theorems in `Falafel/Theorems.lean` have those four claims as their types.
-3. That the build prints the axiom lines above and no error.
+1. `Statement.lean`, 71 lines: the spiral number, the moves, `IsWalk`, and the four claims.
+2. `Basic.lean`, 46 lines: the general notions the statement files use (`ℕ`, `ℤ`, `|x|`,
+   `Even`, `Odd`, `∃!`, `Set`, `StrictMono`, `Function.update`), one line each. Mathlib has
+   the same notions; here they are plain Lean. Nothing else has to be trusted.
+3. That the four theorems in `Falafel/Theorems.lean` have those four claims as their types.
+4. That the build prints the axiom lines above and no error.
 
 Two things support the statement itself:
 
@@ -72,7 +75,7 @@ from finitely many laps to all laps.
 - **First 80 squares** (`Falafel/Prefix.lean`). The same facts, by evaluation.
 - **Spiral order** (`Falafel/Spiral.lean`). The spiral number is (2 ring - 1)² + position, so
   comparing spiral numbers is comparing (ring, position).
-- **Induction** (`Falafel/Main.lean`). The walk is the step iterated from the origin. Its stamps
+- **Induction** (`Falafel/Main.lean`). The walk is the step applied n times from the origin, by recursion. Its stamps
   increase by one position per step. So after step n the visited squares are exactly the squares
   with stamp up to that of step n. With the greedy fact this gives `IsWalk`.
 - **Odd numbers** (`Falafel/Numbers.lean`). Three facts about the spiral number of any square
@@ -106,32 +109,22 @@ the write-up (laps 4 to 400), and the Lean lap number is the L of its section 4 
 Install Lean through [elan](https://github.com/leanprover/elan). Then, in this folder:
 
 ```
-lake exe cache get
-lake build
+lake build Falafel Leaper Straight Fortress Trap
 ```
 
-The first command fetches the prebuilt Mathlib, so that only the files of this folder are
-compiled. `lean-toolchain` and `lake-manifest.json` fix Lean v4.36.0 and Mathlib v4.36.0.
+`lean-toolchain` fixes Lean v4.36.0. Nothing else is fetched: the project has no dependencies.
+`lake build` alone builds only `Falafel`.
 
-Measured on 23 and 24 Nov 2026 on a laptop that was running other jobs at the same time:
-
-| What | Time |
-| --- | --- |
-| Clean build of the Falafel files (Mathlib prebuilt), before the fourth theorem | 1 min 35 s wall, 8.0 min of CPU |
-| `lake build Leaper` | 37 s wall |
-| Fetching Lean, the Mathlib source and the prebuilt Mathlib | 2 min 36 s, about 1.6 GB received |
-
-Disk: Lean itself takes 3.0 GB and the folder `.lake` (Mathlib and its dependencies, prebuilt)
-takes 7.9 GB.
-
-The build prints a warning per file that Mathlib is designed for the module system. It is
-harmless.
+Measured on 28 Nov 2026 on a laptop that was running another job at the same time: a clean
+build of the five libraries took 8 min 14 s wall (23 min of CPU), most of it `Trap/Kangaroo`
+(450 s) and `Trap/Big` (257 s). Disk: Lean itself takes 3.0 GB and the folder `.lake` 161 MB.
 
 ## Files
 
 | Path | What it is |
 | --- | --- |
-| `Statement.lean` | The statement. The only trusted file. |
+| `Statement.lean` | The statement. |
+| `Basic.lean` | The general notions of the statement files, in place of Mathlib. Trusted with the statement. |
 | `PathStatement.lean` | Second statement file: the table of terms and the claim that it gives the sequence. |
 | `Falafel/Theorems.lean` | The four theorems. |
 | `Falafel.lean` | Root of the library, with `#print axioms`. |
@@ -202,7 +195,7 @@ A third library, `Straight`, in the same Lake project. Build it with `lake build
 (2 min 25 s wall on 24 Nov 2026, with three other jobs running; nearly all of it is one case
 analysis, `nxt_key`).
 
-- **Statement:** `StraightStatement.lean`, 57 lines. A piece is a set `M` of moves. The
+- **Statement:** `StraightStatement.lean`, 58 lines. A piece is a set `M` of moves. The
   condition `MovesStraight s M` says that the piece can move s squares straight in each of the
   four directions and that all its moves change both coordinates by multiples of s. It uses
   `Falafel.spiral` of `Statement.lean`.
@@ -253,7 +246,7 @@ proofs). Build with `lake build Trap`: 9 min 39 s wall and 15 GB of memory at th
   (2015 moves, square 2084), `priest_trapped` (1050, 858), `kangaroo_trapped` (59,676, 57,552),
   `carpenter_trapped` (253,925,075, 259,115,490), `leopard_trapped` (256,730,881, 267,545,105),
   and `knight_begins` to `leopard_begins`: the walk begins with the DATA line of the OEIS entry.
-- **How the proof goes.** `TrapCheck/Check.lean` (no Mathlib) is the walk as a program, over a
+- **How the proof goes.** `TrapCheck/Check.lean` is the walk as a program, over a
   store of visited squares. `Trap/Machine.lean` proves `check_sound`: if `check S ms L t` is
   true for a lawful store, then `TrappedAfter {d | d ∈ ms} L t`. Two stores are proved lawful: the
   bits of one number (for the kernel) and an array (for compiled code).
@@ -267,3 +260,22 @@ proofs). Build with `lake build Trap`: 9 min 39 s wall and 15 GB of memory at th
   for the run. `native_decide` uses compiled code only when built by `lake build`.
 - No `sorry`.
 
+
+## Without Mathlib (28 Nov 2026)
+
+Until 28 Nov 2026 the project imported Mathlib (7.9 GB prebuilt). It now needs only Lean.
+
+- **`Basic.lean`** (new, 46 lines) defines the few notions that came from Mathlib, each in one
+  line. A reader of a statement file reads these definitions as well, instead of trusting
+  Mathlib's.
+- **Statement files.** The claims are unchanged, word for word. `Statement.lean` imports
+  `Basic` instead of `Mathlib`; the comments that listed "notions taken from Mathlib" now say
+  where each notion comes from. `LeaperStatement.lean` and `TrapStatement.lean` did not change.
+- **Axioms.** The same as with Mathlib, theorem for theorem.
+- **Proofs.** About 280 lines changed. The large case analyses (`Falafel/Greedy`, `Step`, `Laps`,
+  `Leaper/Greedy`, the Trap machine) needed no change: they use `omega`, `decide` and `split`,
+  which are part of Lean. `ring`, `linarith`, `norm_num` became `grind` or `omega`; each
+  `nlinarith` became one explicit product `Int.mul_nonneg ...` followed by `grind`; `Nat.find`
+  became a short descent; function iteration became a recursive definition; the order of the
+  stamps (`StrictMono`, `toLex`) became a direct induction. The helpers are in
+  `Falafel/Tactic.lean` (about 90 lines).

@@ -11,7 +11,7 @@ From step 80 on the walk runs in laps R = 4, 5, 6, ... around the origin. A step
 index j, counted so that the lap's first staircase starts at index 0; the row before it has
 negative indices. Every term is the square of an odd number plus a remainder.
 
-Notions taken from Mathlib, beyond those of `Statement.lean`: `x / y` and `x % y` on `ℤ`
+Notions from Lean itself, beyond those of `Statement.lean`: `x / y` and `x % y` on `ℤ`
 (quotient rounded down and remainder, for y > 0), and `(n : ℤ)` for a natural number n.
 -/
 namespace Falafel

@@ -17,12 +17,16 @@ open Falafel (spiral)
 
 /-! ## Scaling -/
 
-theorem sc_zero (s z : ℤ) (h : z = 0) : s * z = 0 := by rw [h]; ring
-theorem sc_one (s z : ℤ) (h : z = 1) : s * z = s := by rw [h]; ring
-theorem sc_ge (s z : ℤ) (hs : 0 < s) (h : 1 ≤ z) : s ≤ s * z := by nlinarith
-theorem sc_le (s z : ℤ) (hs : 0 < s) (h : z ≤ -1) : s * z ≤ -s := by nlinarith
-theorem sc_nonneg (s z : ℤ) (hs : 0 < s) (h : 0 ≤ z) : 0 ≤ s * z := by nlinarith
-theorem sc_nonpos (s z : ℤ) (hs : 0 < s) (h : z ≤ 0) : s * z ≤ 0 := by nlinarith
+theorem sc_zero (s z : ℤ) (h : z = 0) : s * z = 0 := by rw [h]; grind
+theorem sc_one (s z : ℤ) (h : z = 1) : s * z = s := by rw [h]; grind
+theorem sc_ge (s z : ℤ) (hs : 0 < s) (h : 1 ≤ z) : s ≤ s * z := by
+  have := Int.mul_nonneg (Int.le_of_lt hs) (show 0 ≤ z - 1 by omega); grind
+theorem sc_le (s z : ℤ) (hs : 0 < s) (h : z ≤ -1) : s * z ≤ -s := by
+  have := Int.mul_nonneg (Int.le_of_lt hs) (show 0 ≤ -z - 1 by omega); grind
+theorem sc_nonneg (s z : ℤ) (hs : 0 < s) (h : 0 ≤ z) : 0 ≤ s * z :=
+  Int.mul_nonneg (Int.le_of_lt hs) h
+theorem sc_nonpos (s z : ℤ) (hs : 0 < s) (h : z ≤ 0) : s * z ≤ 0 := by
+  have := Int.mul_nonneg (Int.le_of_lt hs) (show 0 ≤ -z by omega); grind
 
 /-! ## Comparing two squares -/
 
@@ -132,11 +136,11 @@ theorem greedy_pp (s p q : ℤ) (hs : 0 < s) (hpar : (p + q) % 2 = 0)
   rcases class_pp p q hpar h with c | c | c
   · have hx : nx p q = p + 1 := by unfold nx; split_omega
     have hy : ny p q = q - 1 := by unfold ny; split_omega
-    rw [hx, hy]; simp only [mul_add, mul_sub, mul_one]
+    rw [hx, hy]; simp only [Int.mul_add, Int.mul_sub, Int.mul_one]
     exact spiral_le_of_key _ _ _ _ (k2 s _ _ hs (sc_ge s p hs c.1) (sc_ge s q hs c.2))
   · have hx : nx p q = p - 1 := by unfold nx; split_omega
     have hy : ny p q = q - 1 := by unfold ny; split_omega
-    rw [hx, hy]; simp only [mul_add, mul_sub, mul_one]
+    rw [hx, hy]; simp only [Int.mul_add, Int.mul_sub, Int.mul_one]
     exact spiral_le_of_key _ _ _ _ (k5 s _ _ hs (sc_ge s p hs c.1) (sc_zero s q c.2))
   · have hx : nx p q = p + 1 := by unfold nx; split_omega
     have hy : ny p q = q + 1 := by unfold ny; split_omega
@@ -148,18 +152,18 @@ theorem greedy_pm (s p q : ℤ) (hs : 0 < s) (hpar : (p + q) % 2 = 0)
   rcases class_pm p q hpar h with c | c | c | c
   · have hx : nx p q = p + 1 := by unfold nx; split_omega
     have hy : ny p q = q + 1 := by unfold ny; split_omega
-    rw [hx, hy]; simp only [mul_add, mul_sub, mul_one]
+    rw [hx, hy]; simp only [Int.mul_add, Int.mul_sub, Int.mul_one]
     exact spiral_le_of_key _ _ _ _ (k0pm s _ _ hs (sc_zero s p c.1) (sc_zero s q c.2))
   · have hx : nx p q = p + 1 := by unfold nx; split_omega
     have hy : ny p q = q - 1 := by unfold ny; split_omega
     rw [hx, hy]
   · have hx : nx p q = p - 1 := by unfold nx; split_omega
     have hy : ny p q = q - 1 := by unfold ny; split_omega
-    rw [hx, hy]; simp only [mul_add, mul_sub, mul_one]
+    rw [hx, hy]; simp only [Int.mul_add, Int.mul_sub, Int.mul_one]
     exact spiral_le_of_key _ _ _ _ (k4 s _ _ hs (sc_ge s p hs c.1) (sc_nonpos s q hs c.2))
   · have hx : nx p q = p - 1 := by unfold nx; split_omega
     have hy : ny p q = q + 1 := by unfold ny; split_omega
-    rw [hx, hy]; simp only [mul_add, mul_sub, mul_one]
+    rw [hx, hy]; simp only [Int.mul_add, Int.mul_sub, Int.mul_one]
     exact spiral_le_of_key _ _ _ _ (k7 s _ _ hs (sc_zero s p c.1) (sc_le s q hs c.2))
 
 theorem greedy_mm (s p q : ℤ) (hs : 0 < s) (hpar : (p + q) % 2 = 0)
@@ -168,18 +172,18 @@ theorem greedy_mm (s p q : ℤ) (hs : 0 < s) (hpar : (p + q) % 2 = 0)
   rcases class_mm p q hpar h with c | c | c | c
   · have hx : nx p q = p + 1 := by unfold nx; split_omega
     have hy : ny p q = q + 1 := by unfold ny; split_omega
-    rw [hx, hy]; simp only [mul_add, mul_sub, mul_one]
+    rw [hx, hy]; simp only [Int.mul_add, Int.mul_sub, Int.mul_one]
     exact spiral_le_of_key _ _ _ _ (k0mm s _ _ hs (sc_zero s p c.1) (sc_zero s q c.2))
   · have hx : nx p q = p - 1 := by unfold nx; split_omega
     have hy : ny p q = q - 1 := by unfold ny; split_omega
     rw [hx, hy]
   · have hx : nx p q = p - 1 := by unfold nx; split_omega
     have hy : ny p q = q + 1 := by unfold ny; split_omega
-    rw [hx, hy]; simp only [mul_add, mul_sub, mul_one]
+    rw [hx, hy]; simp only [Int.mul_add, Int.mul_sub, Int.mul_one]
     exact spiral_le_of_key _ _ _ _ (k6 s _ _ hs (sc_nonpos s p hs c.1) (sc_le s q hs c.2))
   · have hx : nx p q = p + 1 := by unfold nx; split_omega
     have hy : ny p q = q + 1 := by unfold ny; split_omega
-    rw [hx, hy]; simp only [mul_add, mul_sub, mul_one]
+    rw [hx, hy]; simp only [Int.mul_add, Int.mul_sub, Int.mul_one]
     exact spiral_le_of_key _ _ _ _ (k9 s _ _ hs (sc_le s p hs c.1) (sc_zero s q c.2))
 
 theorem greedy_mp (s p q : ℤ) (hs : 0 < s) (hpar : (p + q) % 2 = 0)
@@ -188,14 +192,14 @@ theorem greedy_mp (s p q : ℤ) (hs : 0 < s) (hpar : (p + q) % 2 = 0)
   rcases class_mp p q hpar h with c | c | c
   · have hx : nx p q = p + 1 := by unfold nx; split_omega
     have hy : ny p q = q - 1 := by unfold ny; split_omega
-    rw [hx, hy]; simp only [mul_add, mul_sub, mul_one]
+    rw [hx, hy]; simp only [Int.mul_add, Int.mul_sub, Int.mul_one]
     exact spiral_le_of_key _ _ _ _ (k3 s _ _ hs (sc_one s p c.1) (sc_ge s q hs c.2))
   · have hx : nx p q = p - 1 := by unfold nx; split_omega
     have hy : ny p q = q + 1 := by unfold ny; split_omega
     rw [hx, hy]
   · have hx : nx p q = p + 1 := by unfold nx; split_omega
     have hy : ny p q = q + 1 := by unfold ny; split_omega
-    rw [hx, hy]; simp only [mul_add, mul_sub, mul_one]
+    rw [hx, hy]; simp only [Int.mul_add, Int.mul_sub, Int.mul_one]
     exact spiral_le_of_key _ _ _ _ (k8 s _ _ hs (sc_nonpos s p hs c.1) (sc_nonneg s q hs c.2))
 
 /-- **Greedy.** A diagonal neighbour of (p, q) that does not come before it on the path has no
@@ -204,8 +208,8 @@ theorem greedy (s p q e1 e2 : ℤ) (hs : 0 < s) (hpar : (p + q) % 2 = 0)
     (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
     (h : ¬ Before (p + e1) (q + e2) p q) :
     spiral (s * nx p q, s * ny p q) ≤ spiral (s * (p + e1), s * (q + e2)) := by
-  have m1 : p + -1 = p - 1 := by ring
-  have m2 : q + -1 = q - 1 := by ring
+  have m1 : p + -1 = p - 1 := by grind
+  have m2 : q + -1 = q - 1 := by grind
   rcases he1 with rfl | rfl <;> rcases he2 with rfl | rfl
   · exact greedy_pp s p q hs hpar h
   · rw [m2] at h ⊢; exact greedy_pm s p q hs hpar h

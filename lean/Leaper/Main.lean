@@ -16,14 +16,16 @@ open Falafel (spiral)
 def step (P : ℤ × ℤ) : ℤ × ℤ := (nx P.1 P.2, ny P.1 P.2)
 
 /-- The path of the (1, 1)-leaper. -/
-def w (n : ℕ) : ℤ × ℤ := step^[n] (0, 0)
+def w : ℕ → ℤ × ℤ
+  | 0 => (0, 0)
+  | n + 1 => step (w n)
 
 /-- The walk of the (s, s)-leaper. -/
 def walk (s : ℤ) (n : ℕ) : ℤ × ℤ := (s * (w n).1, s * (w n).2)
 
 theorem w_zero : w 0 = (0, 0) := rfl
 
-theorem w_succ (n : ℕ) : w (n + 1) = step (w n) := Function.iterate_succ_apply' step n (0, 0)
+theorem w_succ (n : ℕ) : w (n + 1) = step (w n) := rfl
 
 theorem w_par (n : ℕ) : ((w n).1 + (w n).2) % 2 = 0 := by
   induction n with
@@ -39,7 +41,7 @@ theorem w_rk (n : ℕ) : rk (w n).1 (w n).2 = n := by
     show rk (nx (w n).1 (w n).2) (ny (w n).1 (w n).2) = ((n + 1 : ℕ) : ℤ)
     rw [rk_next _ _ (w_par n), ih]
     push_cast
-    ring
+    grind
 
 theorem w_injective : Function.Injective w := fun m n h => by
   have h1 := w_rk m
@@ -63,7 +65,8 @@ theorem walk_succ (s : ℤ) (n : ℕ) :
 theorem walk_injective (s : ℤ) (hs : 0 < s) : Function.Injective (walk s) := fun m n h => by
   have h1 : s * (w m).1 = s * (w n).1 := congrArg Prod.fst h
   have h2 : s * (w m).2 = s * (w n).2 := congrArg Prod.snd h
-  exact w_injective (Prod.ext (mul_left_cancel₀ hs.ne' h1) (mul_left_cancel₀ hs.ne' h2))
+  exact w_injective (Prod.ext (Int.eq_of_mul_eq_mul_left (by omega) h1)
+    (Int.eq_of_mul_eq_mul_left (by omega) h2))
 
 theorem walk_move (s : ℤ) (hs : 0 < s) (n : ℕ) : IsMove s (walk s n) (walk s (n + 1)) := by
   obtain ⟨h1, h2⟩ := next_diag (w n).1 (w n).2
@@ -71,19 +74,20 @@ theorem walk_move (s : ℤ) (hs : 0 < s) (n : ℕ) : IsMove s (walk s n) (walk s
   constructor
   · show |s * nx (w n).1 (w n).2 - s * (w n).1| = s
     rcases h1 with h | h <;> rw [h]
-    · rw [show s * ((w n).1 + 1) - s * (w n).1 = s by ring]; exact abs_of_pos hs
-    · rw [show s * ((w n).1 - 1) - s * (w n).1 = -s by ring, abs_neg]; exact abs_of_pos hs
+    · rw [show s * ((w n).1 + 1) - s * (w n).1 = s by grind]; abs_omega
+    · rw [show s * ((w n).1 - 1) - s * (w n).1 = -s by grind]; abs_omega
   · show |s * ny (w n).1 (w n).2 - s * (w n).2| = s
     rcases h2 with h | h <;> rw [h]
-    · rw [show s * ((w n).2 + 1) - s * (w n).2 = s by ring]; exact abs_of_pos hs
-    · rw [show s * ((w n).2 - 1) - s * (w n).2 = -s by ring, abs_neg]; exact abs_of_pos hs
+    · rw [show s * ((w n).2 + 1) - s * (w n).2 = s by grind]; abs_omega
+    · rw [show s * ((w n).2 - 1) - s * (w n).2 = -s by grind]; abs_omega
 
 /-- A coordinate one leap away is s (z ± 1). -/
 theorem leap_coord (s z t : ℤ) (hs : 0 < s) (h : |t - s * z| = s) :
     ∃ e : ℤ, (e = 1 ∨ e = -1) ∧ t = s * (z + e) := by
-  rcases (abs_eq hs.le).mp h with h | h
-  · exact ⟨1, Or.inl rfl, by linear_combination h⟩
-  · exact ⟨-1, Or.inr rfl, by linear_combination h⟩
+  simp only [Int.abs] at h
+  split at h
+  · exact ⟨1, Or.inl rfl, by grind⟩
+  · exact ⟨-1, Or.inr rfl, by grind⟩
 
 theorem walk_lowest (s : ℤ) (hs : 0 < s) (n : ℕ) (q : ℤ × ℤ) (hq : IsMove s (walk s n) q)
     (hlt : spiral q < spiral (walk s (n + 1))) : ∃ m ≤ n, walk s m = q := by
@@ -101,7 +105,7 @@ theorem walk_lowest (s : ℤ) (hs : 0 < s) (n : ℕ) (q : ℤ × ℤ) (hq : IsMo
     rw [walk, w_of_rk _ _ hpar', hqe]
   · have := greedy s (w n).1 (w n).2 e1 e2 hs hpar he1 he2 hb
     rw [walk_succ, hqe] at hlt
-    exact absurd hlt (not_lt.mpr this)
+    exact absurd hlt (Int.not_lt.mpr this)
 
 /-- **The walk of the (s, s)-leaper is a run of the rule.** -/
 theorem walk_isWalk (s : ℤ) (hs : 0 < s) : IsWalk s (walk s) where
@@ -130,16 +134,16 @@ theorem walk_unique (s : ℤ) (hs : 0 < s) (a : ℕ → ℤ × ℤ) (ha : IsWalk
       by_cases hmn : m ≤ n
       · exact ih m hmn
       · obtain rfl : m = n + 1 := by omega
-        have han : a n = walk s n := ih n (le_refl n)
+        have han : a n = walk s n := ih n (Nat.le_refl n)
         have hmv : IsMove s (walk s n) (a (n + 1)) := han ▸ ha.move n
-        rcases lt_trichotomy (spiral (a (n + 1))) (spiral (walk s (n + 1))) with hlt | heq | hgt
+        rcases Int.lt_trichotomy (spiral (a (n + 1))) (spiral (walk s (n + 1))) with hlt | heq | hgt
         · obtain ⟨k, hk, hw⟩ := walk_lowest s hs n (a (n + 1)) hmv hlt
           exact absurd ((ih k hk).trans hw) (ha.injective.ne (by omega))
         · exact spiral_inj' _ _ heq
         · have hmv' : IsMove s (a n) (walk s (n + 1)) := han ▸ walk_move s hs n
           obtain ⟨k, hk, hw⟩ := ha.lowest n (walk s (n + 1)) hmv' hgt
           exact absurd ((ih k hk).symm.trans hw) ((walk_injective s hs).ne (by omega))
-  exact funext fun n => main n n (le_refl n)
+  exact funext fun n => main n n (Nat.le_refl n)
 
 /-- The walk is on (s p, s q) exactly at step `rk p q`. -/
 theorem walk_eq_iff (s : ℤ) (hs : 0 < s) (n : ℕ) (p q : ℤ) (h : (p + q) % 2 = 0) :
@@ -148,7 +152,7 @@ theorem walk_eq_iff (s : ℤ) (hs : 0 < s) (n : ℕ) (p q : ℤ) (h : (p + q) % 
   · intro e
     have h1 : s * (w n).1 = s * p := congrArg Prod.fst e
     have h2 : s * (w n).2 = s * q := congrArg Prod.snd e
-    rw [← mul_left_cancel₀ hs.ne' h1, ← mul_left_cancel₀ hs.ne' h2, w_rk]
+    rw [← Int.eq_of_mul_eq_mul_left (Int.ne_of_gt hs) h1, ← Int.eq_of_mul_eq_mul_left (Int.ne_of_gt hs) h2, w_rk]
   · intro e
     have h0 := rk_nonneg p q h
     have : n = (rk p q).toNat := by omega

@@ -15,8 +15,9 @@ coordinates by multiples of s, for some s > 0.
 The square spiral is `Falafel.spiral` of `Statement.lean`. The proofs are in the folder
 `Straight`; `Straight/Theorems.lean` has the theorems.
 
-Notions taken from Mathlib, beyond those of `Statement.lean`: `Set` and `∈`, `s ∣ x` (x is a
-multiple of s) and `StrictMono f` (`f m < f n` whenever `m < n`).
+Notions beyond those of `Statement.lean`: from Lean itself, `s ∣ x` (x is a multiple of s);
+defined in `Basic.lean`, `Set` and `∈`, `p - q` on pairs (coordinate by coordinate) and
+`StrictMono f` (`f m < f n` whenever `m < n`).
 -/
 namespace Straight
 

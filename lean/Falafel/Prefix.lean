@@ -44,8 +44,10 @@ theorem prefix_table : ∀ i < 80,
   decide +kernel
 
 /-- Every square of the box -4 ≤ u ≤ 6, -5 ≤ v ≤ 4 with lap number at most 3 is in the table. -/
-theorem prefix_box : ∀ u ∈ Finset.Icc (-4 : ℤ) 6, ∀ v ∈ Finset.Icc (-5 : ℤ) 4,
-    lapnum u v ≤ 3 → pidx u v < 80 ∧ pget (pidx u v) = (u, v) := by
+theorem prefix_box : ∀ i : ℕ, i < 11 → ∀ j : ℕ, j < 10 →
+    lapnum ((i : ℤ) - 4) ((j : ℤ) - 5) ≤ 3 →
+      pidx ((i : ℤ) - 4) ((j : ℤ) - 5) < 80 ∧
+        pget (pidx ((i : ℤ) - 4) ((j : ℤ) - 5)) = ((i : ℤ) - 4, (j : ℤ) - 5) := by
   decide +kernel
 
 /-- Squares with lap number at most 3 lie in that box. -/
@@ -56,7 +58,10 @@ theorem low_bounds (u v : ℤ) : lapnum u v ≤ 3 → -4 ≤ u ∧ u ≤ 6 ∧ -
 /-- A square with lap number at most 3 is one of the first 80 squares. -/
 theorem prefix_mem (u v : ℤ) (h : lapnum u v ≤ 3) : pidx u v < 80 ∧ pget (pidx u v) = (u, v) := by
   obtain ⟨h1, h2, h3, h4⟩ := low_bounds u v h
-  exact prefix_box u (Finset.mem_Icc.mpr ⟨h1, h2⟩) v (Finset.mem_Icc.mpr ⟨h3, h4⟩) h
+  have := prefix_box (u + 4).toNat (by omega) (v + 5).toNat (by omega)
+  rw [Int.toNat_of_nonneg (by omega), Int.toNat_of_nonneg (by omega),
+    Int.add_sub_cancel, Int.add_sub_cancel] at this
+  exact this h
 
 /-- Every square with lap number at most 3 is in order. -/
 theorem prefix_ok (u v : ℤ) (h : lapnum u v ≤ 3) : SquareOK u v := by

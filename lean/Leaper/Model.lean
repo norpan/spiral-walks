@@ -65,16 +65,18 @@ theorem next_class (p q : ℤ) (h : (p + q) % 2 = 0) :
 theorem rk_next (p q : ℤ) (h : (p + q) % 2 = 0) : rk (nx p q) (ny p q) = rk p q + 1 := by
   unfold rk
   rcases next_class p q h with ⟨h1, h2⟩ | ⟨h1, h2, h3⟩
-  · rw [h1, h2]; ring
-  · rw [h1, h2, h3]; ring
+  · rw [h1, h2]; grind
+  · rw [h1, h2, h3]; grind
 
 theorem rk_nonneg (p q : ℤ) (h : (p + q) % 2 = 0) : 0 ≤ rk p q := by
   obtain ⟨h0, h1, h2, h3, h4⟩ := bounds p q h
   unfold rk
-  rcases eq_or_lt_of_le h0 with h5 | h5
+  rcases (show 0 = dd p q ∨ 0 < dd p q by omega) with h5 | h5
   · rw [← h5]; omega
   · have : 2 ≤ dd p q := by omega
-    nlinarith [h4 (by omega)]
+    have := h4 (by omega)
+    have := Int.mul_nonneg (show 0 ≤ dd p q by omega) (show 0 ≤ dd p q - 2 by omega)
+    grind
 
 theorem rk_lt_of_before (p q p' q' : ℤ) (h : (p + q) % 2 = 0) (h' : (p' + q') % 2 = 0)
     (hb : Before p q p' q') : rk p q < rk p' q' := by
@@ -84,8 +86,9 @@ theorem rk_lt_of_before (p q p' q' : ℤ) (h : (p + q) % 2 = 0) (h' : (p' + q') 
   rcases hb with hb | ⟨hb, hb'⟩
   · have e : dd p q + 2 ≤ dd p' q' := by omega
     have := h4' (by omega)
-    nlinarith [mul_nonneg (show (0 : ℤ) ≤ dd p' q' - (dd p q + 2) by omega)
-      (show (0 : ℤ) ≤ dd p' q' + dd p q by omega)]
+    have := Int.mul_nonneg (show (0 : ℤ) ≤ dd p' q' - (dd p q + 2) by omega)
+      (show (0 : ℤ) ≤ dd p' q' + dd p q by omega)
+    grind
   · rw [hb]; omega
 
 /-- Diamond and place determine the square. -/

@@ -4,10 +4,11 @@ Written 24 Nov 2026. Updated on 28 Nov 2026: the Squirrel at 3.61x10^13 steps (i
 Civet and the Spider as they stood when their runs were stopped on 26 Nov 2026; Section 4 now says what is known
 about each open piece.
 
-Every proof named here is checked by Lean 4 (version 4.36.0, with Mathlib). The Lean project is
-[`lean/`](../lean/); `lake build` in that folder checks all of it. A reader only has to
-trust six short statement files, which are linked below, and for two of the trapped pieces also the
-Lean compiler (Section 3).
+Every proof named here is checked by Lean 4 (version 4.36.0, no other library). The Lean project is
+[`lean/`](../lean/); `lake build Falafel Leaper Straight Fortress Trap` in that folder
+checks all of it. A reader only has to trust six short statement files, which are linked below, the
+general notions they use (`Basic.lean`, 46 lines: absolute value, even, odd, sets and a few more), and
+for two of the trapped pieces also the Lean compiler (Section 3).
 
 ## The question
 
@@ -151,8 +152,9 @@ as the other statement files.
   many rings further in the lowest unvisited one of them lies. The Squirrel's 63 deepest gaps are exactly 3;
   no gap of 4 has occurred.
 - All of this is observed, not proved. The Squirrel run is still going. The Civet and Spider runs were stopped
-  on 26 Nov 2026, at n = 21,041,133,796,953 and n = 21,963,266,704,756.
+  on 26 Nov 2026 at Martin's word, at n = 21,041,133,796,953 and n = 21,963,266,704,756.
 - On 28 Nov 2026 none of the three OEIS entries said whether the sequence is finite.
+- Status of the proof attempts for these three: `doc/squirrel.md`, `doc/civet.md`, `doc/spider.md`.
 
 ### What is known about each open piece
 

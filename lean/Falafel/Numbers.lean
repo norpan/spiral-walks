@@ -15,8 +15,7 @@ half-width r and on its border. -/
 theorem ring_iff (x y r : ℤ) :
     max |x| |y| = r ↔
       (-r ≤ x ∧ x ≤ r) ∧ (-r ≤ y ∧ y ≤ r) ∧ (x = r ∨ x = -r ∨ y = r ∨ y = -r) := by
-  rcases abs_cases x with ⟨h1, _⟩ | ⟨h1, _⟩ <;> rcases abs_cases y with ⟨h2, _⟩ | ⟨h2, _⟩ <;>
-    rw [h1, h2, max_def] <;> split_ifs <;> omega
+  abs_omega
 
 /-- The spiral number of a square whose ring is known to be r. -/
 theorem spiral_eq (x y r : ℤ) (h : max |x| |y| = r) :
@@ -29,7 +28,10 @@ theorem spiral_eq (x y r : ℤ) (h : max |x| |y| = r) :
 
 /-- The first number of a ring, minus one, is an odd square. -/
 theorem odd_square (r : ℤ) (hr : 0 ≤ r) : ∃ m, 0 ≤ m ∧ (2 * r - 1) ^ 2 = 2 * m + 1 :=
-  ⟨2 * (r * r) - 2 * r, by nlinarith, by ring⟩
+  ⟨2 * (r * r) - 2 * r, by
+    rcases (show r = 0 ∨ 1 ≤ r by omega) with h | h
+    · subst h; decide
+    · have := Int.mul_nonneg (show 0 ≤ r by omega) (show 0 ≤ r - 1 by omega); grind, by grind⟩
 
 /-- **Parity.** The spiral number of (x, y) has the parity of x + y + 1. So the squares with
 x + y even are exactly the odd-numbered squares. -/
@@ -69,23 +71,34 @@ theorem spiral_on_ring (r t : ℤ) (hr : 1 ≤ r) (h1 : 1 ≤ t) (h2 : t ≤ 8 *
     rw [spiral_eq (t - 7 * r) (-r) r ((ring_iff _ _ _).mpr (by omega))]
     split_ifs <;> omega
 
+/-- The least r with k ≤ (2r + 1)², found by going down from any such r. -/
+theorem least_ring (k : ℤ) : ∀ N : ℕ, k ≤ (2 * (N : ℤ) + 1) ^ 2 →
+    ∃ r : ℕ, k ≤ (2 * (r : ℤ) + 1) ^ 2 ∧ ∀ m < r, ¬ k ≤ (2 * (m : ℤ) + 1) ^ 2
+  | 0, h => ⟨0, h, fun m hm => absurd hm (Nat.not_lt_zero m)⟩
+  | N + 1, h => by
+    by_cases h' : k ≤ (2 * (N : ℤ) + 1) ^ 2
+    · exact least_ring k N h'
+    · refine ⟨N + 1, h, fun m hm hm' => h' ?_⟩
+      have := Int.mul_nonneg (show (0 : ℤ) ≤ N - m by omega) (show (0 : ℤ) ≤ N + m + 1 by omega)
+      grind
+
 /-- **Every positive integer is the spiral number of a square.** -/
 theorem spiral_surjective (k : ℤ) (hk : 0 < k) : ∃ p, spiral p = k := by
-  have hex : ∃ r : ℕ, k ≤ (2 * (r : ℤ) + 1) ^ 2 :=
-    ⟨k.toNat, by rw [Int.toNat_of_nonneg hk.le]; nlinarith⟩
-  obtain ⟨r, hr, hmin⟩ :
-      ∃ r : ℕ, k ≤ (2 * (r : ℤ) + 1) ^ 2 ∧ ∀ m < r, ¬ k ≤ (2 * (m : ℤ) + 1) ^ 2 :=
-    ⟨Nat.find hex, Nat.find_spec hex, fun m hm => Nat.find_min hex hm⟩
+  obtain ⟨r, hr, hmin⟩ := least_ring k k.toNat (by
+    rw [Int.toNat_of_nonneg (Int.le_of_lt hk)]
+    have := Int.mul_nonneg (show (0 : ℤ) ≤ k by omega) (show (0 : ℤ) ≤ k by omega); grind)
   rcases r with _ | r
-  · obtain rfl : k = 1 := by norm_num at hr; omega
+  · obtain rfl : k = 1 := by
+      have : (2 * ((0 : ℕ) : ℤ) + 1) ^ 2 = 1 := by decide
+      omega
     exact ⟨(0, 0), by decide⟩
   · have hlow := hmin r (Nat.lt_succ_self r)
     push_cast at hr
     have e1 : (2 * ((r : ℤ) + 1) + 1) ^ 2 = (2 * ((r : ℤ) + 1) - 1) ^ 2 + 8 * ((r : ℤ) + 1) := by
-      ring
-    have e2 : (2 * (r : ℤ) + 1) ^ 2 = (2 * ((r : ℤ) + 1) - 1) ^ 2 := by ring
+      grind
+    have e2 : (2 * (r : ℤ) + 1) ^ 2 = (2 * ((r : ℤ) + 1) - 1) ^ 2 := by grind
     obtain ⟨p, hp⟩ := spiral_on_ring ((r : ℤ) + 1) (k - (2 * ((r : ℤ) + 1) - 1) ^ 2)
-      (by omega) (by linarith) (by linarith)
-    exact ⟨p, by rw [hp]; ring⟩
+      (by omega) (by omega) (by omega)
+    exact ⟨p, by rw [hp]; omega⟩
 
 end Falafel

@@ -45,7 +45,7 @@
 
 \title{The Falafel's walk on the square spiral never~ends}
 \author{Martin Norbäck Olivers}
-\date{Draft, 25 November 2026}
+\date{Draft, 28 November 2026}
 
 \begin{document}
 
@@ -56,7 +56,7 @@ numbers of the squares it visits form sequence A399160 of the OEIS. We prove tha
 never trapped and that it visits every square it can reach, so the sequence is a permutation of the
 odd positive integers. After its first 80 squares the walk runs in laps around the origin, and we
 give every lap in closed form. The proof is a case analysis in linear integer arithmetic. It has
-been formalised in Lean~4 with Mathlib and is checked by the Lean kernel.
+been formalised in Lean~4 and is checked by the Lean kernel.
 \end{abstract}
 
 \maketitle
@@ -216,9 +216,9 @@ the sequence.
 The proof goes as follows. Every square gets a \emph{stamp}: the number of its lap, and its index
 within the lap. Four lemmas about stamps carry the proof (Section~4). Each is a statement of linear
 integer arithmetic and is proved by a case analysis, which we do not print. The whole proof has been
-formalised in Lean~4~\cite{ref3} with the library Mathlib~\cite{ref4}, and the Lean kernel has
-checked it. Sections 5 and 6 derive the theorems and Corollaries 8 and 9 from the lemmas by hand.
-Section~7 says what was formalised, and which few lines a reader has to trust.
+formalised in Lean~4~\cite{ref3}, and the Lean kernel has checked it. Sections 5 and 6 derive the
+theorems and Corollaries 8 and 9 from the lemmas by hand. Section~7 says what was formalised, and
+which few lines a reader has to trust.
 
 \section{The spiral in diagonal coordinates}
 
@@ -1562,18 +1562,21 @@ The first 80 terms, the numbers of \(T_0, \dots, T_{79}\), are 1, 3, 7, 19, 5, 9
 
 \section{The formal proof}
 
-The proof has been formalised in Lean~4, version 4.36.0, with Mathlib. The Lean kernel accepts it.
-It has no \texttt{sorry}, which would mark an unproved step, and no \texttt{native\_decide}, which
-would take the result of compiled code on trust. It depends only on the three standard axioms
-\texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}. The Lean files, with the
-program that printed the tables of this paper, are in the repository~\cite{ref5}.
+The proof has been formalised in Lean~4, version 4.36.0, with no library beyond Lean itself. The
+Lean kernel accepts it. It has no \texttt{sorry}, which would mark an unproved step, and no
+\texttt{native\_decide}, which would take the result of compiled code on trust. It depends only on
+the three standard axioms \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}. The
+Lean files, with the program that printed the tables of this paper, are in the
+repository~\cite{ref4}.
 
 \emph{What a reader has to trust.} Appendix~B reproduces the statement as Lean has it. It defines
 \(\sigma\) by formula (1), a move, and a Falafel walk as in Definition~1, and it states four claims:
-Remark~1, Theorem~1~(a), Theorem~1~(b) and Corollary~8. The laps, the lap number, the index and the
-stamps are only tools of the proof. A mistake in them could make the proof fail. It could not make a
-false theorem pass. Corollary~9 is proved in Lean as a formula for the terms: for every \(n \ge 80\)
-the number of \(a_n\) is the entry of Table~6 (\texttt{term\_formula}). Its statement is in a second
+Remark~1, Theorem~1~(a), Theorem~1~(b) and Corollary~8. It uses a few general notions (absolute
+value, even, odd, ``exactly one''), which a short file of the proof defines in the usual way, one
+line each; a reader trusts that file too. The laps, the lap number, the index and the stamps are
+only tools of the proof. A mistake in them could make the proof fail. It could not make a false
+theorem pass. Corollary~9 is proved in Lean as a formula for the terms: for every \(n \ge 80\) the
+number of \(a_n\) is the entry of Table~6 (\texttt{term\_formula}). Its statement is in a second
 file, which defines \(\mathrm{start}\), \(\mathrm{lo}\) and the numbers of Table~6 and mentions no
 square and no lap. Appendix~B shows it without the rows of the table. A reader who wants that claim
 has to trust that file as well.
@@ -1863,10 +1866,6 @@ L. de Moura and S. Ullrich, The Lean 4 theorem prover and programming language, 
 Deduction -- CADE 28}, Lecture Notes in Computer Science 12699, Springer, 2021, pp. 625--635.
 
 \bibitem{ref4}
-The mathlib Community, The Lean mathematical library, in \emph{Proceedings of the 9th ACM SIGPLAN
-International Conference on Certified Programs and Proofs (CPP 2020)}, ACM, 2020, pp. 367--381.
-
-\bibitem{ref5}
 M. Norbäck Olivers, \emph{spiral-walks}, source repository,
 2026.\newline\url{https://github.com/norpan/spiral-walks}
 

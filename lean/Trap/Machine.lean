@@ -13,8 +13,9 @@ open Falafel (spiral)
 open TrapCheck (VSet sp lowest cands step loop check key inBox natSet arrSet)
 
 theorem sp_eq (p : ℤ × ℤ) : sp p = spiral p := by
+  have h : max |p.1| |p.2| = max (max p.1 (-p.1)) (max p.2 (-p.2)) := by abs_omega
   unfold sp spiral
-  simp only [abs_eq_max_neg, sq]
+  simp only [h, Int.pow_succ, Int.pow_zero, Int.one_mul]
 
 /-- What a store of visited squares has to satisfy, for squares inside its box. -/
 structure Lawful {V : Type} (S : VSet V) (wf : V → Prop) : Prop where
@@ -52,26 +53,26 @@ theorem lowest_spec : ∀ (l : List (ℤ × ℤ)) (b : ℤ × ℤ), lowest l = s
         subst h
         refine ⟨List.mem_cons_of_mem _ hc, fun r hr => ?_⟩
         rcases List.mem_cons.mp hr with rfl | hr
-        · exact le_of_lt hlt
+        · exact Int.le_of_lt hlt
         · exact hmin r hr
       · next hge =>
         simp only [Option.some.injEq] at h
         subst h
         refine ⟨List.mem_cons_self, fun r hr => ?_⟩
         rcases List.mem_cons.mp hr with rfl | hr
-        · exact le_rfl
-        · exact le_trans (not_lt.mp hge) (hmin r hr)
+        · exact (by omega)
+        · exact Int.le_trans (Int.not_lt.mp hge) (hmin r hr)
 
 theorem mem_cands (ms : List (ℤ × ℤ)) (p q : ℤ × ℤ) : q ∈ cands ms p ↔ q - p ∈ ms := by
   unfold cands
   rw [List.mem_map]
   constructor
   · rintro ⟨d, hd, rfl⟩
-    have : ((p.1 + d.1, p.2 + d.2) : ℤ × ℤ) - p = d := by ext <;> simp
+    have : ((p.1 + d.1, p.2 + d.2) : ℤ × ℤ) - p = d := by ext <;> simp <;> omega
     rw [this]
     exact hd
   · intro h
-    exact ⟨q - p, h, by ext <;> simp⟩
+    exact ⟨q - p, h, by ext <;> simp <;> omega⟩
 
 theorem step_spec {V : Type} (S : VSet V) (ms : List (ℤ × ℤ)) (s s' : V × (ℤ × ℤ))
     (h : step S ms s = some s') :
@@ -164,7 +165,7 @@ theorem state_sound {V : Type} (S : VSet V) (wf : V → Prop) (hS : Lawful S wf)
         rw [hS.mem_ins _ _ _ hS.wf_empty hbox0 hr, hS.mem_empty r hr]
         simp only [Bool.or_false, decide_eq_true_eq]
         constructor
-        · rintro rfl; exact ⟨0, le_rfl, ha0⟩
+        · rintro rfl; exact ⟨0, (by omega), ha0⟩
         · rintro ⟨m, hm, rfl⟩
           obtain rfl : m = 0 := by omega
           exact ha0
@@ -191,7 +192,7 @@ theorem state_sound {V : Type} (S : VSet V) (wf : V → Prop) (hS : Lawful S wf)
         simp only [Bool.or_eq_true, decide_eq_true_eq]
         constructor
         · rintro (rfl | h1)
-          · exact ⟨n + 1, le_rfl, han⟩
+          · exact ⟨n + 1, (by omega), han⟩
           · obtain ⟨m, hm, e⟩ := (hmem r hr).mp h1
             exact ⟨m, by omega, e⟩
         · rintro ⟨m, hm, e⟩
@@ -235,7 +236,7 @@ theorem state_sound {V : Type} (S : VSet V) (wf : V → Prop) (hS : Lawful S wf)
       have := hmin q hqc hf
       rw [hpos', sp_eq, sp_eq] at this
       exact this
-  obtain ⟨s, hs, hpos, -, -, hmem⟩ := inv L le_rfl
+  obtain ⟨s, hs, hpos, -, -, hmem⟩ := inv L (by omega)
   rw [hL] at hs
   cases hs
   exact ⟨a, hfol, hpos.symm, hmem⟩
@@ -309,7 +310,7 @@ theorem begins_sound {V : Type} (S : VSet V) (wf : V → Prop) (hS : Lawful S wf
   | some s =>
     rw [hs] at hn'
     obtain ⟨a0, hf, hpos, -⟩ := state_sound S wf hS ms n s hb hs
-    have e := agree_aux (ha.mono hn) hf.isRun n le_rfl n le_rfl
+    have e := agree_aux (ha.mono hn) hf.isRun n (by omega) n (by omega)
     rw [e, hpos, ← sp_eq]
     simpa using hn'
 

@@ -19,7 +19,9 @@ namespace Falafel
 def step (p : ℤ × ℤ) : ℤ × ℤ := (stepu p.1 p.2, stepv p.1 p.2)
 
 /-- The walk in (u, v) coordinates: the step iterated from the origin. -/
-def w (n : ℕ) : ℤ × ℤ := step^[n] (0, 0)
+def w : ℕ → ℤ × ℤ
+  | 0 => (0, 0)
+  | n + 1 => step (w n)
 
 /-- The walk in (x, y) coordinates. -/
 def walk (n : ℕ) : ℤ × ℤ := ((w n).1 + (w n).2, (w n).1 - (w n).2)
@@ -32,7 +34,7 @@ def J (n : ℕ) : ℤ := idx (w n).1 (w n).2
 
 theorem w_zero : w 0 = (0, 0) := rfl
 
-theorem w_succ (n : ℕ) : w (n + 1) = step (w n) := Function.iterate_succ_apply' step n (0, 0)
+theorem w_succ (n : ℕ) : w (n + 1) = step (w n) := rfl
 
 theorem L_zero : L 0 = 3 := by decide
 
@@ -51,18 +53,23 @@ theorem LJ_range (n : ℕ) : 3 ≤ L n ∧ lolap (L n) ≤ J n ∧ J n < hilap (
   ⟨lap_ge _ _, idx_range _ _⟩
 
 /-- The stamps (lap, index) increase along the walk, in the lexicographic order. -/
-theorem stamp_strictMono : StrictMono (fun n => toLex (L n, J n)) :=
-  strictMono_nat_of_lt_succ fun n => by
-    rw [Prod.Lex.toLex_lt_toLex]
-    show L n < L (n + 1) ∨ (L n = L (n + 1) ∧ J n < J (n + 1))
-    have h := LJ_succ n
-    omega
+theorem LJ_lt {m n : ℕ} (h : m < n) : L m < L n ∨ (L m = L n ∧ J m < J n) := by
+  induction n with
+  | zero => omega
+  | succ n ih =>
+    have hs := LJ_succ n
+    rcases Nat.lt_succ_iff_lt_or_eq.mp h with h | rfl
+    · have := ih h
+      omega
+    · omega
 
-theorem LJ_lt {m n : ℕ} (h : m < n) : L m < L n ∨ (L m = L n ∧ J m < J n) :=
-  Prod.Lex.toLex_lt_toLex.mp (stamp_strictMono h)
-
-theorem w_injective : Function.Injective w := fun m n h =>
-  stamp_strictMono.injective (by show toLex (L m, J m) = toLex (L n, J n); unfold L J; rw [h])
+theorem w_injective : Function.Injective w := fun m n h => by
+  have hL : L m = L n := by unfold L; rw [h]
+  have hJ : J m = J n := by unfold J; rw [h]
+  rcases Nat.lt_trichotomy m n with hmn | hmn | hmn
+  · have := LJ_lt hmn; omega
+  · exact hmn
+  · have := LJ_lt hmn; omega
 
 /-- Every square whose stamp is not later than that of the n-th square has been visited by
 step n. -/
@@ -77,7 +84,7 @@ theorem covered (n : ℕ) (u v : ℤ) (h : ¬ (L n < lap u v ∨ (L n = lap u v 
     have h0 : lolap 3 = 0 := by decide
     have e := stamp_inj u v 0 0 (by show lap u v = L 0; rw [L_zero]; omega)
       (by show idx u v = J 0; rw [J_zero]; omega)
-    exact ⟨0, le_refl 0, by rw [w_zero, e.1, e.2]⟩
+    exact ⟨0, Nat.le_refl 0, by rw [w_zero, e.1, e.2]⟩
   | succ k ih =>
     by_cases hk : L k < lap u v ∨ (L k = lap u v ∧ J k < idx u v)
     · have hs := LJ_succ k
@@ -85,7 +92,7 @@ theorem covered (n : ℕ) (u v : ℤ) (h : ¬ (L n < lap u v ∨ (L n = lap u v 
       have hlo : lap u v = L k + 1 → lolap (L k + 1) ≤ idx u v := fun e => e ▸ hr.1
       have key : lap u v = L (k + 1) ∧ idx u v = J (k + 1) := by omega
       have e := stamp_inj u v (w (k + 1)).1 (w (k + 1)).2 key.1 key.2
-      exact ⟨k + 1, le_refl _, Prod.ext e.1.symm e.2.symm⟩
+      exact ⟨k + 1, Nat.le_refl _, Prod.ext e.1.symm e.2.symm⟩
     · obtain ⟨m, hm, hw⟩ := ih hk
       exact ⟨m, Nat.le_succ_of_le hm, hw⟩
 
@@ -95,19 +102,14 @@ theorem covered (n : ℕ) (u v : ℤ) (h : ¬ (L n < lap u v ∨ (L n = lap u v 
 theorem isMove_iff_rook (u v u' v' : ℤ) :
     IsMove (u + v, u - v) (u' + v', u' - v') ↔ Rook (u' - u) (v' - v) := by
   simp only [IsMove, Rook]
-  rcases abs_cases (u' + v' - (u + v)) with ⟨h1, _⟩ | ⟨h1, _⟩ <;>
-    rcases abs_cases (u' - v' - (u - v)) with ⟨h2, _⟩ | ⟨h2, _⟩ <;>
-    rw [h1, h2] <;> omega
+  abs_omega
 
 /-- A Falafel move from a square of the form (u + v, u - v) leads to a square of that form. -/
 theorem rook_of_isMove (u v : ℤ) (q : ℤ × ℤ) (h : IsMove (u + v, u - v) q) :
     ∃ c d, Rook c d ∧ q = (u + c + (v + d), u + c - (v + d)) := by
   obtain ⟨x, y⟩ := q
-  simp only [IsMove] at h
-  refine ⟨(x + y) / 2 - u, (x - y) / 2 - v, ?_, ?_⟩ <;>
-    rcases abs_cases (x - (u + v)) with ⟨h1, _⟩ | ⟨h1, _⟩ <;>
-    rcases abs_cases (y - (u - v)) with ⟨h2, _⟩ | ⟨h2, _⟩ <;>
-    rw [h1, h2] at h <;> simp only [Rook, Prod.mk.injEq] <;> omega
+  simp only [IsMove, Int.abs] at h
+  refine ⟨(x + y) / 2 - u, (x - y) / 2 - v, ?_, ?_⟩ <;> simp only [Rook, Prod.mk.injEq] <;> omega
 
 theorem walk_succ (n : ℕ) :
     walk (n + 1) = (stepu (w n).1 (w n).2 + stepv (w n).1 (w n).2,
@@ -135,7 +137,7 @@ theorem walk_lowest (n : ℕ) (q : ℤ × ℤ) (hq : IsMove (walk n) q)
   rw [walk_succ] at hs
   have hk : ¬ KeyLE (stepu (w n).1 (w n).2) (stepv (w n).1 (w n).2)
       ((w n).1 + c) ((w n).2 + d) :=
-    fun hk => absurd hs (not_lt.mpr (spiral_le_of_keyLE _ _ _ _ hk))
+    fun hk => absurd hs (Int.not_lt.mpr (spiral_le_of_keyLE _ _ _ _ hk))
   have hl : ¬ (L n < lap ((w n).1 + c) ((w n).2 + d) ∨
       (L n = lap ((w n).1 + c) ((w n).2 + d) ∧ J n < idx ((w n).1 + c) ((w n).2 + d))) :=
     fun hl => hk (greedy _ _ c d hr hl)
@@ -165,10 +167,10 @@ theorem walk_unique (a : ℕ → ℤ × ℤ) (ha : IsWalk a) : a = walk := by
       by_cases hmn : m ≤ n
       · exact ih m hmn
       · obtain rfl : m = n + 1 := by omega
-        have han : a n = walk n := ih n (le_refl n)
+        have han : a n = walk n := ih n (Nat.le_refl n)
         have hmv : IsMove (walk n) (a (n + 1)) := han ▸ ha.move n
         obtain ⟨c, d, -, hq⟩ := rook_of_isMove (w n).1 (w n).2 (a (n + 1)) hmv
-        rcases lt_trichotomy (spiral (a (n + 1))) (spiral (walk (n + 1))) with hlt | heq | hgt
+        rcases Int.lt_trichotomy (spiral (a (n + 1))) (spiral (walk (n + 1))) with hlt | heq | hgt
         · obtain ⟨k, hk, hw⟩ := walk_lowest n (a (n + 1)) hmv hlt
           exact absurd ((ih k hk).trans hw) (ha.injective.ne (by omega))
         · rw [hq, walk_succ] at heq ⊢
@@ -177,7 +179,7 @@ theorem walk_unique (a : ℕ → ℤ × ℤ) (ha : IsWalk a) : a = walk := by
         · have hmv' : IsMove (a n) (walk (n + 1)) := han ▸ walk_move n
           obtain ⟨k, hk, hw⟩ := ha.lowest n (walk (n + 1)) hmv' hgt
           exact absurd ((ih k hk).symm.trans hw) (walk_injective.ne (by omega))
-  exact funext fun n => main n n (le_refl n)
+  exact funext fun n => main n n (Nat.le_refl n)
 
 /-! ## The walk visits every square of its colour -/
 
@@ -290,7 +292,7 @@ theorem first_eighty (n : ℕ) (h : n < 80) : w n = pget n := by
   rw [L_zero] at h1
   rw [hl] at h2
   have hlow : lapnum (w n).1 (w n).2 ≤ 3 := by
-    by_contra hbig
+    refine Classical.byContradiction fun hbig => ?_
     have h4 : L n = lapnum (w n).1 (w n).2 := lap_big hbig
     omega
   have hi' : J n = (pidx (w n).1 (w n).2 : ℤ) := idx_low hlow
@@ -321,7 +323,7 @@ theorem walk_visits (x y : ℤ) (h : Even (x + y)) : ∃ n, walk n = (x, y) := b
 
 /-- Every square of the walk has x + y even. -/
 theorem walk_even (n : ℕ) : Even ((walk n).1 + (walk n).2) :=
-  ⟨(w n).1, by simp only [walk]; ring⟩
+  ⟨(w n).1, by simp only [walk]; omega⟩
 
 /-! ## The terms are the odd positive integers, each once -/
 

@@ -33,8 +33,8 @@ theorem visits_lattice_in_order : VisitsLatticeInOrder := by
 /-- **A piece that has the Wazir's moves walks 1, 2, 3, ...** -/
 theorem wazir_walks_in_order : WazirWalksInOrder := by
   intro M hM a ha n
-  rw [walk_unique 1 one_pos M hM a ha]
-  have e : walk 1 n = w n := by unfold walk; rw [one_mul, one_mul]
+  rw [walk_unique 1 Int.one_pos M hM a ha]
+  have e : walk 1 n = w n := by unfold walk; rw [Int.one_mul, Int.one_mul]
   rw [e, spiral_w]
 
 /-- The moves of the Wazir. -/
@@ -48,7 +48,7 @@ def alibaba : Set (ℤ × ℤ) := {(2, 0), (-2, 0), (0, 2), (0, -2), (2, 2), (2,
 
 theorem wazir_moves : MovesStraight 1 wazir := by
   refine ⟨by simp [wazir], by simp [wazir], by simp [wazir], by simp [wazir], fun d _ => ?_⟩
-  exact ⟨one_dvd _, one_dvd _⟩
+  exact ⟨Int.one_dvd _, Int.one_dvd _⟩
 
 theorem dabbaba_moves : MovesStraight 2 dabbaba := by
   refine ⟨by simp [dabbaba], by simp [dabbaba], by simp [dabbaba], by simp [dabbaba], fun d hd => ?_⟩
@@ -61,19 +61,19 @@ theorem alibaba_moves : MovesStraight 2 alibaba := by
   rcases hd with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl <;> decide
 
 /-- The Wazir walk is never trapped, and it is 1, 2, 3, ... (OEIS A000027). -/
-theorem wazir_never_trapped : ∃ a : ℕ → ℤ × ℤ, IsWalk wazir a := never_trapped 1 one_pos _ wazir_moves
+theorem wazir_never_trapped : ∃ a : ℕ → ℤ × ℤ, IsWalk wazir a := never_trapped 1 Int.one_pos _ wazir_moves
 
 /-- The Dabbaba walk (OEIS A399158) is never trapped. -/
 theorem dabbaba_never_trapped : ∃ a : ℕ → ℤ × ℤ, IsWalk dabbaba a :=
-  never_trapped 2 two_pos _ dabbaba_moves
+  never_trapped 2 (by decide : (0:ℤ) < 2) _ dabbaba_moves
 
 /-- The Alibaba walk is never trapped. -/
 theorem alibaba_never_trapped : ∃ a : ℕ → ℤ × ℤ, IsWalk alibaba a :=
-  never_trapped 2 two_pos _ alibaba_moves
+  never_trapped 2 (by decide : (0:ℤ) < 2) _ alibaba_moves
 
 /-- The Dabbaba and the Alibaba make the same walk. -/
 theorem alibaba_eq_dabbaba (a b : ℕ → ℤ × ℤ) (ha : IsWalk dabbaba a) (hb : IsWalk alibaba b) :
     a = b :=
-  (walk_unique 2 two_pos _ dabbaba_moves a ha).trans (walk_unique 2 two_pos _ alibaba_moves b hb).symm
+  (walk_unique 2 (by decide : (0:ℤ) < 2) _ dabbaba_moves a ha).trans (walk_unique 2 (by decide : (0:ℤ) < 2) _ alibaba_moves b hb).symm
 
 end Straight

@@ -31,12 +31,13 @@ theorem max_eq_rg (x y : ℤ) : max |x| |y| = rg x y :=
 theorem spiral_key (x y : ℤ) : spiral (x, y) = (2 * rg x y - 1) ^ 2 + ps x y := by
   rw [Falafel.spiral_eq x y _ (max_eq_rg x y)]
   unfold ps
-  split_ifs <;> ring
+  split <;> grind
 
 /-- Ring r ends before ring s begins, for r < s. -/
 theorem ring_step (r s : ℤ) (h0 : 0 ≤ r) (h : r < s) :
     (2 * r - 1) ^ 2 + 8 * r ≤ (2 * s - 1) ^ 2 := by
-  nlinarith [mul_nonneg (show (0 : ℤ) ≤ s - r - 1 by omega) (show (0 : ℤ) ≤ s + r by omega)]
+  have := Int.mul_nonneg (show (0 : ℤ) ≤ s - r - 1 by omega) (show (0 : ℤ) ≤ s + r by omega)
+  grind
 
 theorem rg_nonneg (x y : ℤ) : 0 ≤ rg x y := by
   unfold rg
@@ -56,7 +57,7 @@ theorem key_inj (x y x' y' : ℤ) :
   unfold ps at hp
   rw [← hr] at hp b'
   generalize rg x y = r at hp b b'
-  split_ifs at hp <;> omega
+  split at hp <;> omega
 
 /-- Comparing (rg, ps) compares spiral numbers. -/
 theorem spiral_le_of_key (x y x' y' : ℤ)
@@ -67,9 +68,9 @@ theorem spiral_le_of_key (x y x' y' : ℤ)
   have h2 := ps_bounds x' y'
   rcases h with h | ⟨h, h'⟩
   · have h4 := ring_step _ _ (rg_nonneg x y) h
-    linarith
+    omega
   · rw [h]
-    linarith
+    omega
 
 /-- Different squares have different spiral numbers. -/
 theorem spiral_inj (x y x' y' : ℤ) (h : spiral (x, y) = spiral (x', y')) : x = x' ∧ y = y' := by
@@ -77,15 +78,15 @@ theorem spiral_inj (x y x' y' : ℤ) (h : spiral (x, y) = spiral (x', y')) : x =
   have h1 := ps_bounds x y
   have h2 := ps_bounds x' y'
   have hr : rg x y = rg x' y' := by
-    rcases lt_trichotomy (rg x y) (rg x' y') with hlt | heq | hgt
+    rcases Int.lt_trichotomy (rg x y) (rg x' y') with hlt | heq | hgt
     · have h4 := ring_step _ _ (rg_nonneg x y) hlt
-      have h5 := h2.2.2 (by linarith [rg_nonneg x y])
-      linarith
+      have h5 := h2.2.2 (by have := rg_nonneg x y; omega)
+      omega
     · exact heq
     · have h4 := ring_step _ _ (rg_nonneg x' y') hgt
-      have h5 := h1.2.2 (by linarith [rg_nonneg x' y'])
-      linarith
+      have h5 := h1.2.2 (by have := rg_nonneg x' y'; omega)
+      omega
   rw [hr] at h
-  exact key_inj x y x' y' hr (by linarith)
+  exact key_inj x y x' y' hr (by omega)
 
 end Leaper
